@@ -16,7 +16,6 @@ const mockItems = [
       name: "Adaga dos Orcs",
       type: EquipmentType.Weapon,
       subType: WeaponSubType.Dagger,
-      iconUrl: "https://www.divine-pride.net/img/items/item/bRO/510147",
       slotConfigs: [
         {allowedTypes: [SlotType.Card]},
         {allowedTypes: [SlotType.Card]}

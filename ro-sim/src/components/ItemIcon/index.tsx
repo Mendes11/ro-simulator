@@ -29,7 +29,7 @@ export default function ItemIcon({
       />
       {id ? 
         <a href={`https://www.divine-pride.net/database/item/${id || 0}`} onClick={handleLinkClick}>
-          <Image 
+          <img 
             src={url} 
             alt={""}
             width={type === ItemType.Card ? 20 : 24}
