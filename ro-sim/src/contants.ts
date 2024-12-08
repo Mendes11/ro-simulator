@@ -1,4 +1,3 @@
-import { Equipment } from "./types";
 
 export enum Priority {
   Primary,

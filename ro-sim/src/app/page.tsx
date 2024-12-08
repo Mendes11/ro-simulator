@@ -1,14 +1,12 @@
 'use client'
 
-import { searchEquipments } from "@/actions/search";
 import EquipmentForm from "@/components/EquipmentForm";
 import EquipmentInstanceCard from "@/components/EquipmentInstanceCard";
 import Inventory from "@/components/Inventory";
 import EquipmentSearch from "@/components/EquipmentSearch";
-import { ArmorSubType, EquipmentType, Job, SlotType, WeaponSubType } from "@/contants";
-import { CharacterEquipments, Equipment, EquipmentInstance } from "@/types";
-import { useEffect, useState } from "react";
-import Script from "next/script";
+import { EquipmentType, Job, SlotType, WeaponSubType } from "@/contants";
+import { CharacterEquipments, EquipmentInstance } from "@/types";
+import { useState } from "react";
 
 const mockItems = [
   {
@@ -33,11 +31,11 @@ const mockItems = [
 ]
 
 export default function Home() {
-  const [inventory, setInventory] = useState(mockItems)
+  const [inventory, ] = useState(mockItems)
   const [equipments, setEquipments] = useState<CharacterEquipments>({});
   const [rightHandFormVisibility, setRightHandFormVisibility] = useState(true);
 
-  const handleEquipFormSave = (equip: EquipmentInstance<EquipmentType.Weapon>) => {
+  const handleEquipFormSave = (equip?: EquipmentInstance) => {
     setEquipments({...equipments, rightHand: equip});
     setRightHandFormVisibility(false);
   }
@@ -47,7 +45,7 @@ export default function Home() {
       <div id="inventory" className="">
         <div className="h-[1px] bg-gray-600"></div>
         <div className="w-96">
-          <EquipmentSearch onItemSelected={(item) => {}}/>
+          <EquipmentSearch onItemSelected={() => {}}/>
           <Inventory 
             items={inventory} 
           />
@@ -60,7 +58,7 @@ export default function Home() {
         </div>
         <div className="border p-1">
           {rightHandFormVisibility ? 
-            <EquipmentForm<EquipmentType.Weapon> onSave={(equipmentInstance) => handleEquipFormSave(equipmentInstance)}/> 
+            <EquipmentForm onSave={(equipmentInstance) => handleEquipFormSave(equipmentInstance)}/> 
             : <EquipmentInstanceCard item={equipments.rightHand} />}
         </div>
       </div>

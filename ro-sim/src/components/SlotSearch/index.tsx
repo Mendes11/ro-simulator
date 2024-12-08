@@ -3,9 +3,11 @@ import UseComponentVisibility from "@/hooks/UseClickOutside";
 import { Slot } from "@/types"
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SlotList } from "./SlotList";
+import { SlotType } from "@/contants";
 
 type Props = {
   onItemSelected: (item: Slot) => void
+  allowedTypes: SlotType[]
 }
 
 export default function SlotSearch({onItemSelected}: Props) {
@@ -18,7 +20,7 @@ export default function SlotSearch({onItemSelected}: Props) {
     inputRef.current?.focus();
   }, [])
 
-  let setValue = (e: ChangeEvent<HTMLInputElement>) => {
+  const setValue = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
 
     // Add a debouncer rule

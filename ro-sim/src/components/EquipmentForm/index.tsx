@@ -1,58 +1,47 @@
 import { Equipment, EquipmentInstance, Slot } from "@/types";
-import { useRef, useState } from "react";
-import EquipmentCard from "../EquipmentCard";
-import UseComponentVisibility from "@/hooks/UseClickOutside";
-import EquipmentList from "../EquipmentSearch/EquipmentList";
-import EquipmentSearch from "../EquipmentSearch";
+import { useState } from "react";
 import CardSelector from "./CardSelector";
 import EquipmentSelector from "./EquipmentSelector";
-import { EquipmentType, Priority, SlotType } from "@/contants";
+import { Priority } from "@/contants";
 import AppButton from "../common/AppButton";
 
-const defaultEquipmentInstance = {
-  refinement: 0,
-  slots: [
-    {
-      id: 123,
-      name: "Carta Freeoni",
-      iconUrl: "https://static.divine-pride.net/images/items/cards/4121.png",
-      type: SlotType.Card,
-      suffix: "infinito"
-    }
-  ]
+
+type Props = {
+  equipment?: EquipmentInstance,
+  onSave(equipment?: EquipmentInstance): void
 }
 
-type Props<T = EquipmentType> = {
-  equipment?: EquipmentInstance<T>,
-  onSave(equipment: EquipmentInstance<T>): void
+type FormDataType = {
+  id?: number
+  equipment?: Equipment
+  refinement: number
+  slots: Slot[]
 }
 
-export default function EquipmentForm<T = EquipmentType>(props: Props<T>) {
-  const [formData, setFormData] = useState({
+export default function EquipmentForm(props: Props) {
+  const [formData, setFormData] = useState<FormDataType>({
     id: props.equipment?.id,
     equipment: props.equipment?.equipment,
-    refinement: props.equipment?.refinement,
+    refinement: props.equipment?.refinement ?? 0,
     slots: props.equipment?.slots ?? [],
   })
 
-  const { ref, isVisible, setVisibility } = UseComponentVisibility()
 
-  const handleItemSelected = (item: Equipment<T>) => {
+  const handleItemSelected = (item: Equipment) => {
     // const data = equipmentInstance ?? defaultEquipmentInstance;
     setFormData({...formData, equipment: item})
-    setVisibility(false)
   }
 
   const handleRefinementSet = (value: number) => {
     setFormData({...formData, refinement: value})
   }
 
-  const showEquipmentSearch = () => {
-    setVisibility(true);
-  }
-
-  const onFormSave = (formData: any) => {
-    props.onSave(formData);
+  const onFormSave = (formData: FormDataType) => {
+    if (formData.equipment == null) {
+      props.onSave();
+    } else {
+      props.onSave(formData as EquipmentInstance);
+    }
   }
 
   const updateSlotItem = (i: number, slot: Slot) => {
@@ -72,7 +61,7 @@ export default function EquipmentForm<T = EquipmentType>(props: Props<T>) {
           ))}
         </select>
 
-        <EquipmentSelector<T>
+        <EquipmentSelector
           equipment={formData.equipment}
           onEquipmentSelected={handleItemSelected}/>
       </div>

@@ -1,6 +1,6 @@
-import { EquipmentInstance, EquipmentSubType } from "@/types"
+import { EquipmentInstance } from "@/types"
 import ItemIcon, { ItemType } from "../ItemIcon"
-import { ArmorLocation, EquipmentType, WeaponSubType } from "@/contants"
+import {  EquipmentType } from "@/contants"
 
 type Props = {
   item?: EquipmentInstance
@@ -17,7 +17,6 @@ export default function EquipmentInstanceCard({item}: Props) {
         <div className="flex flex-row">
           {item?.equipment.slotConfigs.map((_, i) => (
             <div className="ml-1" key={i}>
-              {/* add width={20} height={30} */}
               <ItemIcon id={item.slots[i]?.id} type={ItemType.Card} />
             </div>
           ))}
@@ -33,28 +32,4 @@ function equipmentName(item: EquipmentInstance) {
   let name = `${item.equipment.name} [${item.equipment.slotConfigs.length}]`;
   if (item.refinement > 0) name = `+${item.refinement} ${name}`
   return name
-}
-
-function equipmentSubTypeToStr(t: EquipmentSubType, l: ArmorLocation) {
-  switch (t) {
-    case WeaponSubType.Dagger:
-      return "Adaga"
-    case WeaponSubType.Axe:
-      return "Machado"
-    default:
-      return ""
-  };
-}
-
-function equipmentTypeToStr(t: EquipmentType) {
-  switch (t) {
-    case EquipmentType.Armor:
-      return "Armadura"
-    case EquipmentType.Weapon:
-      return "Arma"
-    case EquipmentType.ShadowEquipment:
-      return "Eqp. Sombrio"
-    default:
-      return ""
-  }
 }

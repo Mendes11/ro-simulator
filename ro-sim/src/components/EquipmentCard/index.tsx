@@ -1,10 +1,8 @@
-import { ArmorSubType, EquipmentType, ShadowEquipmentSubType, WeaponSubType } from "@/contants";
 import { Equipment } from "@/types";
-import Image from "next/image";
 import ItemIcon, { ItemType } from "../ItemIcon";
 
 interface Props {
-    equipment?: Equipment<any>
+    equipment?: Equipment
     hoverable?: boolean
     
 }
@@ -27,6 +25,5 @@ export default function EquipmentCard({equipment, hoverable}: Props) {
 }
 
 function equipmentName(item: Equipment) {
-  let name = `${item.name} [${item.slotConfigs.length}]`;
-  return name
+  return `${item.name} [${item.slotConfigs.length}]`;
 }

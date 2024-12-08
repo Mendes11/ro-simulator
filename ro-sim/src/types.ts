@@ -10,16 +10,16 @@ export type Attributes = {
 }
 
 export type CharacterEquipments = {
-    top?: EquipmentInstance<EquipmentType.Armor, ArmorSubType.Headgear, ArmorLocation.Top>;
-    mid?: EquipmentInstance<EquipmentType.Armor, ArmorSubType.Headgear, ArmorLocation.Mid>;
-    bottom?: EquipmentInstance<EquipmentType.Armor, ArmorSubType.Headgear, ArmorLocation.Bottom>;
-    armor?: EquipmentInstance<EquipmentType.Armor, ArmorSubType.Armor>;
-    rightHand?: EquipmentInstance<EquipmentType.Weapon>;
-    leftHand?: EquipmentInstance<EquipmentType.Armor | EquipmentType.Weapon> ;
-    cloack?: EquipmentInstance<EquipmentType.Armor>;
-    shoes?: EquipmentInstance<EquipmentType.Armor>;
-    rightAccessory?: EquipmentInstance<EquipmentType.Armor>;
-    leftAccessory?: EquipmentInstance<EquipmentType.Armor>;
+    top?: EquipmentInstance;
+    mid?: EquipmentInstance;
+    bottom?: EquipmentInstance;
+    armor?: EquipmentInstance;
+    rightHand?: EquipmentInstance;
+    leftHand?: EquipmentInstance;
+    cloack?: EquipmentInstance;
+    shoes?: EquipmentInstance;
+    rightAccessory?: EquipmentInstance;
+    leftAccessory?: EquipmentInstance;
 }
 
 // Modifier interface applies to any equipable item that cause a change in the character info
@@ -73,12 +73,12 @@ export type Slot = {
 }
 
 export type EquipmentSubType = ArmorSubType | WeaponSubType | ShadowEquipmentSubType
-
+export type EquipmentLocation = ArmorLocation
 // Equipment has the basic characteristics of any equipment item in the game.
-export type Equipment<T = EquipmentType, ST = EquipmentSubType, L = ArmorLocation> = {
-    type: T,
-    subType: ST,
-    location?: L,
+export type Equipment = {
+    type: EquipmentType,
+    subType: EquipmentSubType,
+    location?: EquipmentLocation,
     id: number,
     name: string,
     slotConfigs: SlotConfig[],
@@ -87,20 +87,11 @@ export type Equipment<T = EquipmentType, ST = EquipmentSubType, L = ArmorLocatio
     allowedClasses: Job[],
 }
 
-// Armor is a specialization of an Equipment with defense values
-export type Armor<ST = ArmorSubType> = Equipment<EquipmentType.Armor, ST> & {
-    
-}
-
-// Weapon is a specialization of an Equipment with atack values
-export type Weapon<ST = WeaponSubType> = Equipment<EquipmentType.Weapon, ST> & {
-
-}
 
 // EquipmentInstance is the materialization of an equipment, with refinement, and cards attached
-export type EquipmentInstance<T = EquipmentType, ST = EquipmentSubType, L = ArmorLocation> = {
+export type EquipmentInstance = {
     id?: number,
-    equipment: Equipment<T, ST, L>,
+    equipment: Equipment,
     refinement: number,
     slots: Slot[],
 }

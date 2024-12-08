@@ -1,14 +1,13 @@
 
 import { Equipment } from "@/types";
 import EquipmentCard from "../EquipmentCard";
-import { EquipmentType } from "@/contants";
 
-type Props<T = EquipmentType> = {
-  equipments: Equipment<T>[]
-  onItemSelected: (item: Equipment<T>) => void
+type Props = {
+  equipments: Equipment[]
+  onItemSelected: (item: Equipment) => void
 }
 
-export default function EquipmentList<T = EquipmentType>({ equipments, onItemSelected }: Props<T>) {
+export default function EquipmentList({ equipments, onItemSelected }: Props) {
 
   return (
     <div className="shadow-xs w-full overflow-auto">

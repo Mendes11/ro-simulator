@@ -1,6 +1,6 @@
 'use server'
 
-import { ArmorLocation, ArmorSubType, EquipmentType, ShadowEquipmentSubType, SlotType, WeaponSubType } from "@/contants";
+import { ArmorLocation, EquipmentType, SlotType, WeaponSubType } from "@/contants";
 import { Equipment, EquipmentSubType, Slot } from "@/types";
 
 type SearchEquipmentsProps = {
@@ -10,10 +10,10 @@ type SearchEquipmentsProps = {
   location?: ArmorLocation
 }
 
-export async function searchEquipments({query, type, subType, location}: SearchEquipmentsProps): Promise<Equipment<any>[]> {
+export async function searchEquipments({query}: SearchEquipmentsProps): Promise<Equipment[]> {
   console.log(query);
 
-  let result: Equipment[] = [
+  const result: Equipment[] = [
     {
       id: 510147,
       name: "Adaga dos Orcs",
@@ -63,6 +63,7 @@ type SearchSlotsProps = {
 }
 
 export async function searchSlotItem({query}: SearchSlotsProps): Promise<Slot[]> {
+  console.log(query);
   return [
     {
       id: 4121,

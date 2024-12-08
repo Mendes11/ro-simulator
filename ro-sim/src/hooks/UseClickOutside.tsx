@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function UseComponentVisibility() {
     const [isVisible, setVisibility] = useState(false);
-    const ref = useRef<any>();
+    const ref = useRef<HTMLDivElement>(null);
 
     const escapeKey = useCallback((e: KeyboardEvent) => {
         if (e.key === "Escape") {
@@ -11,9 +11,9 @@ export default function UseComponentVisibility() {
     }, [])
 
     const outsideClick = useCallback((e: MouseEvent) => {
-        if (ref.current && !ref.current.contains(e.target)) {
-            setVisibility(false);
-        }
+      if (ref.current && e.target && !ref.current.contains(e.target as Node)) {
+        setVisibility(false);
+      }
     }, [])
     
     useEffect(() => {
