@@ -19,7 +19,7 @@ export default function EquipmentSearch({
 
   useEffect(()=> {
     if (autofocus) inputRef.current?.focus();
-  }, [])
+  }, [autofocus])
 
   const setValue = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
@@ -32,17 +32,24 @@ export default function EquipmentSearch({
   }
 
   const focused = () => {
-    console.log("focused");
     setVisibility(true)
   }
 
   return (
-    <div ref={ref} className="w-full">
-        <input ref={inputRef} type="text" onFocus={focused} className="w-full h-8 border-b" value={searchText} onChange={setValue}></input>
+    <div ref={ref} className="w-auto">
+        <input ref={inputRef}
+          type="text"
+          onFocus={focused}
+          placeholder="Nome do Equipamento..."
+          className="ml-1 w-full h-8 border-b"
+          value={searchText}
+          onChange={setValue} />
         {isVisible && (
           <div  className="min-h-56 bg-white">
-            <EquipmentList equipments={items} onItemSelected={onItemSelected} />
-          </div>)}      
+            <EquipmentList
+              equipments={items} onItemSelected={onItemSelected}
+            />
+          </div>)}
     </div>
   )
 }

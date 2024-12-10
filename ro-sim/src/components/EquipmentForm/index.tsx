@@ -33,6 +33,7 @@ export default function EquipmentForm(props: Props) {
   }
 
   const handleRefinementSet = (value: number) => {
+    console.log(value);
     setFormData({...formData, refinement: value})
   }
 
@@ -54,25 +55,24 @@ export default function EquipmentForm(props: Props) {
     <>
       <div className="flex flex-row">
         <select name="refinement"
-          value={props.equipment?.refinement}
+          value={formData.refinement}
           onChange={(e) => handleRefinementSet(parseInt(e.target.value))}>
           {[...Array(21).keys()].map((i) => (
-            <option key={i}>+{i}</option>
+            <option key={i} value={i}>+{i}</option>
           ))}
         </select>
-
-        <EquipmentSelector
-          equipment={formData.equipment}
-          onEquipmentSelected={handleItemSelected}/>
+        <div className="ml-1 flex-auto">
+          <EquipmentSelector
+            equipment={formData.equipment}
+            onEquipmentSelected={handleItemSelected}/>
+        </div>
       </div>
       <div>
         {formData.equipment?.slotConfigs.map((slotConfig, i) => (
           <div key={i} className="flex flex-row text-xs mt-1">
-            <div className="flex flex-col justify-center">
-              <p>Slot {i}</p>
-            </div>
-            <div className="ml-1 cursor-pointer">
-              <CardSelector 
+            <p className="m-auto w-[3.25rem]">Slot {i}</p>
+            <div className="flex-auto">
+              <CardSelector
                 slotConfig={slotConfig}
                 selected={formData.slots[i]}
                 onCardSelected={(item) => updateSlotItem(i, item)}
@@ -82,11 +82,11 @@ export default function EquipmentForm(props: Props) {
         ))}
       </div>
       <div className="mt-1">
-      <AppButton 
+      <AppButton
         text={"Salvar"}
         priority={Priority.Primary}
         full={true}
-        onClick={() => formData && onFormSave(formData)} 
+        onClick={() => formData && onFormSave(formData)}
       />
       </div>
     </>

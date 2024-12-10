@@ -4,15 +4,17 @@ import ItemIcon, { ItemType } from "../ItemIcon";
 interface Props {
     equipment?: Equipment
     hoverable?: boolean
-    
+
 }
 
 export default function EquipmentCard({equipment, hoverable}: Props) {
 
     return (
-        <div className={`flex flex-row min-w-80 min-h-12 bg-white ${hoverable && "hover:bg-gray-100"}`}>
-          <ItemIcon id={equipment?.id} type={ItemType.Equipment} />
-          <div className="flex flex-col justify-between">
+        <div className={`flex flex-row w-auto min-h-12 bg-white ${hoverable && "hover:bg-gray-100"}`}>
+          <div className="ml-1 h-auto my-auto">
+            <ItemIcon id={equipment?.id} type={ItemType.Equipment} />
+          </div>
+          <div className="flex flex-col justify-between ml-1">
             <div className="">
               <p>{equipment && equipmentName(equipment)}</p>
             </div>

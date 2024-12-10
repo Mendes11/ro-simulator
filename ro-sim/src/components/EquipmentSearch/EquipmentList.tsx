@@ -12,7 +12,7 @@ export default function EquipmentList({ equipments, onItemSelected }: Props) {
   return (
     <div className="shadow-xs w-full overflow-auto">
       {equipments.map(eqp =>
-        <div key={eqp.id} className="border-t" onClick={() => onItemSelected(eqp)}>
+        <div key={eqp.id} className="border-t hover:cursor-pointer" onClick={() => onItemSelected(eqp)}>
           <EquipmentCard
             equipment={eqp}
             hoverable={true}

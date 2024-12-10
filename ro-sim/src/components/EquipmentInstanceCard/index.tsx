@@ -4,12 +4,16 @@ import {  EquipmentType } from "@/contants"
 
 type Props = {
   item?: EquipmentInstance
+  onClick?: () => void;
+  clickable?: boolean;
 }
 
-export default function EquipmentInstanceCard({item}: Props) {
+export default function EquipmentInstanceCard({item, onClick, clickable}: Props) {
   return (
-    <div className="flex flex-row p-1 min-w-80 bg-white min-h-12">
-      <ItemIcon id={item?.equipment?.id} type={ItemType.Equipment} />
+    <div className={`flex flex-row p-1 min-w-80 bg-white min-h-12 ${clickable && "hover:cursor-pointer"}`} onClick={() => clickable && onClick && onClick()}>
+      <div className="ml-1 h-auto my-auto">
+        <ItemIcon id={item?.equipment?.id} type={ItemType.Equipment} />
+      </div>
       <div className="flex flex-col text-md ml-1">
         <div className="">
           {item && equipmentName(item)}

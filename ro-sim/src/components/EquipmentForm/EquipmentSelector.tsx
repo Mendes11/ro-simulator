@@ -12,7 +12,7 @@ export default function EquipmentSelector({
   equipment, onEquipmentSelected
 }: Props) {
   const { ref, isVisible, setVisibility } = UseComponentVisibility()
-  
+
   const handleItemSelected = (item: Equipment) => {
     onEquipmentSelected(item)
     setVisibility(false)
@@ -23,11 +23,11 @@ export default function EquipmentSelector({
   }
 
   return (
-    <div className="w-full relative">
+    <div className="relative">
       <div className="cursor-pointer" onClick={() => showEquipmentSearch()}>
         <EquipmentCard equipment={equipment} />
       </div>
-      {isVisible && <div ref={ref} className="absolute min-w-80 left-0 w-full">
+      {isVisible && <div ref={ref} className="absolute inset-0 z-10">
         <EquipmentSearch onItemSelected={handleItemSelected} autofocus={true}/>
       </div>}
     </div>

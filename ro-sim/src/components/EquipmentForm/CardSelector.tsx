@@ -24,16 +24,19 @@ export default function CardSelector({
   const showCardSearch = () => {
     setVisibility(true);
   }
-  
+
   return (
-    <div className="w-full">
+    <div className="relative">
       <div className="cursor-pointer" onClick={() => showCardSearch()}>
         <SlotCard item={currentSlot}/>
       </div>
-      {isVisible && <div ref={ref} className="absolute min-w-80">
-        <SlotSearch onItemSelected={handleItemSelected} allowedTypes={slotConfig.allowedTypes} />
+      {isVisible && <div ref={ref} className="absolute inset-0 z-10">
+        <SlotSearch
+          autofocus={true}
+          onItemSelected={handleItemSelected}
+          allowedTypes={slotConfig.allowedTypes}
+        />
       </div>}
     </div>
   )
 }
-  
