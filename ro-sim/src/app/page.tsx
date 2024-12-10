@@ -1,67 +1,97 @@
 'use client'
 
-import EquipmentForm from "@/components/EquipmentForm";
-import EquipmentInstanceCard from "@/components/EquipmentInstanceCard";
-import Inventory from "@/components/Inventory";
-import EquipmentSearch from "@/components/EquipmentSearch";
-import { EquipmentType, Job, SlotType, WeaponSubType } from "@/contants";
-import { CharacterEquipments, EquipmentInstance } from "@/types";
+import CharacterEquipmentCard from "@/components/CharacterEquipmentCard";
+import { CharacterEquipments } from "@/types";
 import { useState } from "react";
 
-const mockItems = [
-  {
-    id: 1,
-    equipment: {
-      id: 510147,
-      name: "Adaga dos Orcs",
-      type: EquipmentType.Weapon,
-      subType: WeaponSubType.Dagger,
-      slotConfigs: [
-        {allowedTypes: [SlotType.Card]},
-        {allowedTypes: [SlotType.Card]}
-      ],
-      weight: 100,
-      minLevel: 1,
-      allowedClasses: [Job.Novice]
-    },
-    refinement: 14,
-    slots: [],
-  }
-]
+
 
 export default function Home() {
-  const [inventory, ] = useState(mockItems)
   const [equipments, setEquipments] = useState<CharacterEquipments>({});
-  const [rightHandFormVisibility, setRightHandFormVisibility] = useState(true);
-
-  const handleEquipFormSave = (equip?: EquipmentInstance) => {
-    setEquipments({...equipments, rightHand: equip});
-    setRightHandFormVisibility(false);
-  }
 
   return (
-    <div>
-      <div id="inventory" className="">
-        <div className="h-[1px] bg-gray-600"></div>
-        <div className="w-96">
-          <EquipmentSearch onItemSelected={() => {}}/>
-          <Inventory 
-            items={inventory} 
-          />
-        </div>
+    <div className="flex flex-row flex-wrap lg:max-w-[75%]">
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Topo"
+          equippedItem={equipments.top}
+          onItemChanged={(item) => setEquipments({...equipments, top: item})}
+          onItemRemoved={() => setEquipments({...equipments, top: undefined})}
+        />
       </div>
-
-      <div className="">
-        <div className="p-2 border bg-gray-100">
-          Mão Direita
-        </div>
-        <div className="border p-1">
-          {rightHandFormVisibility ? 
-            <EquipmentForm onSave={(equipmentInstance) => handleEquipFormSave(equipmentInstance)}/> 
-            : <EquipmentInstanceCard item={equipments.rightHand} />}
-        </div>
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Meio"
+          equippedItem={equipments.mid}
+          onItemChanged={(item) => setEquipments({...equipments, mid: item})}
+          onItemRemoved={() => setEquipments({...equipments, mid: undefined})}
+        />
       </div>
-      
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Baixo"
+          equippedItem={equipments.bottom}
+          onItemChanged={(item) => setEquipments({...equipments, bottom: item})}
+          onItemRemoved={() => setEquipments({...equipments, bottom: undefined})}
+        />
+      </div>
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Mão Direita"
+          equippedItem={equipments.rightHand}
+          onItemChanged={(item) => setEquipments({...equipments, rightHand: item})}
+          onItemRemoved={() => setEquipments({...equipments, rightHand: undefined})}
+        />
+      </div>
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Mão Esquerda"
+          equippedItem={equipments.leftHand}
+          onItemChanged={(item) => setEquipments({...equipments, leftHand: item})}
+          onItemRemoved={() => setEquipments({...equipments, leftHand: undefined})}
+        />
+      </div>
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Armadura"
+          equippedItem={equipments.armor}
+          onItemChanged={(item) => setEquipments({...equipments, armor: item})}
+          onItemRemoved={() => setEquipments({...equipments, armor: undefined})}
+        />
+      </div>
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Capa"
+          equippedItem={equipments.cloack}
+          onItemChanged={(item) => setEquipments({...equipments, cloack: item})}
+          onItemRemoved={() => setEquipments({...equipments, cloack: undefined})}
+        />
+      </div>
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Botas"
+          equippedItem={equipments.shoes}
+          onItemChanged={(item) => setEquipments({...equipments, shoes: item})}
+          onItemRemoved={() => setEquipments({...equipments, shoes: undefined})}
+        />
+      </div>
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Accessório Direito"
+          equippedItem={equipments.leftAccessory}
+          onItemChanged={(item) => setEquipments({...equipments, leftAccessory: item})}
+          onItemRemoved={() => setEquipments({...equipments, leftAccessory: undefined})}
+        />
+      </div>
+      <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
+        <CharacterEquipmentCard
+          title="Acessório Esquerdo"
+          equippedItem={equipments.rightAccessory}
+          onItemChanged={(item) => setEquipments({...equipments, rightAccessory: item})}
+          onItemRemoved={() => setEquipments({...equipments, rightAccessory: undefined})}
+        />
+      </div>
     </div>
+
   );
 }
