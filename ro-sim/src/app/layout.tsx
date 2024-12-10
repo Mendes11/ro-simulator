@@ -23,13 +23,13 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-100 h-100 bg-gray-100 text-black`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 text-black`}
       >
         <div className="">
           <Navbar/>
           <main id="main" className="p-4">
             {children}
-          </main>   
+          </main>
         </div>
       </body>
     </html>
