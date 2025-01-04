@@ -1,13 +1,13 @@
-import { Slot, SlotConfig } from "@/types"
 import UseComponentVisibility from "@/hooks/UseClickOutside";
 import SlotSearch from "../SlotSearch";
 import SlotCard from "../SlotCard";
 import { useState } from "react";
+import { iSlot, iSlotConfig } from "@/types/slot";
 
 type Props = {
-  slotConfig: SlotConfig
-  selected?: Slot
-  onCardSelected: (slot: Slot) => void
+  slotConfig: iSlotConfig
+  selected?: iSlot
+  onCardSelected: (slot: iSlot) => void
 }
 
 export default function CardSelector({
@@ -15,7 +15,7 @@ export default function CardSelector({
 }: Props) {
   const { ref, isVisible, setVisibility } = UseComponentVisibility()
   const [currentSlot, setCurrentSlot] = useState(selected);
-  const handleItemSelected = (item: Slot) => {
+  const handleItemSelected = (item: iSlot) => {
     onCardSelected(item);
     setCurrentSlot(item);
     setVisibility(false);

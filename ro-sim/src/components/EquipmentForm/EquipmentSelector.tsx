@@ -1,11 +1,11 @@
-import { Equipment } from "@/types"
 import EquipmentCard from "../EquipmentCard"
 import UseComponentVisibility from "@/hooks/UseClickOutside"
 import EquipmentSearch from "../EquipmentSearch"
+import { iEquipment } from "@/types/equipment"
 
 type Props = {
-  equipment?: Equipment
-  onEquipmentSelected: (equipment: Equipment) => void
+  equipment?: iEquipment
+  onEquipmentSelected: (equipment: iEquipment) => void
 }
 
 export default function EquipmentSelector({
@@ -13,7 +13,7 @@ export default function EquipmentSelector({
 }: Props) {
   const { ref, isVisible, setVisibility } = UseComponentVisibility()
 
-  const handleItemSelected = (item: Equipment) => {
+  const handleItemSelected = (item: iEquipment) => {
     onEquipmentSelected(item)
     setVisibility(false)
   }

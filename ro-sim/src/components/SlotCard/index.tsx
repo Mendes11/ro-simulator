@@ -1,7 +1,7 @@
-import { Slot } from "@/types";
+import { iSlot } from "@/types/slot";
 import ItemIcon, { ItemType } from "../ItemIcon";
 
-export default function SlotCard({item}: {item?: Slot}) {
+export default function SlotCard({item}: {item?: iSlot}) {
   return (
     <div className="flex flex-row p-1 min-h-12 bg-white">
       <div className="ml-1 h-auto my-auto">

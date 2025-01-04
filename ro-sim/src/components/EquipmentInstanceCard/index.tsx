@@ -1,9 +1,9 @@
-import { EquipmentInstance } from "@/types"
+import { iEquipmentInstance } from "@/types/equipmentInstance";
 import ItemIcon, { ItemType } from "../ItemIcon"
-import {  EquipmentType } from "@/contants"
+import { EquipmentTypes } from "@/types/equipment";
 
 type Props = {
-  item?: EquipmentInstance
+  item?: iEquipmentInstance
   onClick?: () => void;
   clickable?: boolean;
 }
@@ -26,13 +26,13 @@ export default function EquipmentInstanceCard({item, onClick, clickable}: Props)
           ))}
         </div>
       </div>
-      {item && item.equipment.type === EquipmentType.Weapon ? (undefined) : (undefined)}
+      {item && item.equipment.type === EquipmentTypes.Weapon ? (undefined) : (undefined)}
     </div>
   )
 }
 
 
-function equipmentName(item: EquipmentInstance) {
+function equipmentName(item: iEquipmentInstance) {
   let name = `${item.equipment.name} [${item.equipment.slotConfigs.length}]`;
   if (item.refinement > 0) name = `+${item.refinement} ${name}`
   return name

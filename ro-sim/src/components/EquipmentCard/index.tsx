@@ -1,8 +1,8 @@
-import { Equipment } from "@/types";
+import { iEquipment } from "@/types/equipment";
 import ItemIcon, { ItemType } from "../ItemIcon";
 
 interface Props {
-    equipment?: Equipment
+    equipment?: iEquipment
     hoverable?: boolean
 
 }
@@ -26,6 +26,6 @@ export default function EquipmentCard({equipment, hoverable}: Props) {
     )
 }
 
-function equipmentName(item: Equipment) {
+function equipmentName(item: iEquipment) {
   return `${item.name} [${item.slotConfigs.length}]`;
 }

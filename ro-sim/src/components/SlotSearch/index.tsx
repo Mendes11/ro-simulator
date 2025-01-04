@@ -1,19 +1,18 @@
 import { searchSlotItem } from "@/actions/search";
 import UseComponentVisibility from "@/hooks/UseClickOutside";
-import { Slot } from "@/types"
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SlotList } from "./SlotList";
-import { SlotType } from "@/contants";
+import { iSlot, SlotTypes } from "@/types/slot";
 
 type Props = {
-  onItemSelected: (item: Slot) => void
-  allowedTypes: SlotType[]
+  onItemSelected: (item: iSlot) => void
+  allowedTypes: SlotTypes[]
   autofocus?: boolean
 }
 
 export default function SlotSearch({onItemSelected, autofocus}: Props) {
   const [searchText, setSearchText] = useState<string>('');
-  const [items, setItems] = useState<Slot[]>([]);
+  const [items, setItems] = useState<iSlot[]>([]);
   const { ref, isVisible, setVisibility } = UseComponentVisibility()
   const inputRef = useRef<HTMLInputElement>(null);
 

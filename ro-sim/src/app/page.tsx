@@ -1,13 +1,13 @@
 'use client'
 
 import CharacterEquipmentCard from "@/components/CharacterEquipmentCard";
-import { CharacterEquipments } from "@/types";
+import { iCharacterEquipments } from "@/types/character";
 import { useState } from "react";
 
 
 
 export default function Home() {
-  const [equipments, setEquipments] = useState<CharacterEquipments>({});
+  const [equipments, setEquipments] = useState<iCharacterEquipments>({});
 
   return (
     <div className="flex flex-row flex-wrap">

@@ -1,9 +1,9 @@
-import { Slot } from "@/types"
+import { iSlot } from "@/types/slot"
 import SlotCard from "../SlotCard"
 
 type Props = {
-  items: Slot[]
-  onItemSelected: (item: Slot) => void
+  items: iSlot[]
+  onItemSelected: (item: iSlot) => void
 }
 
 export function SlotList({items, onItemSelected}: Props) {

@@ -1,12 +1,12 @@
-import { EquipmentInstance } from "@/types";
 import { useState } from "react";
 import EquipmentForm from "../EquipmentForm";
 import EquipmentInstanceCard from "../EquipmentInstanceCard";
+import { iEquipmentInstance } from "@/types/equipmentInstance";
 
 type Props = {
   title: string
-  equippedItem?: EquipmentInstance
-  onItemChanged: (item: EquipmentInstance) => void
+  equippedItem?: iEquipmentInstance
+  onItemChanged: (item: iEquipmentInstance) => void
   onItemRemoved: () => void
 }
 
@@ -15,7 +15,7 @@ export default function CharacterEquipmentCard({
 }: Props) {
   const [formVisibible, setFormVisible] = useState(false);
 
-  const handleFormSave = (item?: EquipmentInstance) => {
+  const handleFormSave = (item?: iEquipmentInstance) => {
     if (item != null) {
       onItemChanged(item);
     } else {

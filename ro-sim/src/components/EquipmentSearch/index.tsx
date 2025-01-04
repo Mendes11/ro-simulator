@@ -2,10 +2,11 @@ import { ChangeEvent, useEffect, useRef, useState } from "react"
 import EquipmentList from "./EquipmentList";
 import { searchEquipments } from "@/actions/search";
 import UseComponentVisibility from "@/hooks/UseClickOutside";
-import { Equipment } from "@/types";
+import { iEquipment } from "@/types/equipment";
+
 
 type Props = {
-  onItemSelected: (item: Equipment) => void
+  onItemSelected: (item: iEquipment) => void
   autofocus?: boolean
 }
 
@@ -13,7 +14,7 @@ export default function EquipmentSearch({
   onItemSelected, autofocus
 }: Props) {
   const [searchText, setSearchText] = useState<string>('');
-  const [items, setItems] = useState<Equipment[]>([]);
+  const [items, setItems] = useState<iEquipment[]>([]);
   const { ref, isVisible, setVisibility } = UseComponentVisibility()
   const inputRef = useRef<HTMLInputElement>(null);
 

@@ -1,10 +1,10 @@
-import { EquipmentInstance } from '@/types'
+import { iEquipmentInstance } from '@/types/equipmentInstance'
 import EquipmentInstanceCard from '../EquipmentInstanceCard'
 
 
 
 interface InventoryProps {
-  items: EquipmentInstance[]
+  items: iEquipmentInstance[]
 }
 
 export default function Inventory({ items }: InventoryProps) {

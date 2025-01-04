@@ -1,10 +1,10 @@
 
-import { Equipment } from "@/types";
+import { iEquipment } from "@/types/equipment";
 import EquipmentCard from "../EquipmentCard";
 
 type Props = {
-  equipments: Equipment[]
-  onItemSelected: (item: Equipment) => void
+  equipments: iEquipment[]
+  onItemSelected: (item: iEquipment) => void
 }
 
 export default function EquipmentList({ equipments, onItemSelected }: Props) {

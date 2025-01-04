@@ -1,21 +1,23 @@
-import { Equipment, EquipmentInstance, Slot } from "@/types";
 import { useState } from "react";
 import CardSelector from "./CardSelector";
 import EquipmentSelector from "./EquipmentSelector";
 import { Priority } from "@/contants";
 import AppButton from "../common/AppButton";
+import { iEquipmentInstance } from "@/types/equipmentInstance";
+import { iEquipment } from "@/types/equipment";
+import { iSlot } from "@/types/slot";
 
 
 type Props = {
-  equipment?: EquipmentInstance,
-  onSave(equipment?: EquipmentInstance): void
+  equipment?: iEquipmentInstance,
+  onSave(equipment?: iEquipmentInstance): void
 }
 
 type FormDataType = {
   id?: number
-  equipment?: Equipment
+  equipment?: iEquipment
   refinement: number
-  slots: Slot[]
+  slots: iSlot[]
 }
 
 export default function EquipmentForm(props: Props) {
@@ -27,7 +29,7 @@ export default function EquipmentForm(props: Props) {
   })
 
 
-  const handleItemSelected = (item: Equipment) => {
+  const handleItemSelected = (item: iEquipment) => {
     // const data = equipmentInstance ?? defaultEquipmentInstance;
     setFormData({...formData, equipment: item})
   }
@@ -41,11 +43,11 @@ export default function EquipmentForm(props: Props) {
     if (formData.equipment == null) {
       props.onSave();
     } else {
-      props.onSave(formData as EquipmentInstance);
+      props.onSave(formData as iEquipmentInstance);
     }
   }
 
-  const updateSlotItem = (i: number, slot: Slot) => {
+  const updateSlotItem = (i: number, slot: iSlot) => {
     formData.slots[i] = slot
     setFormData(formData)
   }
