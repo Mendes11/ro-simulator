@@ -1,17 +1,46 @@
 require 'json'
 
+# TODO: Replace our regexps by calls to Divine Pride,
+#  it has access to better data somehow, such as detecting enchants that don't have descriptions telling what that is.
+#
+# Possibly move this to a Node script as well.
+#
+
+def int_matcher(name)
+  [/#{name}:\s+\^\w{6}(\d+)/, Proc.new {|v| v.to_i }]
+end
+
+def text_matcher(name)
+   [/#{name}:\s+\^\w{6}(.*?)\^/, Proc.new {|v| v}]
+end
+
 files = [
     {path: "./itemInfo.lub", encoding: "cp1252"},
     {path: "./iteminfo_new.lub"}
 ]
 
-ID_MATCHER = /^\[(\d+)\]\s{0,}=\s{0,}\{.*$/
-NAME_MATCHER = /^identifiedDisplayName\s+=\s+\"(.*)\",.*$/
-DESCRIPTION_MATCHER = /^identifiedDescriptionName\s{0,}=\s{0,}\{$/
-BLOCK_END_MATCHER = /^\},?.*$/
-SLOT_MATCHER = /^slotCount\s{0,}=\s{0,}(\d+).*$/
-CLASS_NUM_MATCHER = /^ClassNum\s{0,}=\s{0,}(\d+).*$/
-COSTUME_MATCHER = /^costume\s{0,}=\s{0,}(false|true).*$/
+ID_MATCHER = /^\[(\d+)\]\s{0,}=\s{0,}\{.*$/im
+NAME_MATCHER = /^identifiedDisplayName\s+=\s+\"(.*)\",.*$/im
+DESCRIPTION_MATCHER = /^identifiedDescriptionName\s{0,}=\s{0,}\{$/im
+BLOCK_END_MATCHER = /^\},?.*$/im
+SLOT_MATCHER = /^slotCount\s{0,}=\s{0,}(\d+).*$/im
+CLASS_NUM_MATCHER = /^ClassNum\s{0,}=\s{0,}(\d+).*$/im
+COSTUME_MATCHER = /^costume\s{0,}=\s{0,}(false|true).*$/im
+
+# Description Matchers
+DESCRIPTION_FIELDS = {
+  weight: int_matcher("Peso"),
+  sub_type: text_matcher("Tipo"),
+  location: text_matcher("(?:Equipa.*?|Posi[cç][aã]o)"),
+  def: int_matcher("DEF"),
+  atq: int_matcher("Ataque|ATQ"),
+  atqm: int_matcher("ATQM"),
+  defm: int_matcher("DEFM"),
+  level: int_matcher("N[íi]vel\snecess[aá]rio"),
+  weapon_level: int_matcher("N[íi]vel\s.*?arma"),
+  jobs: text_matcher("Classes"),
+}
+
 
 items = {}
 
@@ -28,9 +57,8 @@ files.each do |file|
       current_id = $1
       items[current_id] ||= {
         name: nil,
-        description_lines: [],
-        slots_count: 0,
         class_num: 0,
+        description: "",
         costume: false,
       }
 
@@ -39,11 +67,10 @@ files.each do |file|
 
     when DESCRIPTION_MATCHER
       description_block = true
-      items[current_id][:description_lines] = []
+      items[current_id][:description] = ""
 
     when BLOCK_END_MATCHER
       if description_block
-        items[current_id][:description] = items[current_id][:description_lines].join("\n") unless current_id.nil?
         description_block = false
       end
 
@@ -56,11 +83,17 @@ files.each do |file|
     else
       if description_block
         desc = line.match(/^\"(.*)\".*$/)&.captures&.first
-        items[current_id][:description_lines] << desc
+        items[current_id][:description] += desc + "\n"
+
+        DESCRIPTION_FIELDS.each do |key, (matcher, fn)|
+          value = desc.match(matcher)&.captures&.first
+          if value
+            value = fn.call(value.strip)
+            items[current_id][key] = value
+          end
+        end
       end
-
     end
-
   end
 end
 
