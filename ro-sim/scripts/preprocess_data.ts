@@ -109,7 +109,7 @@ const subTypeToTypeEnum = (subType: EquipmentSubTypes) => {
         case EquipmentSubTypes.ShadowEquipment:
             return EquipmentTypes.ShadowEquipment;
         case EquipmentSubTypes.Card:
-            return EquipmentTypes.Card;
+            return null;
     }
 }
 
@@ -162,7 +162,6 @@ Object.keys(items).forEach((id: string) => {
         weight: items[id].weight || 0,
         minLevel: items[id].level || 1,
         weaponLevel: items[id].weapon_level,
-        effects: [],
     };
 })
 
