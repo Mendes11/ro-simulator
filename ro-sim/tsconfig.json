@@ -23,6 +23,7 @@
       "@app/*": ["./src/app/*"],
       "@engine/*": ["./src/engine/*"],
       "@types/*": ["./src/types/*"],
+      "@repositories/*": ["./src/repositories/local/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
