@@ -1,7 +1,9 @@
 import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes, iEquipment } from "@/types/equipment"
 import { EquipmentSearchArgs } from "@/types/repositories"
-import { parseJsonFile } from "next/dist/build/load-jsconfig"
+import { promises as fs } from "fs";
+import path from "path";
 
+const file = await fs.readFile(path.join(process.cwd(), "equipments.json"), 'utf-8');
 
 export class LocalEquipmentRepository {
     equipments: {[k: string]: iEquipment}
@@ -11,7 +13,7 @@ export class LocalEquipmentRepository {
 
 
     public constructor() {
-        this.equipments = parseJsonFile("./equipments.json")
+        this.equipments = JSON.parse(file);
         this.typeIndex = new Map();
         this.subTypeIndex = new Map();
         this.locationIndex = new Map();
