@@ -16,7 +16,7 @@ end
 
 files = [
     {path: "./itemInfo.lub", encoding: "cp1252"},
-    {path: "./iteminfo_new.lub"}
+    {path: "./iteminfo_new.lub", encoding: "utf-8"}
 ]
 
 ID_MATCHER = /^\[(\d+)\]\s{0,}=\s{0,}\{.*$/im
