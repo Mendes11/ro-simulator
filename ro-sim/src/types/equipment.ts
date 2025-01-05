@@ -1,3 +1,4 @@
+import { AttackRangeTypes } from "./attackMultiplier";
 import { iSlotConfig } from "./slot";
 
 export enum EquipmentTypes {
@@ -45,6 +46,31 @@ export enum EquipmentSubTypes {
     Card,
 }
 
+export const AllWeaponSubTypes = [
+    EquipmentSubTypes.Dagger,
+    EquipmentSubTypes.Sword,
+    EquipmentSubTypes.TwoHandedSword,
+    EquipmentSubTypes.Spear,
+    EquipmentSubTypes.TwoHandedSpear,
+    EquipmentSubTypes.Axe,
+    EquipmentSubTypes.TwoHandedAxe,
+    EquipmentSubTypes.Mace,
+    EquipmentSubTypes.Bow,
+    EquipmentSubTypes.Katar,
+    EquipmentSubTypes.Whip,
+    EquipmentSubTypes.Instrument,
+    EquipmentSubTypes.Staff,
+    EquipmentSubTypes.TwoHandedStaff,
+    EquipmentSubTypes.Rifle,
+    EquipmentSubTypes.Pistol,
+    EquipmentSubTypes.GrenadeLauncher,
+    EquipmentSubTypes.MachineGun,
+    EquipmentSubTypes.Shotgun,
+    EquipmentSubTypes.ShurikenHuuma,
+    EquipmentSubTypes.FistWeapon,
+    EquipmentSubTypes.Book,
+]
+
 export enum EquipmentLocations {
     // Headgear Location
     Upper,
@@ -75,4 +101,9 @@ export interface iEquipment {
     weight: number,
     minLevel: number,
     weaponLevel?: number,
+    weaponAtk?: number,
+    weaponMAtk?: number,
+    equipDef?: number;
+    equipMDef?: number;
+    attackRange?: AttackRangeTypes;
 }

@@ -14,9 +14,7 @@ export enum SubStatTypes {
 }
 
 export type CharacterSubStatsType = {
-    wAtk: number
     eAtk: number
-    wMatk: number
     eMatk: number
     crit: number
     precision: number

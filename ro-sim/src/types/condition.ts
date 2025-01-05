@@ -1,8 +1,3 @@
-import { iCharacter } from "./character"
-import { iEquipmentInstance } from "./equipmentInstance"
-import { Jobs } from "./jobs"
-import { SkillNames } from "./skills"
-
 export enum ConditionTypes {
     Refinement,
     Equipment,

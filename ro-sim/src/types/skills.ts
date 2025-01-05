@@ -1,5 +1,4 @@
 import { AttackTypes, AttackRangeTypes } from "./attackMultiplier"
-import { iCharacter } from "./character"
 
 export enum SkillNames {
     SoulBreaker
