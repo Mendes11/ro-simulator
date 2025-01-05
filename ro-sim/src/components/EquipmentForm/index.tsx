@@ -4,12 +4,15 @@ import EquipmentSelector from "./EquipmentSelector";
 import { Priority } from "@/contants";
 import AppButton from "../common/AppButton";
 import { iEquipmentInstance } from "@/types/equipmentInstance";
-import { iEquipment } from "@/types/equipment";
+import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes, iEquipment } from "@/types/equipment";
 import { iSlot } from "@/types/slot";
 
 
 type Props = {
   equipment?: iEquipmentInstance,
+  searchTypes: EquipmentTypes[];
+  searchSubTypes: EquipmentSubTypes[];
+  searchLocations?: EquipmentLocations[];
   onSave(equipment?: iEquipmentInstance): void
 }
 
@@ -66,6 +69,9 @@ export default function EquipmentForm(props: Props) {
         <div className="ml-1 flex-auto">
           <EquipmentSelector
             equipment={formData.equipment}
+            searchTypes={props.searchTypes}
+            searchSubTypes={props.searchSubTypes}
+            searchLocations={props.searchLocations}
             onEquipmentSelected={handleItemSelected}/>
         </div>
       </div>

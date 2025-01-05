@@ -20,14 +20,19 @@ export default function SlotSearch({onItemSelected, autofocus}: Props) {
     if (autofocus) inputRef.current?.focus();
   }, [autofocus])
 
+  useEffect(() => {
+      const debouncer = setTimeout(() => {
+        searchSlotItem({query: searchText}).then((items) => {
+            setItems(items);
+            setVisibility(true);
+          })
+      }, 500);
+
+      return () => clearTimeout(debouncer);
+    }, [searchText, setVisibility]);
+
   const setValue = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
-
-    // Add a debouncer rule
-    searchSlotItem({query: searchText}).then((items) => {
-      setItems(items);
-      setVisibility(true);
-    })
   }
 
   const focused = () => {

@@ -2,6 +2,7 @@
 
 import CharacterEquipmentCard from "@/components/CharacterEquipmentCard";
 import { iCharacterEquipments } from "@/types/character";
+import { AllWeaponSubTypes, EquipmentLocations, EquipmentSubTypes, EquipmentTypes } from "@/types/equipment";
 import { useState } from "react";
 
 
@@ -74,6 +75,9 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Topo"
+              type={EquipmentTypes.Armor}
+              allowedSubTypes={[EquipmentSubTypes.Headgear]}
+              allowedLocations={[EquipmentLocations.Upper]}
               equippedItem={equipments.top}
               onItemChanged={(item) => setEquipments({...equipments, top: item})}
               onItemRemoved={() => setEquipments({...equipments, top: undefined})}
@@ -82,6 +86,9 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Meio"
+              type={EquipmentTypes.Armor}
+              allowedSubTypes={[EquipmentSubTypes.Headgear]}
+              allowedLocations={[EquipmentLocations.Mid]}
               equippedItem={equipments.mid}
               onItemChanged={(item) => setEquipments({...equipments, mid: item})}
               onItemRemoved={() => setEquipments({...equipments, mid: undefined})}
@@ -90,6 +97,9 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Baixo"
+              type={EquipmentTypes.Armor}
+              allowedSubTypes={[EquipmentSubTypes.Headgear]}
+              allowedLocations={[EquipmentLocations.Bottom]}
               equippedItem={equipments.bottom}
               onItemChanged={(item) => setEquipments({...equipments, bottom: item})}
               onItemRemoved={() => setEquipments({...equipments, bottom: undefined})}
@@ -98,6 +108,8 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Mão Direita"
+              type={EquipmentTypes.Weapon}
+              allowedSubTypes={AllWeaponSubTypes}
               equippedItem={equipments.rightHand}
               onItemChanged={(item) => setEquipments({...equipments, rightHand: item})}
               onItemRemoved={() => setEquipments({...equipments, rightHand: undefined})}
@@ -106,6 +118,8 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Mão Esquerda"
+              type={EquipmentTypes.Armor}
+              allowedSubTypes={[EquipmentSubTypes.Shield]}
               equippedItem={equipments.leftHand}
               onItemChanged={(item) => setEquipments({...equipments, leftHand: item})}
               onItemRemoved={() => setEquipments({...equipments, leftHand: undefined})}
@@ -114,6 +128,8 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Armadura"
+              type={EquipmentTypes.Armor}
+              allowedSubTypes={[EquipmentSubTypes.Armor]}
               equippedItem={equipments.armor}
               onItemChanged={(item) => setEquipments({...equipments, armor: item})}
               onItemRemoved={() => setEquipments({...equipments, armor: undefined})}
@@ -122,6 +138,8 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Capa"
+              type={EquipmentTypes.Armor}
+              allowedSubTypes={[EquipmentSubTypes.Cloack]}
               equippedItem={equipments.cloack}
               onItemChanged={(item) => setEquipments({...equipments, cloack: item})}
               onItemRemoved={() => setEquipments({...equipments, cloack: undefined})}
@@ -130,6 +148,8 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Botas"
+              type={EquipmentTypes.Armor}
+              allowedSubTypes={[EquipmentSubTypes.Shoes]}
               equippedItem={equipments.shoes}
               onItemChanged={(item) => setEquipments({...equipments, shoes: item})}
               onItemRemoved={() => setEquipments({...equipments, shoes: undefined})}
@@ -138,6 +158,8 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Accessório Direito"
+              type={EquipmentTypes.Armor}
+              allowedSubTypes={[EquipmentSubTypes.Accessory, EquipmentSubTypes.AccessoryRight]}
               equippedItem={equipments.leftAccessory}
               onItemChanged={(item) => setEquipments({...equipments, leftAccessory: item})}
               onItemRemoved={() => setEquipments({...equipments, leftAccessory: undefined})}
@@ -146,6 +168,8 @@ export default function Home() {
           <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
             <CharacterEquipmentCard
               title="Acessório Esquerdo"
+              type={EquipmentTypes.Armor}
+              allowedSubTypes={[EquipmentSubTypes.Accessory, EquipmentSubTypes.AccessoryLeft]}
               equippedItem={equipments.rightAccessory}
               onItemChanged={(item) => setEquipments({...equipments, rightAccessory: item})}
               onItemRemoved={() => setEquipments({...equipments, rightAccessory: undefined})}

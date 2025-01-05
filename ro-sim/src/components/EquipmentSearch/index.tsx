@@ -1,17 +1,20 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import EquipmentList from "./EquipmentList";
-import { searchEquipments } from "@/actions/search";
 import UseComponentVisibility from "@/hooks/UseClickOutside";
-import { iEquipment } from "@/types/equipment";
+import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes, iEquipment } from "@/types/equipment";
+import { searchEquipments } from "@/actions/search";
 
 
 type Props = {
+  types?: EquipmentTypes[];
+  subTypes?: EquipmentSubTypes[];
+  locations?: EquipmentLocations[];
   onItemSelected: (item: iEquipment) => void
   autofocus?: boolean
 }
 
 export default function EquipmentSearch({
-  onItemSelected, autofocus
+  onItemSelected, autofocus, types, subTypes, locations,
 }: Props) {
   const [searchText, setSearchText] = useState<string>('');
   const [items, setItems] = useState<iEquipment[]>([]);
@@ -22,14 +25,19 @@ export default function EquipmentSearch({
     if (autofocus) inputRef.current?.focus();
   }, [autofocus])
 
+  useEffect(() => {
+    const debouncer = setTimeout(() => {
+        searchEquipments({name: searchText, types: types, subTypes: subTypes, locations: locations}).then((items) => {
+            setItems(items);
+            setVisibility(true);
+        })
+    }, 500);
+
+    return () => clearTimeout(debouncer);
+  }, [searchText, setVisibility, locations, subTypes, types]);
+
   const setValue = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
-
-    // Add a debouncer rule
-    searchEquipments({query: searchText}).then((items) => {
-      setItems(items);
-      setVisibility(true);
-    })
   }
 
   const focused = () => {
