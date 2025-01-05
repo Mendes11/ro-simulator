@@ -2,13 +2,13 @@ import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes, iEquipment } fro
 import { EquipmentSearchArgs } from "@/types/repositories"
 import { promises as fs } from "fs";
 import path from "path";
-import { getDownloadUrl } from "@vercel/blob";
 
 let file: string;
 
+console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "production") {
     console.log("Loading equipments.json from Bucket");
-    const url = await getDownloadUrl("equipments.json");
+    const url = "https://uhajjqevycyljnw0.public.blob.vercel-storage.com/equipments-Kq7jYKiOKX6NlRCH5TEqihx3SUID2y.json"
     file = await fetch(url).then(res => res.text())
 } else {
     file = await fs.readFile(path.join(process.cwd(), "equipments.json"), 'utf-8');
