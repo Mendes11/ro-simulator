@@ -1,11 +1,10 @@
-import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes, iEquipment } from "@/types/equipment"
+import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "@/types/equipment"
 import { EquipmentSearchArgs } from "@/types/repositories"
 import { promises as fs } from "fs";
 import path from "path";
 
 let file: string;
 
-console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "production") {
     console.log("Loading equipments.json from Bucket");
     const url = "https://uhajjqevycyljnw0.public.blob.vercel-storage.com/equipments-Kq7jYKiOKX6NlRCH5TEqihx3SUID2y.json"
@@ -16,9 +15,9 @@ if (process.env.NODE_ENV === "production") {
 
 export class LocalEquipmentRepository {
     equipments: {[k: string]: iEquipment}
-    typeIndex: Map<EquipmentTypes, string[]>;
-    subTypeIndex: Map<EquipmentSubTypes, string[]>;
-    locationIndex: Map<EquipmentLocations, string[]>;
+    typeIndex: Map<ItemTypes, string[]>;
+    subTypeIndex: Map<ItemSubTypes, string[]>;
+    locationIndex: Map<ItemLocations, string[]>;
 
 
     public constructor() {
@@ -45,13 +44,14 @@ export class LocalEquipmentRepository {
                 this.subTypeIndex.get(eqp.subType)?.push(id);
             }
 
-            if (eqp.location != null) {
-                if (this.locationIndex.get(eqp.location) == null) {
-                    this.locationIndex.set(eqp.location, []);
-                }
-                this.locationIndex.get(eqp.location)?.push(id);
+            if (eqp.allowedLocations != null) {
+                eqp.allowedLocations.forEach(l => {
+                    if (this.locationIndex.get(l) == null) {
+                        this.locationIndex.set(l, []);
+                    }
+                    this.locationIndex.get(l)?.push(id);
+                })
             }
-
         })
         console.log("Finished Indexing Equipments.");
 
@@ -64,10 +64,14 @@ export class LocalEquipmentRepository {
     async Search(query: EquipmentSearchArgs): Promise<iEquipment[]> {
         return Object.values(this.equipments).filter(e => {
             let q = true
-            if (query.types) q &&= query.types.includes(e.type);
-            if (query.subTypes) q &&= query.subTypes.includes(e.subType)
-            if (query.locations) q &&= e.location != null && query.locations.includes(e.location);
-            if (query.name) q &&= new RegExp(query.name!, "gi").test(e.name)
+            if (query.name && !(new RegExp(query.name!, "gi").test(e.name))) return false;
+            if (query.types && !query.types.includes(e.type)) return false;
+            if (query.subTypes && !query.subTypes.includes(e.subType!)) return false;
+            if (query.locations) {
+                q &&= e.allowedLocations != null
+                q &&= query.locations.some((l) => e.allowedLocations?.some(ll => ll & l));
+            }
+
             return q
         })
     }

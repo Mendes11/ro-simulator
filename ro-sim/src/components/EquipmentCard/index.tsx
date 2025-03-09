@@ -27,5 +27,5 @@ export default function EquipmentCard({equipment, hoverable}: Props) {
 }
 
 function equipmentName(item: iEquipment) {
-  return `${item.name} [${item.slotConfigs.length}]`;
+  return `${item.name} [${item.slots}]`;
 }

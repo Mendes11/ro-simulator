@@ -4,15 +4,15 @@ import EquipmentSelector from "./EquipmentSelector";
 import { Priority } from "@/contants";
 import AppButton from "../common/AppButton";
 import { iEquipmentInstance } from "@/types/equipmentInstance";
-import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes, iEquipment } from "@/types/equipment";
-import { iSlot } from "@/types/slot";
+import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "@/types/equipment";
+import { iCard } from "@/types/card";
 
 
 type Props = {
   equipment?: iEquipmentInstance,
-  searchTypes: EquipmentTypes[];
-  searchSubTypes: EquipmentSubTypes[];
-  searchLocations?: EquipmentLocations[];
+  searchTypes: ItemTypes[];
+  searchSubTypes: ItemSubTypes[];
+  searchLocations?: ItemLocations[];
   onSave(equipment?: iEquipmentInstance): void
 }
 
@@ -20,7 +20,7 @@ type FormDataType = {
   id?: number
   equipment?: iEquipment
   refinement: number
-  slots: iSlot[]
+  slots: iCard[]
 }
 
 export default function EquipmentForm(props: Props) {
@@ -50,7 +50,7 @@ export default function EquipmentForm(props: Props) {
     }
   }
 
-  const updateSlotItem = (i: number, slot: iSlot) => {
+  const updateSlotItem = (i: number, slot: iCard) => {
     formData.slots[i] = slot
     setFormData(formData)
   }
@@ -76,12 +76,12 @@ export default function EquipmentForm(props: Props) {
         </div>
       </div>
       <div>
-        {formData.equipment?.slotConfigs.map((slotConfig, i) => (
+        {formData.equipment && [...Array(formData.equipment.slots).keys()].map((i) => (
           <div key={i} className="flex flex-row text-xs mt-1">
             <p className="m-auto w-[3.25rem]">Slot {i}</p>
             <div className="flex-auto">
               <CardSelector
-                slotConfig={slotConfig}
+                equipment={formData.equipment!}
                 selected={formData.slots[i]}
                 onCardSelected={(item) => updateSlotItem(i, item)}
               />

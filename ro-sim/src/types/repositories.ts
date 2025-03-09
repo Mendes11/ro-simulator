@@ -1,11 +1,17 @@
-import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes, iEquipment } from "./equipment";
-import { iSlot } from "./slot";
+import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "./equipment";
+import { iCard } from "./card";
 
 export type EquipmentSearchArgs = {
     name?: string;
-    types?: EquipmentTypes[];
-    subTypes?: EquipmentSubTypes[];
-    locations?: EquipmentLocations[];
+    types?: ItemTypes[];
+    subTypes?: ItemSubTypes[];
+    locations?: ItemLocations[];
+}
+
+export type CardSearchArgs = {
+    name?: string;
+    targetTypes?: ItemTypes[];
+    targetSubTypes?: ItemSubTypes[];
 }
 
 export interface iEquipmentRepository {
@@ -13,7 +19,7 @@ export interface iEquipmentRepository {
     Search(query: EquipmentSearchArgs): Promise<iEquipment[]>;
 }
 
-export interface iSlotRepository {
-    Find(id: number): iSlot;
-    Search(query: EquipmentSearchArgs): iSlot[];
+export interface iCardRepository {
+    Find(id: number): iCard;
+    Search(query: CardSearchArgs): iCard[];
 }

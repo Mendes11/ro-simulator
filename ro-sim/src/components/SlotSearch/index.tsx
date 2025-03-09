@@ -1,18 +1,21 @@
-import { searchSlotItem } from "@/actions/search";
+import { searchCards } from "@/actions/search";
 import UseComponentVisibility from "@/hooks/UseClickOutside";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SlotList } from "./SlotList";
-import { iSlot, SlotTypes } from "@/types/slot";
+import { iCard } from "@/types/card";
+import { ItemSubTypes, ItemTypes } from "@/types/equipment";
+
 
 type Props = {
-  onItemSelected: (item: iSlot) => void
-  allowedTypes: SlotTypes[]
-  autofocus?: boolean
+  onItemSelected: (item: iCard) => void;
+  targetType: ItemTypes;
+  targetSubType?: ItemSubTypes;
+  autofocus?: boolean;
 }
 
-export default function SlotSearch({onItemSelected, autofocus}: Props) {
+export default function SlotSearch({onItemSelected, autofocus, targetType, targetSubType}: Props) {
   const [searchText, setSearchText] = useState<string>('');
-  const [items, setItems] = useState<iSlot[]>([]);
+  const [items, setItems] = useState<iCard[]>([]);
   const { ref, isVisible, setVisibility } = UseComponentVisibility()
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -22,7 +25,7 @@ export default function SlotSearch({onItemSelected, autofocus}: Props) {
 
   useEffect(() => {
       const debouncer = setTimeout(() => {
-        searchSlotItem({query: searchText}).then((items) => {
+        searchCards({name: searchText, targetTypes: [targetType], targetSubTypes: targetSubType ? [targetSubType] : undefined}).then((items) => {
             setItems(items);
             setVisibility(true);
           })

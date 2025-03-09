@@ -1,22 +1,26 @@
+import { SimulationSummary } from "@/engine/simulation";
 import { AttackTypes, AttackRangeTypes } from "./attackMultiplier"
 
-export enum SkillNames {
-    SoulBreaker
-}
-
 export enum SkillTypes {
-    Damage,
-    Defensive,
+    AttackSkill,
+    BuffSkill,
 }
 
 export interface iSkill {
-    name: SkillNames
-    type: SkillTypes
-    maxLevel: number
+    id: string;
+    name: string;
+    maxLevel: number;
+    skillType: SkillTypes;
 
     // For Active-type Skills
-    attackType?: AttackTypes
-    attackSubType?: AttackRangeTypes
+    attackType?: AttackTypes;
+    attackRangeType?: AttackRangeTypes;
+    critable?: boolean;
+
+    // attackMultiplier is the percentage over the attack
+    attackMultiplier?: (skillLevel: number, summary: SimulationSummary) => number;
+    // Apply in-place to the summary
+    apply?: (skillLevel: number, summary: SimulationSummary) => void;
 }
 
 export interface iSkillInstance {

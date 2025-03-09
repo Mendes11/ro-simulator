@@ -2,20 +2,21 @@ import UseComponentVisibility from "@/hooks/UseClickOutside";
 import SlotSearch from "../SlotSearch";
 import SlotCard from "../SlotCard";
 import { useState } from "react";
-import { iSlot, iSlotConfig } from "@/types/slot";
+import { iCard } from "@/types/card";
+import { iEquipment } from "@/types/equipment";
 
 type Props = {
-  slotConfig: iSlotConfig
-  selected?: iSlot
-  onCardSelected: (slot: iSlot) => void
+  equipment: iEquipment;
+  selected?: iCard
+  onCardSelected: (slot: iCard) => void
 }
 
 export default function CardSelector({
-  slotConfig, selected, onCardSelected
+    equipment, selected, onCardSelected
 }: Props) {
   const { ref, isVisible, setVisibility } = UseComponentVisibility()
   const [currentSlot, setCurrentSlot] = useState(selected);
-  const handleItemSelected = (item: iSlot) => {
+  const handleItemSelected = (item: iCard) => {
     onCardSelected(item);
     setCurrentSlot(item);
     setVisibility(false);
@@ -34,7 +35,8 @@ export default function CardSelector({
         <SlotSearch
           autofocus={true}
           onItemSelected={handleItemSelected}
-          allowedTypes={slotConfig.allowedTypes}
+          targetType={equipment.type}
+          targetSubType={equipment.subType}
         />
       </div>}
     </div>

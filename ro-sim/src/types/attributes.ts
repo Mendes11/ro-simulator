@@ -8,10 +8,15 @@ export enum AttributeTypes {
 }
 
 export type AttributesData = {
-    for: number;
+    str: number;
     agi: number;
     vit: number;
     int: number;
     dex: number;
-    luck: number;
+    luk: number;
+}
+
+export interface iAttributes extends AttributesData {
+    sum: (other: iAttributes, inplace?: boolean) => iAttributes;
+    mul: (n: number, inplace?: boolean) => iAttributes;
 }

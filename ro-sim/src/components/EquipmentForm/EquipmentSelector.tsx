@@ -1,13 +1,13 @@
 import EquipmentCard from "../EquipmentCard"
 import UseComponentVisibility from "@/hooks/UseClickOutside"
 import EquipmentSearch from "../EquipmentSearch"
-import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes, iEquipment } from "@/types/equipment"
+import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "@/types/equipment"
 
 type Props = {
   equipment?: iEquipment
-  searchTypes: EquipmentTypes[];
-  searchSubTypes: EquipmentSubTypes[];
-  searchLocations?: EquipmentLocations[];
+  searchTypes: ItemTypes[];
+  searchSubTypes: ItemSubTypes[];
+  searchLocations?: ItemLocations[];
   onEquipmentSelected: (equipment: iEquipment) => void
 }
 

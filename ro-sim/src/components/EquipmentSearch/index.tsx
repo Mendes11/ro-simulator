@@ -1,14 +1,14 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import EquipmentList from "./EquipmentList";
 import UseComponentVisibility from "@/hooks/UseClickOutside";
-import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes, iEquipment } from "@/types/equipment";
+import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "@/types/equipment";
 import { searchEquipments } from "@/actions/search";
 
 
 type Props = {
-  types?: EquipmentTypes[];
-  subTypes?: EquipmentSubTypes[];
-  locations?: EquipmentLocations[];
+  types?: ItemTypes[];
+  subTypes?: ItemSubTypes[];
+  locations?: ItemLocations[];
   onItemSelected: (item: iEquipment) => void
   autofocus?: boolean
 }

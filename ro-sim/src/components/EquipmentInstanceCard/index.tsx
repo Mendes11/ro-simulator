@@ -1,6 +1,6 @@
 import { iEquipmentInstance } from "@/types/equipmentInstance";
 import ItemIcon, { ItemType } from "../ItemIcon"
-import { EquipmentTypes } from "@/types/equipment";
+import { ItemTypes } from "@/types/equipment";
 
 type Props = {
   item?: iEquipmentInstance
@@ -19,21 +19,21 @@ export default function EquipmentInstanceCard({item, onClick, clickable}: Props)
           {item && equipmentName(item)}
         </div>
         <div className="flex flex-row">
-          {item?.equipment.slotConfigs.map((_, i) => (
+          {item && [...Array(item?.equipment.slots).keys()].map((_, i) => (
             <div className="ml-1" key={i}>
               <ItemIcon id={item.slots[i]?.id} type={ItemType.Card} />
             </div>
           ))}
         </div>
       </div>
-      {item && item.equipment.type === EquipmentTypes.Weapon ? (undefined) : (undefined)}
+      {item && item.equipment.type === ItemTypes.Weapon ? (undefined) : (undefined)}
     </div>
   )
 }
 
 
 function equipmentName(item: iEquipmentInstance) {
-  let name = `${item.equipment.name} [${item.equipment.slotConfigs.length}]`;
+  let name = `${item.equipment.name} [${item.equipment.slots}]`;
   if (item.refinement > 0) name = `+${item.refinement} ${name}`
   return name
 }

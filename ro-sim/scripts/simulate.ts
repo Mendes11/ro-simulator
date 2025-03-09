@@ -1,17 +1,17 @@
-import { Simulate } from "@/engine/simulation";
+import { SimulationSummary, Simulate } from "@/engine/simulation";
 import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
 
-const charSummary = {
+const charSummary: SimulationSummary = {
     level: 99,
     attributes: {
-        for: 99,
+        str: 99,
         dex: 16,
-        luck: 68,
+        luk: 68,
         int: 91,
         vit: 1,
         agi: 50,
     },
-    stats: {
+    subStats: {
         eAtk: 627,
         eMatk: 430,
         crit: 190,
@@ -21,36 +21,30 @@ const charSummary = {
         hardDef: 0,
         aspdPercent: 0,
         aspdUnit: 0,
+        masteryAtk: 0,
     },
     attackInfo: {
         defBypass: 0,
         defMBypass: 0,
         sizePenalty: 1,
         thanatosEffect: false,
+        critable: true,
+        attackMultiplier: 15.74,
+        skill: true,
+        attackType: AttackTypes.Physical,
         rightWeapon: {
             wAtk: 130,
             wMAtk: 100,
-            attackType: AttackTypes.Physical,
-            attackRangeType: AttackRangeTypes.Melee,
             refinement: 15,
             weaponLevel: 4,
         },
         leftWeapon: {
             wAtk: 130,
             wMAtk: 100,
-            attackType: AttackTypes.Physical,
-            attackRangeType: AttackRangeTypes.Melee,
             refinement: 15,
             weaponLevel: 4,
         },
-        skill: {
-            attackType: AttackTypes.Physical,
-            attackMultiplier: 15.74,
-            bonusMultiplier: 0,
-            critable: true,
-        }
     },
-    masteryAtk: 0,
     target: {
         softDef: 65,
         hardDef: 0,
@@ -65,7 +59,7 @@ const charSummary = {
             range: 0,
         }
     },
-    multipliers: {
+    attackMultipliers: {
         weaponAtk: 0.32,
         race: 0.5,
         size: 0.63,
@@ -78,6 +72,7 @@ const charSummary = {
         weaponDamage: 0.25, // EDP
         groupB: 3.0, // EDP
         finalDamage: 0,
+        skill: 1,
     }
 }
 

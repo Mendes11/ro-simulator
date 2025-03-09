@@ -13,7 +13,7 @@ export enum SubStatTypes {
     aspdUnit = "aspdUnit",
 }
 
-export type CharacterSubStatsType = {
+export type CharacterSubStatsData = {
     eAtk: number
     eMatk: number
     crit: number
@@ -23,4 +23,10 @@ export type CharacterSubStatsType = {
     hardDef: number
     aspdPercent: number
     aspdUnit: number
+    masteryAtk: number
+}
+
+export interface iCharacterSubStats extends CharacterSubStatsData {
+    sum: (other: iCharacterSubStats, inplace?: boolean) => iCharacterSubStats;
+    mul: (n: number, inplace?: boolean) => iCharacterSubStats;
 }

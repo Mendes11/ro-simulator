@@ -1,81 +1,49 @@
-import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
-import { AttributesData } from "@/types/attributes"
-import { CharacterSubStatsType } from "@/types/stats"
+import { AttackRangeTypes, AttackTypes, iAttackMultipliers } from "@/types/attackMultiplier";
+import { AttributesData, iAttributes } from "@/types/attributes"
+import { ElementTypes } from "@/types/element";
+import { iCharacterSubStats } from "@/types/stats"
+import { iTarget } from "@/types/target";
 
 const BaseCriticalMultiplier = 1.4;
 
 
-export type SkillAttackInfo = {
-    attackType: AttackTypes;
-    attackMultiplier: number;
-    bonusMultiplier: number;
-    critable: boolean;
-}
-
 export type WeaponInfo = {
     wAtk: number;
     wMAtk: number;
-    attackType: AttackTypes
-    attackRangeType: AttackRangeTypes;
     refinement: number;
     weaponLevel: number;
 }
 
 export type AttackInfo = {
+    element: ElementTypes;
+    attackRange?: AttackRangeTypes;
     rightWeapon: WeaponInfo;
     leftWeapon?: WeaponInfo;
-    skill?: SkillAttackInfo;
+    attackType: AttackTypes;
+    critable: boolean;
+    skill: boolean;
     defBypass: number;
     defMBypass: number;
     sizePenalty: number; // 1.0 for 100% damage
     thanatosEffect: boolean;
 }
 
-export type TargetInfo = {
-    softDef: number;
-    hardDef: number;
-    softDefM: number;
-    hardDefM: number;
-    reductions: {
-        race: number;
-        size: number;
-        attackElement: number;
-        targetElement: number;
-        default: number;
-        range: number;
-    }
-}
-
-export type CharSummary = {
+export type SimulationSummary = {
     level: number;
-    attributes: AttributesData;
-    stats: CharacterSubStatsType;
+    attributes: iAttributes;
+    subStats: iCharacterSubStats;
     attackInfo: AttackInfo;
-    masteryAtk: number;
-    target: TargetInfo;
-    multipliers: {
-        weaponAtk: number; // Weapon Atk%
-        race: number;
-        size: number;
-        attackElement: number;
-        targetElement: number;
-        default: number;
-        range: number;
-        crit: number;
-        damage: number; // Or 0 and use (1 + x) in the formula. -- Frenesi / Força violentíssima
-        finalDamage: number;
-        weaponDamage: number; // Eg: EDP, MagnumBreak
-        groupB: number; // Eg: EDP
-    }
+    target: iTarget;
+    attackMultipliers: iAttackMultipliers;
 }
 
 
 function statusAtk(level: number, attrs: AttributesData) {
-    return (level / 4) + attrs.for + (attrs.dex / 5) + (attrs.luck / 3)
+    return (level / 4) + attrs.str + (attrs.dex / 5) + (attrs.luk / 3)
 }
 
 
-function weaponAtk(summary: CharSummary, maxVariance=true) {
+function weaponAtk(summary: SimulationSummary, maxVariance=true) {
     // TODO: Missing MAtk here...
 
     let atk = summary.attackInfo.rightWeapon.wAtk ?? 0;
@@ -88,7 +56,7 @@ function weaponAtk(summary: CharSummary, maxVariance=true) {
         atk += overUpgradeBonus(summary.attackInfo.rightWeapon);
     }
     atk *= summary.attackInfo.sizePenalty;
-    atk *= (1 + summary.multipliers.weaponDamage);
+    atk *= (1 + summary.attackMultipliers.weaponDamage);
 
     return atk;
 }
@@ -98,7 +66,7 @@ function weaponLevelVariance(weapon: WeaponInfo) {
 }
 
 function statBonus(attrs: AttributesData, weapon: WeaponInfo) {
-    return ((weapon.wAtk ?? 0) * attrs.for) / 200;
+    return ((weapon.wAtk ?? 0) * attrs.str) / 200;
 }
 
 function refinementBonus(weapon: WeaponInfo) {
@@ -167,12 +135,23 @@ function hardDefMReduction(defM: number, bypass: number) {
     return ((1000+defM)/(1000+defM*10)) * (1 - bypass)
 }
 
+type SimulationResult = {
+    damage: number;
+    criticalDamage?: number;
+    hardReduction: number;
+    softReduction: number;
+    finalReductions: number;
+    groupA: number;
+    groupB: number;
+    sAtk: number;
+    atk: number;
+}
 
 // TODO: mAtk is missing some things
 // TODO: Missing consumableAtk + Ammunition Atk + PseudoBuffAtk
 // TODO: I'm not sure about the reductions part.
-export function Simulate(summary: CharSummary, maxVariance=true) {
-    const attackType = summary.attackInfo.skill?.attackType ?? summary.attackInfo.rightWeapon.attackType;
+function simulate(summary: SimulationSummary, maxVariance=true): SimulationResult {
+    const attackType = summary.attackInfo.attackType;
     let hardReduction = attackType === AttackTypes.Physical ?
         hardDefReduction(summary.target.hardDef, summary.attackInfo.defBypass)
         : hardDefMReduction(summary.target.hardDefM, summary.attackInfo.defMBypass);
@@ -182,7 +161,7 @@ export function Simulate(summary: CharSummary, maxVariance=true) {
 
     const sAtk = statusAtk(summary.level, summary.attributes);
     const wAtk = weaponAtk(summary, maxVariance);
-    let eAtk = summary.stats.eAtk;
+    let eAtk = summary.subStats.eAtk;
 
     if (summary.attackInfo.thanatosEffect) {
         eAtk += Math.floor(hardReduction / 2.0)
@@ -192,52 +171,51 @@ export function Simulate(summary: CharSummary, maxVariance=true) {
 
     const extraAtk = eAtk; // + consumable Atk + Ammunition Atk + PseudoBuffAtk
 
-
-    const groupA = (wAtk + extraAtk) * summary.multipliers.weaponAtk; // TODO: Validar se não é (1 + wAtk%)
+    const groupA = (wAtk + extraAtk) * summary.attackMultipliers.weaponAtk; // TODO: Validar se não é (1 + wAtk%)
     const groupB = (
         (wAtk + extraAtk)
-        * (1 + summary.multipliers.race)
-        * (1 + summary.multipliers.size)
-        * (1 + summary.multipliers.attackElement)
-        * (1 + summary.multipliers.targetElement)
-        * (1 + summary.multipliers.default)
-        * (1 + summary.multipliers.groupB)
+        * (1 + summary.attackMultipliers.race)
+        * (1 + summary.attackMultipliers.size)
+        * (1 + summary.attackMultipliers.attackElement)
+        * (1 + summary.attackMultipliers.targetElement)
+        * (1 + summary.attackMultipliers.default)
+        * (1 + summary.attackMultipliers.groupB)
     )
 
-    let atk = (sAtk * 2) + groupA + groupB + summary.masteryAtk;
+    let atk = (sAtk * 2) + groupA + groupB + summary.subStats.masteryAtk;
     let atkCrit = 0;
 
     let includeCrit = true;
 
-    if (summary.attackInfo.skill != null) {
+    if (summary.attackInfo.skill) {
         // Skill Damage
         includeCrit = false;
 
-        atk *= summary.attackInfo.skill.attackMultiplier;
-        atk *= (1 + summary.attackInfo.skill.bonusMultiplier);
-        if (summary.attackInfo.skill.attackType === AttackTypes.Physical) {
-            atk *= (1 + summary.multipliers.range);
+        atk *= summary.attackMultipliers.skillAtk;
+        atk *= (1 + summary.attackMultipliers.skill);
+        if (summary.attackInfo.attackType === AttackTypes.Physical) {
+            atk *= (1 + summary.attackMultipliers.range);
         }
-        if (summary.attackInfo.skill.critable) {
+        if (summary.attackInfo.critable) {
             includeCrit = true;
-            atkCrit = atk * (1 + summary.multipliers.crit);
+            atkCrit = atk * (1 + summary.attackMultipliers.crit);
         }
 
     } else {
-        atk *= (1 + summary.multipliers.range);
-        atkCrit = atk * (1 + summary.multipliers.crit);
+        atk *= (1 + summary.attackMultipliers.range);
+        atkCrit = atk * (1 + summary.attackMultipliers.crit);
     }
 
-    atk = Math.floor(Math.floor(atk) * summary.multipliers.damage);
-    atkCrit = Math.floor(Math.floor(atkCrit) * summary.multipliers.damage);
+    atk = Math.floor(Math.floor(atk) * (1 + summary.attackMultipliers.damage));
+    atkCrit = Math.floor(Math.floor(atkCrit) * (1 + summary.attackMultipliers.damage));
 
     // Damage Reduction Part
     atk = Math.floor(Math.floor(atk * hardReduction) - softReduction)
     atkCrit = Math.floor(Math.floor(atkCrit * hardReduction) - softReduction)
 
     // Final Damage Multiplier
-    atk = Math.floor(atk * (1 + summary.multipliers.finalDamage));
-    atkCrit = Math.floor(atkCrit * (1 + summary.multipliers.finalDamage));
+    atk = Math.floor(atk * (1 + summary.attackMultipliers.finalDamage));
+    atkCrit = Math.floor(atkCrit * (1 + summary.attackMultipliers.finalDamage));
 
     // Crit Damage Multiplier
     atkCrit = Math.floor(atkCrit * BaseCriticalMultiplier);
@@ -255,13 +233,25 @@ export function Simulate(summary: CharSummary, maxVariance=true) {
 
     return {
         damage: atk,
-        criticalDamage: includeCrit ? atkCrit : null,
+        criticalDamage: includeCrit ? atkCrit : undefined,
         hardReduction: 1 - hardReduction,
         softReduction: softReduction,
         finalReductions: 1 - totalReductions,
         groupA: groupA,
         groupB: groupB,
         sAtk: sAtk,
-        atk: (sAtk * 2) + groupA + groupB + summary.masteryAtk,
+        atk: (sAtk * 2) + groupA + groupB + summary.subStats.masteryAtk,
     };
+}
+
+
+export type SimulateResult = {
+    upperBound: SimulationResult;
+    lowerBound: SimulationResult;
+}
+export function Simulate(summary: SimulationSummary): SimulateResult {
+    return {
+        upperBound: simulate(summary, true),
+        lowerBound: simulate(summary, false),
+    }
 }

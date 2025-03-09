@@ -1,22 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EquipmentForm from "../EquipmentForm";
 import EquipmentInstanceCard from "../EquipmentInstanceCard";
 import { iEquipmentInstance } from "@/types/equipmentInstance";
-import { EquipmentLocations, EquipmentSubTypes, EquipmentTypes } from "@/types/equipment";
+import { ItemLocations, ItemSubTypes, ItemTypes } from "@/types/equipment";
 
 type Props = {
   title: string
   equippedItem?: iEquipmentInstance
-  type: EquipmentTypes;
-  allowedSubTypes: EquipmentSubTypes[];
-  allowedLocations?: EquipmentLocations[];
+  allowedTypes: ItemTypes[];
+  allowedSubTypes: ItemSubTypes[];
+  allowedLocations?: ItemLocations[];
+  enabled?: boolean;
   onItemChanged: (item: iEquipmentInstance) => void
   onItemRemoved: () => void
 }
 
 export default function CharacterEquipmentCard({
-  title, equippedItem, onItemChanged, onItemRemoved,
-  type, allowedSubTypes, allowedLocations
+  title, equippedItem, onItemChanged, onItemRemoved, enabled,
+  allowedTypes: allowedTypes, allowedSubTypes, allowedLocations
 }: Props) {
   const [formVisibible, setFormVisible] = useState(false);
 
@@ -29,21 +30,31 @@ export default function CharacterEquipmentCard({
     setFormVisible(false);
   }
 
+  useEffect(()=> {
+    if (!enabled && formVisibible) {
+      setFormVisible(false);
+    }
+  }, [enabled, formVisibible])
+
   return (
-    <div className="border bg-white">
-        <div className="p-2 bg-gray-100 border-b-2">
-          {title}
-        </div>
-        <div className="p-1">
-          {formVisibible ?
-            <EquipmentForm
-                searchTypes={[type]}
-                searchSubTypes={allowedSubTypes}
-                searchLocations={allowedLocations}
-                equipment={equippedItem} onSave={handleFormSave}
-            />
-            : <EquipmentInstanceCard item={equippedItem} clickable={true} onClick={() => setFormVisible(true)} />}
-        </div>
+    <>
+
+    <div className="relative border bg-white">
+      {!enabled && <div className="absolute bg-gray-200 bg-opacity-50 z-100 w-full h-full"></div>}
+      <div className="p-2 bg-gray-100 border-b-2">
+        {title}
       </div>
+      <div className="p-1">
+        {formVisibible ?
+          <EquipmentForm
+              searchTypes={allowedTypes}
+              searchSubTypes={allowedSubTypes}
+              searchLocations={allowedLocations}
+              equipment={equippedItem} onSave={handleFormSave}
+          />
+          : <EquipmentInstanceCard item={equippedItem} clickable={enabled ?? true} onClick={() => setFormVisible(true)} />}
+      </div>
+    </div>
+    </>
   )
 }

@@ -1,31 +1,32 @@
 import { iEquipmentInstance } from "./equipmentInstance";
-import { iSlot } from "./slot";
-import { Jobs } from "./jobs";
-import { iSkillInstance } from "./skills";
+import { iCard } from "./card";
 import { AttributesData } from "./attributes";
+import { Job } from "./jobs";
+import { SimulationSummary } from "@/engine/simulation";
 
-export interface iCharacterEquipments {
+export type CharacterEquipments = {
     top?: iEquipmentInstance;
     mid?: iEquipmentInstance;
     bottom?: iEquipmentInstance;
     armor?: iEquipmentInstance;
     rightHand?: iEquipmentInstance;
     leftHand?: iEquipmentInstance;
-    cloack?: iEquipmentInstance;
+    garment?: iEquipmentInstance;
     shoes?: iEquipmentInstance;
     rightAccessory?: iEquipmentInstance;
     leftAccessory?: iEquipmentInstance;
 }
 
-
-export interface iCharacter {
+export type CharacterData = {
     level: number;
     baseAttrs: AttributesData,
-    equipments: iCharacterEquipments;
-    shadowEquipments: iCharacterEquipments;
-    job: Jobs
-    skills: iSkillInstance[]
-
-    findEquipmentByName: (name: string) => iEquipmentInstance | null
-    findCardByName: (name: string) => {slot: iSlot, equipmentInstance: iEquipmentInstance} | null
+    equipments: CharacterEquipments;
+    job: Job;
+    // shadowEquipments: CharacterEquipments;
+    // job: Jobs
+    // skills: iSkillInstance[]
+}
+export interface iCharacter extends CharacterData {
+    findEquipmentByName: (name: string) => iEquipmentInstance | undefined
+    findCardByName: (name: string) => {slot: iCard, equipmentInstance: iEquipmentInstance} | undefined
 }
