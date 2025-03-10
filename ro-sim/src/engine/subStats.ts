@@ -42,8 +42,8 @@ export class CharacterSubStats implements iCharacterSubStats {
         this.masteryAtk = data?.masteryAtk ?? 0;
     }
 
-    sum(other: iCharacterSubStats, inplace?: boolean) {
-        const data = {
+    sum(other: iCharacterSubStats) {
+        return new CharacterSubStats({
             eAtk: this.eAtk + other.eAtk,
             eMatk: this.eMatk + other.eMatk,
             crit: this.crit + other.crit,
@@ -54,18 +54,11 @@ export class CharacterSubStats implements iCharacterSubStats {
             aspdPercent: this.aspdPercent + other.aspdPercent,
             aspdUnit: this.aspdUnit + other.aspdUnit,
             masteryAtk: this.masteryAtk + other.masteryAtk,
-        }
-
-        if (inplace) {
-            this.setData(data);
-            return this;
-        }
-
-        return new CharacterSubStats(data);
+        });
     }
 
-    mul(n: number, inplace?: boolean) {
-        const data = {
+    mul(n: number) {
+        return new CharacterSubStats({
             eAtk: this.eAtk * n,
             eMatk: this.eMatk * n,
             crit: this.crit * n,
@@ -76,12 +69,6 @@ export class CharacterSubStats implements iCharacterSubStats {
             aspdPercent: this.aspdPercent * n,
             aspdUnit: this.aspdUnit * n,
             masteryAtk: this.masteryAtk * n,
-        };
-
-        if (inplace) {
-            this.setData(data);
-            return this;
-        }
-        return new CharacterSubStats(data)
+        });
     }
 }

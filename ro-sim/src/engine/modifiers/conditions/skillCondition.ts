@@ -1,0 +1,30 @@
+import { ComparisonConditions, ConditionCheckData, iCondition } from "@/types/condition";
+import { compareValues } from "./utils";
+
+export type SkillConditionData = {
+    id: string;
+    level?: number
+    levelComparisonOperator?: ComparisonConditions;
+}
+
+export class SkillCondition implements iCondition {
+    skillId: string;
+    level?: number;
+    levelComparisonOperator?: ComparisonConditions;
+    
+    public constructor(data: SkillConditionData) {
+        this.skillId = data.id;
+        this.level = data.level;
+        this.levelComparisonOperator = data.levelComparisonOperator;
+    }
+
+    check(data: ConditionCheckData) {
+        const skill = data.character.findSkill(this.skillId);
+        if (skill == null) return false;
+        if (this.level != null && this.levelComparisonOperator != null) {
+            return compareValues(skill.level, this.levelComparisonOperator, this.level);
+        }
+        return false;
+
+    }
+}

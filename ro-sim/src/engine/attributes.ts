@@ -42,36 +42,25 @@ export class Attributes implements iAttributes {
         this.luk = data?.luk ?? 0;
     }
 
-    sum(other: iAttributes, inplace?: boolean) {
-        const sumData = {
+    sum(other: iAttributes) {
+        return new Attributes({
             str: this.str + other.str,
             agi: this.agi + other.agi,
             dex: this.dex + other.dex,
             vit: this.vit + other.vit,
             int: this.int + other.int,
             luk: this.luk + other.luk,
-        }
-
-        if (inplace) {
-            this.setData(sumData);
-            return this;
-        }
-        return new Attributes(sumData);
+        });
     }
 
-    mul(n: number, inplace?: boolean) {
-        const mulData = {
+    mul(n: number) {
+        return new Attributes({
             str: this.str * n,
             agi: this.agi * n,
             dex: this.dex * n,
             vit: this.vit * n,
             int: this.int * n,
             luk: this.luk * n,
-        }
-        if (inplace) {
-            this.setData(mulData);
-            return this;
-        }
-        return new Attributes(mulData);
+        });
     }
 }

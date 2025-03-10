@@ -55,8 +55,8 @@ export class AttackMultipliers implements iAttackMultipliers {
         this.skill = data?.skill ?? 0;
     }
 
-    sum(other: iAttackMultipliers, inplace?: boolean){
-        const data = {
+    sum(other: iAttackMultipliers){
+        return new AttackMultipliers({
             weaponAtk: this.weaponAtk + other.weaponAtk,
             race: this.race + other.race,
             size: this.size + other.size,
@@ -71,17 +71,11 @@ export class AttackMultipliers implements iAttackMultipliers {
             groupB: this.groupB + other.groupB,
             skillAtk: this.skillAtk + other.skillAtk,
             skill: this.skill + other.skill,
-        }
-        if (inplace) {
-            this.setData(data);
-            return this;
-        }
-
-        return new AttackMultipliers(data)
+        })
     }
 
-    mul(n: number, inplace?: boolean) {
-        const data = {
+    mul(n: number) {
+        return new AttackMultipliers({
             weaponAtk: this.weaponAtk * n,
             race: this.race * n,
             size: this.size * n,
@@ -96,11 +90,6 @@ export class AttackMultipliers implements iAttackMultipliers {
             groupB: this.groupB * n,
             skillAtk: this.skillAtk * n,
             skill: this.skill * n,
-        }
-        if (inplace) {
-            this.setData(data);
-            return this
-        }
-        return new AttackMultipliers(data)
+        })
     }
 }

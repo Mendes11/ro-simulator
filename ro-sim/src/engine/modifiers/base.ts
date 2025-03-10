@@ -1,19 +1,36 @@
-import { ConditionCheckData, ConditionData, iCondition } from "@/types/condition";
-import { iModifier, ModifierApplyData } from "@/types/equipment";
+import { ConditionCheckData, ConditionData, EquipmentSet, iCondition } from "@/types/condition";
+import { iCharacterModifiers, iModifier, ModifierApplyData } from "@/types/equipment";
 import { newCondition } from "./utils";
 
-export class BaseModifier implements iModifier {
+export abstract class BaseModifier implements iModifier {
     conditions: iCondition[];
 
     public constructor(conditions: ConditionData[] = []) {
         this.conditions = conditions.map(c => newCondition(c)) ?? []
     }
 
-    apply(data: ModifierApplyData){
-        throw 'NotImplemented';
+    getModifier(data: ModifierApplyData): iCharacterModifiers | undefined {
+        return this.checkConditions(data) ? this.mountModifier(data) : undefined;        
     }
 
-    check(data: ConditionCheckData) {
-        return this.conditions.every(c => c.check(data));
+    public abstract mountModifier(data: ModifierApplyData): iCharacterModifiers | undefined;    
+
+    checkConditions(data: ModifierApplyData) {
+        if (this.conditions.length === 0) return true;
+        
+        return this.conditions.every(
+            c => c.check({
+                source: data.source, 
+                character: data.character, 
+                target: data.summary.target, 
+                attackInfo: data.summary.attackInfo,
+                setAlreadyInUse: (set: EquipmentSet) => {
+                    return data.sets.find(s => (s.condition !== c) && (s.source.name === set.source.name) && s.target.name === set.target.name) != null
+                },
+                addSet: (set: EquipmentSet) => {
+                    data.sets.push(set);
+                }
+            })
+        );
     }
 }

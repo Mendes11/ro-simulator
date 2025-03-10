@@ -4,6 +4,12 @@ import { RefinementModifier, RefinementModifierData } from "./refinementModifier
 import { ConditionData, ConditionTypes, iCondition } from "@/types/condition";
 import { RefinementCondition } from "./conditions/refinementCondition";
 import { EquipmentSetCondition } from "./conditions/equipmentSetCondition";
+import { CardSetCondition } from "./conditions/cardSetCondition";
+import { AttackTypeCondition } from "./conditions/attackTypeCondition";
+import { TargetCondition } from "./conditions/targetCondition";
+import { JobCondition } from "./conditions/jobCondition";
+import { LevelCondition } from "./conditions/levelCondition";
+import { SkillCondition } from "./conditions/skillCondition";
 
 export enum ModifierTypes {
     Stats,
@@ -28,9 +34,20 @@ export function newModifier(m: ModifierData): iModifier {
 export function newCondition(c: ConditionData): iCondition {
     switch (c.type) {
         case ConditionTypes.Refinement:
-            return new RefinementCondition(c.data)
+            return new RefinementCondition(c.data);
         case ConditionTypes.EquipmentSet:
-            return new EquipmentSetCondition(c.data)
-            
+            return new EquipmentSetCondition(c.data);
+        case ConditionTypes.Card:
+            return new CardSetCondition(c.data);
+        case ConditionTypes.AttackType:
+            return new AttackTypeCondition(c.data);
+        case ConditionTypes.Target:
+            return new TargetCondition(c.data);
+        case ConditionTypes.Job:
+            return new JobCondition(c.data);
+        case ConditionTypes.Level:
+            return new LevelCondition(c.data);
+        case ConditionTypes.Skill:
+            return new SkillCondition(c.data);
     }
 }

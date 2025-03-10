@@ -34,8 +34,8 @@ export class RefinementModifier extends BaseModifier {
         this.maxRefinement = data.maxRefinement ?? 20;
     }
 
-    apply(data: ModifierApplyData) {
+    mountModifier(data: ModifierApplyData) {
         const multiplier = Math.round(data.source.instance.refinement / this.refinementSteps);
-        this.modifier.apply({...data, multiplier: multiplier});
+        return this.modifier.getModifier(data)?.mul(multiplier);
     }
 }

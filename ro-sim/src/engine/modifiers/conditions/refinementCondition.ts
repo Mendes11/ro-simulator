@@ -1,5 +1,15 @@
-import { ComparisonConditions, ConditionCheckData, iCondition, RefinementConditionData } from "@/types/condition";
+import { ComparisonConditions, ConditionCheckData, iCondition } from "@/types/condition";
 import { ItemLocations } from "@/types/equipment";
+import { iEquipmentInstance } from "@/types/equipmentInstance";
+import { compareValues } from "./utils";
+
+export interface RefinementConditionData {
+    // If the condition is on another equipment
+    // Use location to point to it.
+    location?: ItemLocations
+    refinement: number
+    condition: ComparisonConditions
+}
 
 export class RefinementCondition implements iCondition{
     location?: ItemLocations;
@@ -13,28 +23,17 @@ export class RefinementCondition implements iCondition{
     }
 
     check(data: ConditionCheckData) {
+        let equipment = data.source.instance;
         if (this.location != null) {
-            // TODO: Find Equipment by location -- Implement a Character class to deal with find methods there.
-            return false
+            equipment = data.character.findEquipmentByLocation(this.location)!
         }
-        return this.checkCondition(data.source.instance.refinement);
+        if (equipment != null) {
+            return this.checkCondition(equipment.refinement)
+        }
+        return false;
     };
 
     checkCondition(value: number) {
-        switch(this.condition) {
-            case ComparisonConditions.EQ:
-                return value === this.refinement;
-            case ComparisonConditions.GT:
-                return value > this.refinement;
-            case ComparisonConditions.GTE:
-                return value >= this.refinement;
-            case ComparisonConditions.LT:
-                return value <  this.refinement;
-            case ComparisonConditions.LTE:
-                return value <= this.refinement;
-            case ComparisonConditions.NEQ:
-                return value !== this.refinement;
-        }
+        return compareValues(value, this.condition, this.refinement);
     }
-
 }

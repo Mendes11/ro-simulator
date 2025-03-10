@@ -1,4 +1,9 @@
-import { ConditionCheckData, EquipmentSetConditionData, iCondition } from "@/types/condition";
+import { ConditionCheckData, iCondition } from "@/types/condition";
+
+
+export interface EquipmentSetConditionData {
+    name: string;
+}
 
 // EquipmentSetCondition is used for combos that make a set with other equipments
 // eg: Such as "Conjunto com [Anel dos Orcs]"
@@ -14,15 +19,9 @@ export class EquipmentSetCondition implements iCondition{
     check(data: ConditionCheckData) {
         const targetEquipment = data.character.findEquipmentByName(this.equipmentName);
         if (targetEquipment == null) return false;
-
-        const existingSet = data.sets.find(set => 
-            set.source.name === data.source.instance.equipment.name 
-            && set.target.name == this.equipmentName
-        )
-        if (existingSet != null) return false;
-        
-        data.sets.push({source: data.source.instance.equipment, target: targetEquipment?.equipment})
+        const equipmentSet = {source: data.source.instance.equipment, target: targetEquipment?.equipment, condition: this}
+        if (data.setAlreadyInUse(equipmentSet)) return false;
+        data.addSet(equipmentSet);
         return true;        
     }
-
 }
