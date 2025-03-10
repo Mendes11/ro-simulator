@@ -1,13 +1,13 @@
 import { AttributesData } from "./attributes";
 import { iSkill } from "./skills";
 
-export enum Jobs {
-    Novice,
+export enum JobIds {
+    Novice = "Novice",
 }
 
 
 export interface Job {
-    id: string,
+    id: JobIds,
     name: string;
     dualWield: boolean;
     transcendent: boolean;

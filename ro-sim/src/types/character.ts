@@ -3,6 +3,8 @@ import { iCard } from "./card";
 import { AttributesData } from "./attributes";
 import { Job } from "./jobs";
 import { SimulationSummary } from "@/engine/simulation";
+import { ItemLocations } from "./equipment";
+import { iSkillInstance } from "./skills";
 
 export type CharacterEquipments = {
     top?: iEquipmentInstance;
@@ -27,6 +29,8 @@ export type CharacterData = {
     // skills: iSkillInstance[]
 }
 export interface iCharacter extends CharacterData {
+    findSkill: (id: string) => iSkillInstance | undefined;
     findEquipmentByName: (name: string) => iEquipmentInstance | undefined
+    findEquipmentByLocation: (location: ItemLocations) => iEquipmentInstance | undefined;
     findCardByName: (name: string) => {slot: iCard, equipmentInstance: iEquipmentInstance} | undefined
 }

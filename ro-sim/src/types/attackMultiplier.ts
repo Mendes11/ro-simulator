@@ -38,6 +38,6 @@ export type AttackMultipliersData = {
 }
 
 export interface iAttackMultipliers extends AttackMultipliersData {
-    sum: (other: iAttackMultipliers, inplace?: boolean) => iAttackMultipliers;
-    mul: (n: number, inplace?: boolean) => iAttackMultipliers;
+    sum: (other: iAttackMultipliers) => iAttackMultipliers;
+    mul: (n: number) => iAttackMultipliers;
 }

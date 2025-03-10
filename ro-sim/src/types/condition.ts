@@ -3,15 +3,27 @@ import { iCharacter } from "./character";
 import { iEquipment, ItemLocations, ModifierSourceData } from "./equipment";
 import { iTarget } from "./target";
 import { iCard } from "./card";
+import { AttackInfo } from "@/engine/simulation";
+import { RefinementConditionData } from "@/engine/modifiers/conditions/refinementCondition";
+import { EquipmentSetConditionData } from "@/engine/modifiers/conditions/equipmentSetCondition";
+import { TargetConditionData } from "@/engine/modifiers/conditions/targetCondition";
+import { AttackTypeConditionData } from "@/engine/modifiers/conditions/attackTypeCondition";
+import { CardSetConditionData } from "@/engine/modifiers/conditions/cardSetCondition";
+import { JobConditionData } from "@/engine/modifiers/conditions/jobCondition";
+import { LevelConditionData } from "@/engine/modifiers/conditions/levelCondition";
+import { SkillConditionData } from "@/engine/modifiers/conditions/skillCondition";
 
 export enum ConditionTypes {
     Refinement,
     EquipmentSet,
+    Target,
+    AttackType,
     Level,
     Card,
     Job,
-    Enchant,
-    Skill // Skill level
+    Skill,
+    // TODO: Enchants aren't implemented yet
+    // Enchant,
 }
 
 export enum ComparisonConditions {
@@ -23,29 +35,32 @@ export enum ComparisonConditions {
     NEQ
 }
 
-export interface RefinementConditionData {
-    // If the condition is on another equipment
-    // Use location to point to it.
-    location?: ItemLocations
-    refinement: number
-    condition: ComparisonConditions
-}
 
-export interface EquipmentSetConditionData {
-    name: string;
+export type EquipmentSet = {
+    source: iEquipment;
+    target: iEquipment | iCard
+    condition: iCondition
 }
 
 export type ConditionData =
     | { type: ConditionTypes.Refinement, data: RefinementConditionData }
-    | { type: ConditionTypes.EquipmentSet, data: EquipmentSetConditionData};
+    | { type: ConditionTypes.EquipmentSet, data: EquipmentSetConditionData}
+    | { type: ConditionTypes.Target, data: TargetConditionData}
+    | { type: ConditionTypes.AttackType, data: AttackTypeConditionData}
+    | { type: ConditionTypes.Card, data: CardSetConditionData }
+    | { type: ConditionTypes.Job, data: JobConditionData }
+    | { type: ConditionTypes.Level, data: LevelConditionData }
+    | { type: ConditionTypes.Skill, data: SkillConditionData};
 
 
-export type ConditionCheckData = {
+export interface ConditionCheckData {
     source: ModifierSourceData;
     character: iCharacter;
     target: iTarget;
-    // A set can only be applied once for equipments, cards, and enchantments
-    sets: {source: iEquipment, target: iEquipment | iCard }[]
+    attackInfo: AttackInfo;
+
+    setAlreadyInUse: (set: EquipmentSet) => boolean;
+    addSet: (set: EquipmentSet) => void;
 }
 export interface iCondition {
     check: (data: ConditionCheckData) => boolean;

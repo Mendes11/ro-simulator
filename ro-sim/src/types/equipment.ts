@@ -3,9 +3,10 @@ import { CharacterData, iCharacter } from "./character";
 import { AttackMultipliersData, AttackRangeTypes, iAttackMultipliers } from "./attackMultiplier";
 import { iEquipmentInstance } from "./equipmentInstance";
 import { iTarget } from "./target";
-import { ConditionCheckData } from "./condition";
+import { ConditionCheckData, EquipmentSet } from "./condition";
 import { AttributesData, iAttributes } from "./attributes";
 import { CharacterSubStatsData, iCharacterSubStats } from "./stats";
+import { iCard } from "./card";
 
 export enum ItemTypes {
     Weapon,
@@ -169,8 +170,8 @@ export type ModifierSourceData = {
 export type ModifierApplyData = {
     source: ModifierSourceData,
     character: iCharacter,
-    summary: SimulationSummary
-    multiplier?: number; // Number of times to apply this
+    summary: SimulationSummary,
+    sets: EquipmentSet[],
 }
 
 export type AttackModifiersData = {
@@ -185,18 +186,21 @@ export interface iAttackModifiers extends AttackModifiersData {
     mul: (n: number, inplace?: boolean) => iAttackModifiers;
 }
 
-export interface CharacterModifiers {
+export interface iCharacterModifiers {
     attributes: iAttributes;
     subStats: iCharacterSubStats;
     attackMultipliers: iAttackMultipliers;
-    attackModifiers: AttackModifiersData;
+    attackModifiers: iAttackModifiers;
+
+    sum: (other: iCharacterModifiers) => iCharacterModifiers;
+    mul: (n: number) => iCharacterModifiers;
 }
-// A Modifier applies changes to a SimulationSummary and may have conditions
-// that need to be checked in order for it to be applied.
+
+// A Modifier returns the CharacterModifier structure based on implementation rules.
+// As part of those rules, it may require conditions to be checked prior to that.
+// If those conditions do not check, it shouldn't return any modifier.
 export interface iModifier {
-    // getModifiers: (data: ModifierApplyData) => CharacterModifiers;
-    apply: (data: ModifierApplyData) => void;
-    check: (data: ConditionCheckData) => boolean;
+    getModifier: (data: ModifierApplyData) => iCharacterModifiers | undefined;
 }
 
 

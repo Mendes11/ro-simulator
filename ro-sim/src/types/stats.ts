@@ -27,6 +27,6 @@ export type CharacterSubStatsData = {
 }
 
 export interface iCharacterSubStats extends CharacterSubStatsData {
-    sum: (other: iCharacterSubStats, inplace?: boolean) => iCharacterSubStats;
-    mul: (n: number, inplace?: boolean) => iCharacterSubStats;
+    sum: (other: iCharacterSubStats) => iCharacterSubStats;
+    mul: (n: number) => iCharacterSubStats;
 }

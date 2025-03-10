@@ -17,6 +17,6 @@ export type AttributesData = {
 }
 
 export interface iAttributes extends AttributesData {
-    sum: (other: iAttributes, inplace?: boolean) => iAttributes;
-    mul: (n: number, inplace?: boolean) => iAttributes;
+    sum: (other: iAttributes) => iAttributes;
+    mul: (n: number) => iAttributes;
 }
