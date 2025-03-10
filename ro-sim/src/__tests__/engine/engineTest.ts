@@ -8,7 +8,7 @@ import { CharacterSubStats } from "@/engine/subStats";
 import { AttackTypes } from "@/types/attackMultiplier";
 import { iCharacter } from "@/types/character";
 import { ElementTypes } from "@/types/element";
-import { ItemLocations, ItemTypes, ModifierSourceData, WeaponSubTypes } from "@/types/equipment";
+import { ItemLocations, ItemTypes, ModifierApplyData, ModifierSourceData, WeaponSubTypes } from "@/types/equipment";
 import { RaceTypes } from "@/types/race";
 import { SizeTypes } from "@/types/size";
 import { iTarget, TargetTypes } from "@/types/target";
@@ -19,6 +19,7 @@ interface MyFixtures {
     baseSource: ModifierSourceData;
     summary: SimulationSummary;
     target: iTarget;
+    applyData: ModifierApplyData;
 }
 
 export const engineTest = test.extend<MyFixtures>({
@@ -116,4 +117,7 @@ export const engineTest = test.extend<MyFixtures>({
         }
         await use(target);
     },
+    applyData: async({baseSource, baseCharacter, summary}, use) => {
+        await use({source: baseSource, character: baseCharacter, summary: summary, sets: []})
+    }
 })
