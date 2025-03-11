@@ -2,6 +2,10 @@ import { iAttackMultipliers } from "@/types/attackMultiplier";
 import { iAttributes } from "@/types/attributes";
 import { iAttackModifiers, iCharacterModifiers } from "@/types/equipment";
 import { iCharacterSubStats } from "@/types/stats";
+import { Attributes } from "../attributes";
+import { CharacterSubStats } from "../subStats";
+import { AttackMultipliers } from "../attackMultipliers";
+import { AttackModifiers } from "../attackModifiers";
 
 export class CharacterModifiers implements iCharacterModifiers {
     attributes: iAttributes;
@@ -10,15 +14,15 @@ export class CharacterModifiers implements iCharacterModifiers {
     attackModifiers: iAttackModifiers;
     
     public constructor(
-        attributes: iAttributes, 
-        subStats: iCharacterSubStats, 
-        attackMultipliers: iAttackMultipliers, 
-        attackModifiers: iAttackModifiers
+        attributes?: iAttributes, 
+        subStats?: iCharacterSubStats, 
+        attackMultipliers?: iAttackMultipliers, 
+        attackModifiers?: iAttackModifiers
     ){
-        this.attributes = attributes;
-        this.subStats = subStats;
-        this.attackMultipliers = attackMultipliers;
-        this.attackModifiers = attackModifiers;
+        this.attributes = attributes ?? new Attributes();
+        this.subStats = subStats ?? new CharacterSubStats();
+        this.attackMultipliers = attackMultipliers ?? new AttackMultipliers();
+        this.attackModifiers = attackModifiers ?? new AttackModifiers();
     }
 
     sum(other: iCharacterModifiers){

@@ -12,6 +12,9 @@ import { CardSetConditionData } from "@/engine/modifiers/conditions/cardSetCondi
 import { JobConditionData } from "@/engine/modifiers/conditions/jobCondition";
 import { LevelConditionData } from "@/engine/modifiers/conditions/levelCondition";
 import { SkillConditionData } from "@/engine/modifiers/conditions/skillCondition";
+import { AttackRangeTypes, AttackTypes } from "./attackMultiplier";
+import { ElementType } from "react";
+import { ElementTypes } from "./element";
 
 export enum ConditionTypes {
     Refinement,
@@ -53,11 +56,17 @@ export type ConditionData =
     | { type: ConditionTypes.Skill, data: SkillConditionData};
 
 
+export type ConditionAttackinfo = {
+    element: ElementTypes;
+    attackType: AttackTypes;
+    attackRangeType: AttackRangeTypes;
+}
+
 export interface ConditionCheckData {
     source: ModifierSourceData;
     character: iCharacter;
     target: iTarget;
-    attackInfo: AttackInfo;
+    attackInfo: ConditionAttackinfo;
 
     setAlreadyInUse: (set: EquipmentSet) => boolean;
     addSet: (set: EquipmentSet) => void;

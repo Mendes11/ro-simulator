@@ -12,7 +12,7 @@ import { TargetTypes } from "@/types/target";
 import { BaseModifier } from "./base";
 import { ConditionData, iCondition } from "@/types/condition";
 import { AttackModifiers, AttackModifiersData } from "../attackModifiers";
-import { CharacterModifiers } from "../characterModifiers";
+import { CharacterModifiers } from "./characterModifiers";
 
 export interface StatsModifierData {
     attributes?: AttributesData;

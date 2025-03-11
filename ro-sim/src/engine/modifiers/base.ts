@@ -22,8 +22,8 @@ export abstract class BaseModifier implements iModifier {
             c => c.check({
                 source: data.source, 
                 character: data.character, 
-                target: data.summary.target, 
-                attackInfo: data.summary.attackInfo,
+                target: data.target, 
+                attackInfo: data.attackInfo,
                 setAlreadyInUse: (set: EquipmentSet) => {
                     return data.sets.find(s => (s.condition !== c) && (s.source.name === set.source.name) && s.target.name === set.target.name) != null
                 },

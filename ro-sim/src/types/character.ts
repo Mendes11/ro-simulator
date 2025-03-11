@@ -2,9 +2,11 @@ import { iEquipmentInstance } from "./equipmentInstance";
 import { iCard } from "./card";
 import { AttributesData } from "./attributes";
 import { Job } from "./jobs";
-import { SimulationSummary } from "@/engine/simulation";
+import { SimulateResult, SimulationSummary } from "@/engine/simulation";
 import { ItemLocations } from "./equipment";
 import { iSkillInstance } from "./skills";
+import { iTarget } from "./target";
+import { ElementTypes } from "./element";
 
 export type CharacterEquipments = {
     top?: iEquipmentInstance;
@@ -22,7 +24,7 @@ export type CharacterEquipments = {
 export type CharacterData = {
     level: number;
     baseAttrs: AttributesData,
-    equipments: CharacterEquipments;
+    equipments: iEquipmentInstance[];
     job: Job;
     // shadowEquipments: CharacterEquipments;
     // job: Jobs
@@ -33,4 +35,6 @@ export interface iCharacter extends CharacterData {
     findEquipmentByName: (name: string) => iEquipmentInstance | undefined
     findEquipmentByLocation: (location: ItemLocations) => iEquipmentInstance | undefined;
     findCardByName: (name: string) => {slot: iCard, equipmentInstance: iEquipmentInstance} | undefined
+
+    simulate: (element: ElementTypes,  target: iTarget, skill?: iSkillInstance) => SimulateResult
 }

@@ -27,7 +27,7 @@ export class AttackTypeCondition implements iCondition {
             return false;
         }
         if (this.attackRangeType != null) {
-            if (data.attackInfo.attackRange == null || (data.attackInfo.attackRange & this.attackRangeType) === 0) {
+            if (data.attackInfo.attackRangeType == null || (data.attackInfo.attackRangeType & this.attackRangeType) === 0) {
                 return false;
             }
         }

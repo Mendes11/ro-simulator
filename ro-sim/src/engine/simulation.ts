@@ -248,9 +248,11 @@ function simulate(summary: SimulationSummary, maxVariance=true): SimulationResul
 export type SimulateResult = {
     upperBound: SimulationResult;
     lowerBound: SimulationResult;
+    summary: SimulationSummary;
 }
 export function Simulate(summary: SimulationSummary): SimulateResult {
     return {
+        summary: summary,
         upperBound: simulate(summary, true),
         lowerBound: simulate(summary, false),
     }

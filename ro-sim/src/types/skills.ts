@@ -16,6 +16,9 @@ export interface iSkill {
     attackType?: AttackTypes;
     attackRangeType?: AttackRangeTypes;
     critable?: boolean;
+    defBypass?: number;
+    defMBypass?: number;
+    thanatosEffect?: boolean;
 
     // attackMultiplier is the percentage over the attack
     attackMultiplier?: (skillLevel: number, summary: SimulationSummary) => number;

@@ -3,6 +3,8 @@ import { iSkill } from "./skills";
 
 export enum JobIds {
     Novice = "Novice",
+    Assassin = "Assassin",
+    AssassinCross = "AssassinCross"
 }
 
 

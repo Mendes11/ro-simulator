@@ -22,6 +22,7 @@ export class Attributes implements iAttributes {
     }
 
     // Initializes Attributes with all values default to 1
+    // TODO: Move this to its own CharacterAttributes object
     public static NewCharacterAttrs() {
         return new Attributes({
             str: 1,

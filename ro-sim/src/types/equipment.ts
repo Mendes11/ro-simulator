@@ -1,12 +1,13 @@
-import { SimulationSummary } from "@/engine/simulation";
+import { AttackInfo, SimulationSummary } from "@/engine/simulation";
 import { CharacterData, iCharacter } from "./character";
-import { AttackMultipliersData, AttackRangeTypes, iAttackMultipliers } from "./attackMultiplier";
+import { AttackMultipliersData, AttackRangeTypes, AttackTypes, iAttackMultipliers } from "./attackMultiplier";
 import { iEquipmentInstance } from "./equipmentInstance";
 import { iTarget } from "./target";
-import { ConditionCheckData, EquipmentSet } from "./condition";
+import { ConditionAttackinfo, ConditionCheckData, EquipmentSet } from "./condition";
 import { AttributesData, iAttributes } from "./attributes";
 import { CharacterSubStatsData, iCharacterSubStats } from "./stats";
 import { iCard } from "./card";
+import { ModifierData } from "@/engine/modifiers/utils";
 
 export enum ItemTypes {
     Weapon,
@@ -142,6 +143,7 @@ export interface iItem {
     id: number;
     name: string;
     description: string;
+    modifiers: ModifierData[]
 }
 
 export type EquipmentData = iItem & {
@@ -170,7 +172,8 @@ export type ModifierSourceData = {
 export type ModifierApplyData = {
     source: ModifierSourceData,
     character: iCharacter,
-    summary: SimulationSummary,
+    target: iTarget,
+    attackInfo: ConditionAttackinfo,
     sets: EquipmentSet[],
 }
 
