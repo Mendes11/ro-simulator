@@ -7,9 +7,10 @@ let file: string;
 
 if (process.env.NODE_ENV === "production") {
     console.log("Loading equipments.json from Bucket");
-    const url = "https://uhajjqevycyljnw0.public.blob.vercel-storage.com/equipments-Kq7jYKiOKX6NlRCH5TEqihx3SUID2y.json"
+    const url = "https://uhajjqevycyljnw0.public.blob.vercel-storage.com/equipments-oOSw0T5xmKFjIxM942MeVrgmwEqFPE.json"
     file = await fetch(url).then(res => res.text())
 } else {
+    console.log('Loading %s', path.join(process.cwd(), "equipments.json"));
     file = await fs.readFile(path.join(process.cwd(), "equipments.json"), 'utf-8');
 }
 
@@ -62,9 +63,6 @@ export class LocalEquipmentRepository {
     }
 
     async Search(query: EquipmentSearchArgs): Promise<iEquipment[]> {
-        console.log(`File Size is ${file.length}`)
-        console.log(`Equipments object is`);
-        Object.values(this.equipments).slice(0, 30).forEach((v => console.log(v)));
         console.log(`Searching through ${Object.keys(this.equipments).length} equipments...`);
         return Object.values(this.equipments).filter(e => {
             let q = true
@@ -75,7 +73,6 @@ export class LocalEquipmentRepository {
                 q &&= e.allowedLocations != null
                 q &&= query.locations.some((l) => e.allowedLocations?.some(ll => ll & l));
             }
-
             return q
         })
     }

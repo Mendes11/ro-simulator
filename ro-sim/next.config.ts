@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // eslint: { // Uncomment this when want to skip lint in local builds
+  //   ignoreDuringBuilds: true,
+  // },
   /* config options here */
   images: {
     remotePatterns: [
