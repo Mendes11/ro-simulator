@@ -27,6 +27,7 @@ export class LocalCardRepository {
         console.log(`Loaded ${Object.keys(this.cards).length} cards`)
         console.log("Indexing Cards...");
         console.log("Finished Indexing Equipments.");
+        this.setup = true;
     }
 
     async Find(id: number): Promise<iCard> {
