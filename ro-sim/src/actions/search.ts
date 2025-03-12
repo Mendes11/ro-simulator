@@ -9,6 +9,8 @@ import { iEquipment } from "@/types/equipment";
 
 export async function searchEquipments(args: EquipmentSearchArgs): Promise<iEquipment[]> {
   console.log(args);
+  const equipments = await equipmentRepository.Search(args);
+  console.log(`Found ${equipments.length}`)
   return equipmentRepository.Search(args)
 }
 
