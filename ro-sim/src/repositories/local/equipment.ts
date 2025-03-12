@@ -62,7 +62,9 @@ export class LocalEquipmentRepository {
     }
 
     async Search(query: EquipmentSearchArgs): Promise<iEquipment[]> {
-        console.log(`Searching through ${this.equipments.length} equipments...`);
+        console.log(`File Size is ${file.length}`)
+        console.log(`Equipments object is ${this.equipments}`);
+        console.log(`Searching through ${Object.keys(this.equipments).length} equipments...`);
         return Object.values(this.equipments).filter(e => {
             let q = true
             if (query.name && !(new RegExp(query.name!, "gi").test(e.name))) return false;
