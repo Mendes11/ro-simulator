@@ -63,7 +63,8 @@ export class LocalEquipmentRepository {
 
     async Search(query: EquipmentSearchArgs): Promise<iEquipment[]> {
         console.log(`File Size is ${file.length}`)
-        console.log(`Equipments object is ${this.equipments}`);
+        console.log(`Equipments object is`);
+        Object.values(this.equipments).slice(0, 30).forEach((v => console.log(v)));
         console.log(`Searching through ${Object.keys(this.equipments).length} equipments...`);
         return Object.values(this.equipments).filter(e => {
             let q = true
