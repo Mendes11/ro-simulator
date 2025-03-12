@@ -1,17 +1,13 @@
 import { expect } from 'vitest'
 import { engineTest } from './engineTest'
 import { ModifierData, ModifierTypes, newModifier } from '@/engine/modifiers/utils'
-import { Combo } from '@/engine/modifiers/combo'
 import { AttackTypes } from '@/types/attackMultiplier'
 import { RaceTypes } from '@/types/race'
 import { ComparisonConditions, ConditionTypes, EquipmentSet } from '@/types/condition'
-import { execPath } from 'process'
-import { Character } from '@/engine/character'
-import { ItemTypes } from '@/types/equipment'
-import { CharacterModifiers } from '@/engine/characterModifiers'
+import { ItemLocations, ItemTypes } from '@/types/equipment'
 import { EquipmentSetCondition } from '@/engine/modifiers/conditions/equipmentSetCondition'
-import { SizeTypes } from '@/types/size'
 import { StatsModifier } from '@/engine/modifiers/statsModifier'
+import { CharacterModifiers } from '@/engine/modifiers/characterModifiers'
 
 
 /*
@@ -180,8 +176,8 @@ Refino +9 ou mais:
 --------------------------
 */
 engineTest('Adaga dos Orcs - Combo 2 - id=510147', ({applyData}) => {
-    applyData.summary.attackInfo.attackType = AttackTypes.Physical;
-    applyData.summary.target.race = RaceTypes.Human;
+    applyData.attackInfo.attackType = AttackTypes.Physical;
+    applyData.target.race = RaceTypes.Human;
     const modifier = newModifier({
         type: ModifierTypes.Stats,
         data: {
@@ -217,8 +213,8 @@ engineTest('Adaga dos Orcs - Combo 2 - id=510147', ({applyData}) => {
 });
 
 engineTest('+9 Adaga dos Orcs - Combo 3 - id=510147', ({applyData}) => {
-    applyData.summary.attackInfo.attackType = AttackTypes.Physical;
-    applyData.summary.target.race = RaceTypes.Human;
+    applyData.attackInfo.attackType = AttackTypes.Physical;
+    applyData.target.race = RaceTypes.Human;
     const modifier = newModifier({
         type: ModifierTypes.Stats,
         data: {
@@ -265,10 +261,10 @@ engineTest('Adaga dos Orcs - Combo 4 - Conjunto Anel Orcs - id=510147', ({applyD
             }
         }]
     })
-    expect(modifier.getModifier(applyData)).toBeUndefined;
+    expect(modifier.getModifier(applyData)).toBeUndefined();
 
     // Add the equipment to the character
-    applyData.character.equipments.leftAccessory = {
+    applyData.character.equipments.push({
         equipment: {
             id: 1,
             name: "Anel dos Orcs",
@@ -280,7 +276,9 @@ engineTest('Adaga dos Orcs - Combo 4 - Conjunto Anel Orcs - id=510147', ({applyD
         },
         refinement: 0,
         slots: [],
-    }
+        location: ItemLocations.LeftHand,
+        sourceLocation: ItemLocations.LeftHand,
+    })
 
     expect(modifier.getModifier(applyData)).toBeDefined();
     expect(applyData.sets.length).toBe(1);
@@ -302,7 +300,7 @@ engineTest('Adaga dos Orcs - Combo 4 - Conjunto Anel dos Orcs - id=510147 - doub
         }]
     })
     // Add the equipment to the character
-    applyData.character.equipments.leftAccessory = {
+    applyData.character.equipments.push({
         equipment: {
             id: 1,
             name: "Anel dos Orcs",
@@ -314,7 +312,9 @@ engineTest('Adaga dos Orcs - Combo 4 - Conjunto Anel dos Orcs - id=510147 - doub
         },
         refinement: 0,
         slots: [],
-    }
+        location: ItemLocations.LeftHand,
+        sourceLocation: ItemLocations.LeftHand,
+    });
 
     const equipmentSet: EquipmentSet = {
         source: {
@@ -326,7 +326,7 @@ engineTest('Adaga dos Orcs - Combo 4 - Conjunto Anel dos Orcs - id=510147 - doub
             type: ItemTypes.Weapon,
             weight: 0,
         },
-        target: applyData.character.equipments.leftAccessory.equipment,
+        target: applyData.character.equipments[0].equipment,
         condition: new EquipmentSetCondition({name: "Anel dos Orcs"})
     }
     applyData.source.instance.equipment.name = "Adaga dos Orcs";
@@ -336,7 +336,7 @@ engineTest('Adaga dos Orcs - Combo 4 - Conjunto Anel dos Orcs - id=510147 - doub
 });
 
 engineTest('AttackMultipliers against wrong target not applied', ({applyData}) => {
-    applyData.summary.target.race = RaceTypes.Angel
+    applyData.target.race = RaceTypes.Angel
 
     const modifier = new StatsModifier({attackMultipliers: {race: 0.2}}, [{type: ConditionTypes.Target, data: {race: RaceTypes.Demon}}]);
     const charMod = modifier.getModifier(applyData)
@@ -344,7 +344,7 @@ engineTest('AttackMultipliers against wrong target not applied', ({applyData}) =
 });
 
 engineTest('AttackMultipliers against correct target applied', ({applyData}) => {
-    applyData.summary.target.race = RaceTypes.Angel
+    applyData.target.race = RaceTypes.Angel
 
     const modifier = new StatsModifier({attackMultipliers: {race: 0.2}}, [{type: ConditionTypes.Target, data: {race: RaceTypes.Angel}}]);
     const charMod = modifier.getModifier(applyData)

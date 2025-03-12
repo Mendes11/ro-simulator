@@ -1,12 +1,12 @@
-import { AttributesData, iAttributes } from "@/types/attributes";
+import { iAttributes } from "@/types/attributes";
 import { iCard } from "@/types/card";
-import { CharacterData, CharacterEquipments, iCharacter } from "@/types/character";
-import { iAttackModifiers, iCharacterModifiers, iEquipment, ItemLocations, iWeapon, ModifierApplyData } from "@/types/equipment";
+import { CharacterData, iCharacter } from "@/types/character";
+import { iAttackModifiers, iCharacterModifiers, ItemLocations, iWeapon, ModifierApplyData } from "@/types/equipment";
 import { iEquipmentInstance } from "@/types/equipmentInstance";
 import { Job } from "@/types/jobs";
 import { iSkillInstance } from "@/types/skills";
 import { iTarget } from "@/types/target";
-import { AttackInfo, Simulate, SimulateResult, SimulationSummary } from "./simulation";
+import { AttackInfo, Simulate, SimulationSummary } from "./simulation";
 import { Attributes } from "./attributes";
 import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
 import { ElementTypes } from "@/types/element";
@@ -31,7 +31,7 @@ export class Character implements iCharacter {
         this.job = data?.job ?? Novice;
     }
 
-    findSkill(id: string){
+    findSkill(){
         // TODO: Implement this.
         return undefined;
     }
@@ -74,13 +74,13 @@ export class Character implements iCharacter {
             }
             
             const equipmentModifiers = eqp.equipment.modifiers
-                .map(mod => newModifier(mod).getModifier(applyData))
-                .filter(m => m != null)
+                ?.map(mod => newModifier(mod).getModifier(applyData))
+                ?.filter(m => m != null) ?? []
 
             const cardsModifiers = eqp.slots.flatMap(slot => 
                 slot.modifiers
-                    .map(mod => newModifier(mod).getModifier(applyData))
-                    .filter(m => m != null)
+                    ?.map(mod => newModifier(mod).getModifier(applyData))
+                    ?.filter(m => m != null) ?? []
             );
             if (equipmentModifiers.length > 0 || cardsModifiers.length > 0) {
                 let modifiers: iCharacterModifiers = new CharacterModifiers()
@@ -94,12 +94,12 @@ export class Character implements iCharacter {
     }
 
     simulate(element: ElementTypes, target: iTarget, skill?: iSkillInstance){
-        let charModifiers = new CharacterModifiers(
-            this.baseAttrs,
-            new CharacterSubStats(),
-            new AttackMultipliers(),
-            new AttackModifiers()
-        )
+        let charModifiers = new CharacterModifiers({
+            attributes: this.baseAttrs,
+            subStats: new CharacterSubStats(),
+            attackMultipliers: new AttackMultipliers(),
+            attackModifiers: new AttackModifiers()
+        })
         const mods = this.activeModifiers(element, target, skill)
         if (mods.length > 0) {
             charModifiers = mods.map(m => m.charModifiers).reduce((l, r) => l.sum(r), charModifiers);
@@ -131,16 +131,16 @@ export class Character implements iCharacter {
             thanatosEffect: skill?.skill.thanatosEffect ?? attackModifiers.thanatosEffect,
             rightWeapon: {
                 refinement: this.findEquipmentByLocation(ItemLocations.RightHand)?.refinement ?? 0,
-                wAtk: (rightHand?.equipment as iWeapon).weaponAtk ?? 0,
-                wMAtk: (rightHand?.equipment as iWeapon).weaponMAtk ?? 0,
-                weaponLevel: (rightHand?.equipment as iWeapon).weaponLevel ?? 0,
+                wAtk: (rightHand?.equipment as iWeapon)?.weaponAtk ?? 0,
+                wMAtk: (rightHand?.equipment as iWeapon)?.weaponMAtk ?? 0,
+                weaponLevel: (rightHand?.equipment as iWeapon)?.weaponLevel ?? 0,
             },
             sizePenalty: attackModifiers.sizePenalty != 0 ? attackModifiers.sizePenalty : 1.0, // TODO: Implement size-penalty method from the weapon type
             leftWeapon: leftHand ? {
                 refinement: leftHand?.refinement ?? 0,
-                wAtk: (leftHand?.equipment as iWeapon).weaponAtk ?? 0,
-                wMAtk: (leftHand?.equipment as iWeapon).weaponMAtk ?? 0,
-                weaponLevel: (leftHand?.equipment as iWeapon).weaponLevel ?? 0,
+                wAtk: (leftHand?.equipment as iWeapon)?.weaponAtk ?? 0,
+                wMAtk: (leftHand?.equipment as iWeapon)?.weaponMAtk ?? 0,
+                weaponLevel: (leftHand?.equipment as iWeapon)?.weaponLevel ?? 0,
             } : undefined,
         }
     }

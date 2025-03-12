@@ -1,12 +1,9 @@
-import { AttackInfo, SimulationSummary } from "@/engine/simulation";
-import { CharacterData, iCharacter } from "./character";
-import { AttackMultipliersData, AttackRangeTypes, AttackTypes, iAttackMultipliers } from "./attackMultiplier";
-import { iEquipmentInstance } from "./equipmentInstance";
+import { iCharacter } from "./character";
+import { AttackRangeTypes, iAttackMultipliers } from "./attackMultiplier";
 import { iTarget } from "./target";
-import { ConditionAttackinfo, ConditionCheckData, EquipmentSet } from "./condition";
-import { AttributesData, iAttributes } from "./attributes";
-import { CharacterSubStatsData, iCharacterSubStats } from "./stats";
-import { iCard } from "./card";
+import { ConditionAttackinfo, EquipmentSet } from "./condition";
+import { iAttributes } from "./attributes";
+import { iCharacterSubStats } from "./stats";
 import { ModifierData } from "@/engine/modifiers/utils";
 
 export enum ItemTypes {
@@ -143,7 +140,7 @@ export interface iItem {
     id: number;
     name: string;
     description: string;
-    modifiers: ModifierData[]
+    modifiers?: ModifierData[]
 }
 
 export type EquipmentData = iItem & {
@@ -208,8 +205,7 @@ export interface iModifier {
 
 
 // Equipment has the basic characteristics of any equipment item in the game.
-export interface iEquipment extends EquipmentData {
-}
+export type iEquipment = EquipmentData
 
 export interface iArmor extends iEquipment {
     equipDef?: number;

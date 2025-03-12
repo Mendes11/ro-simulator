@@ -1,6 +1,5 @@
 import { ComparisonConditions, ConditionCheckData, iCondition } from "@/types/condition";
 import { ItemLocations } from "@/types/equipment";
-import { iEquipmentInstance } from "@/types/equipmentInstance";
 import { compareValues } from "./utils";
 
 export interface RefinementConditionData {

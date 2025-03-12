@@ -1,4 +1,4 @@
-import { ConditionCheckData, ConditionData, EquipmentSet, iCondition } from "@/types/condition";
+import { ConditionData, EquipmentSet, iCondition } from "@/types/condition";
 import { iCharacterModifiers, iModifier, ModifierApplyData } from "@/types/equipment";
 import { newCondition } from "./utils";
 

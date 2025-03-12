@@ -5,7 +5,7 @@ import { Character } from "@/engine/character";
 import { Jobs } from "@/engine/jobs";
 import { SimulationSummary } from "@/engine/simulation";
 import { CharacterSubStats } from "@/engine/subStats";
-import { AttackTypes } from "@/types/attackMultiplier";
+import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
 import { iCharacter } from "@/types/character";
 import { ElementTypes } from "@/types/element";
 import { ItemLocations, ItemTypes, ModifierApplyData, ModifierSourceData, WeaponSubTypes } from "@/types/equipment";
@@ -23,19 +23,20 @@ interface MyFixtures {
 }
 
 export const engineTest = test.extend<MyFixtures>({
-    baseCharacter: async ({}, use) => {
+    baseCharacter: async (_, use) => {
         const character = new Character({
             level: 1,
             baseAttrs: Attributes.NewCharacterAttrs(),
-            equipments: {},
+            equipments: [],
             job: Jobs[0],
         })
         await use(character);
 
     },
-    baseSource: async({}, use) => {
+    baseSource: async(_, use) => {
         const baseSource = {
             location: ItemLocations.RightHand,
+            sourceLocation: ItemLocations.RightHand,
             instance: {
                 refinement: 0,
                 equipment: {
@@ -52,7 +53,7 @@ export const engineTest = test.extend<MyFixtures>({
         }
         use(baseSource);
     },
-    summary: async ({}, use) => {
+    summary: async (_, use) => {
         const summary = {
             level: 1,
             attributes: Attributes.NewCharacterAttrs(),
@@ -96,7 +97,7 @@ export const engineTest = test.extend<MyFixtures>({
         }
         await use(summary);
     },
-    target: async ({}, use) => {
+    target: async (_, use) => {
         const target = {
             race: RaceTypes.Human,
             element: ElementTypes.Neutral,
@@ -117,7 +118,17 @@ export const engineTest = test.extend<MyFixtures>({
         }
         await use(target);
     },
-    applyData: async({baseSource, baseCharacter, summary}, use) => {
-        await use({source: baseSource, character: baseCharacter, summary: summary, sets: []})
+    applyData: async({baseSource, baseCharacter, target}, use) => {
+        await use({
+            source: baseSource, 
+            character: baseCharacter, 
+            attackInfo: {
+                attackRangeType: AttackRangeTypes.Melee, 
+                attackType: AttackTypes.Physical,
+                element: ElementTypes.Neutral,
+            },
+            target: target,
+            sets: []
+        });
     }
 })

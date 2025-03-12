@@ -2,7 +2,7 @@ import { iEquipmentInstance } from "./equipmentInstance";
 import { iCard } from "./card";
 import { AttributesData } from "./attributes";
 import { Job } from "./jobs";
-import { SimulateResult, SimulationSummary } from "@/engine/simulation";
+import { SimulateResult } from "@/engine/simulation";
 import { ItemLocations } from "./equipment";
 import { iSkillInstance } from "./skills";
 import { iTarget } from "./target";

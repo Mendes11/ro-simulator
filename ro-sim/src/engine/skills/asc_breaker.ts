@@ -11,6 +11,9 @@ export const ASC_BREAKER: iSkill = {
             ((skillLevel * 140) + characterInfo.attributes.int + characterInfo.attributes.str) * (characterInfo.level / 100.0)
         ) / 100.0;
     },
+    getModifier() {
+        return undefined;
+    },
     maxLevel: 10,
     attackType: AttackTypes.Physical,
     attackRangeType: AttackRangeTypes.Distance,

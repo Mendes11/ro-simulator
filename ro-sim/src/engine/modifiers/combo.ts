@@ -1,6 +1,6 @@
-import { ConditionCheckData, ConditionData, iCondition } from "@/types/condition";
-import { iCharacterModifiers, iModifier, ModifierApplyData } from "@/types/equipment";
-import { ModifierData, newCondition, newModifier } from "./utils";
+import { ConditionData } from "@/types/condition";
+import { iModifier, ModifierApplyData } from "@/types/equipment";
+import { ModifierData, newModifier } from "./utils";
 import { BaseModifier } from "./base";
 
 // A Combo holds multiple modifiers under the same condition

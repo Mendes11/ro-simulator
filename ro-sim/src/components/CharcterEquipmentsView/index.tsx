@@ -1,127 +1,39 @@
-import { CharacterEquipments as CharacterEquipsType } from "@/types/character"
 import { AllWeaponSubTypes, EquipmentSubTypes, ItemLocations, ItemSubTypes, ItemTypes } from "@/types/equipment";
 import { iEquipmentInstance } from "@/types/equipmentInstance";
-import { PositionsState } from "./positionsState";
 import CharacterEquipmentCard from "../CharacterEquipmentCard";
 
 type CharacterEquipmentsProps = {
-    equipments: CharacterEquipsType;
-    onEquipmentsChanged(equipments: CharacterEquipsType): void;
+    equipments: iEquipmentInstance[];
+    onEquipmentAdded(equipment: iEquipmentInstance): void;
+    onEquipmentRemoved(equipment: iEquipmentInstance): void;
+    // onEquipmentsChanged(equipments: CharacterEquipsType): void;
     // onEquipmentChanged(position: keyof CharacterEquipsType, item?: iEquipmentInstance): void;
 }
 
 export const CharacterEquipmentsView = ({
-    equipments, onEquipmentsChanged
+    equipments, onEquipmentAdded, onEquipmentRemoved
 }: CharacterEquipmentsProps) => {
-    // This variable controls what we display, and the components rules
-    const positionsState: PositionsState = {
-        top: {
-          inUseByPosition: undefined,
-          allowedSubTypes: [EquipmentSubTypes.Headgear],
-          location: ItemLocations.HeadUpper,
-        },
-        mid: {
-          inUseByPosition: undefined,
-          allowedSubTypes: [EquipmentSubTypes.Headgear],
-          location: ItemLocations.HeadMid,
-        },
-        bottom: {
-          inUseByPosition: undefined,
-          allowedSubTypes: [EquipmentSubTypes.Headgear],
-          location: ItemLocations.HeadBottom,
-        },
-        armor: {
-          inUseByPosition: undefined,
-          allowedSubTypes: [EquipmentSubTypes.Armor],
-          location: ItemLocations.Armor,
-        },
-        rightHand: {
-          inUseByPosition: undefined,
-          allowedSubTypes: AllWeaponSubTypes,
-          location: ItemLocations.RightHand,
-        },
-        leftHand: {
-          inUseByPosition: undefined,
-          allowedSubTypes: (AllWeaponSubTypes as ItemSubTypes[]).concat([
-            EquipmentSubTypes.Shield,
-          ]),
-          location: ItemLocations.LeftHand,
-        },
-        garment: {
-          inUseByPosition: undefined,
-          allowedSubTypes: [EquipmentSubTypes.Garment],
-          location: ItemLocations.Garment,
-        },
-        shoes: {
-          inUseByPosition: undefined,
-          allowedSubTypes: [EquipmentSubTypes.Shoes],
-          location: ItemLocations.Shoes,
-        },
-        rightAccessory: {
-          inUseByPosition: undefined,
-          allowedSubTypes: [
-            EquipmentSubTypes.AccessoryRight,
-            EquipmentSubTypes.Accessory,
-          ],
-          location: ItemLocations.RightAccessory,
-        },
-        leftAccessory: {
-          inUseByPosition: undefined,
-          allowedSubTypes: [
-            EquipmentSubTypes.AccessoryLeft,
-            EquipmentSubTypes.Accessory,
-          ],
-          location: ItemLocations.LeftAccessory,
-        },
-    };
-
-    const positionsUsedByItem = (position: keyof CharacterEquipsType, item: iEquipmentInstance) => {
-        const positionState = positionsState[position];
-        return Object.keys(positionsState)
-            .filter(p => p !== position)
-            .filter(otherPosition => {
-                const otherPositionState = positionsState[otherPosition as keyof CharacterEquipsType];
-                return item.equipment.allowedLocations?.some(l => l & positionState.location && l & otherPositionState.location);
-        })
-    };
-
-    function newEquipChangeHandler(position: keyof PositionsState) {
+    const newEquipChangeHandler = (location: ItemLocations) => {
         return (item?: iEquipmentInstance) => {
-            const equips = {...equipments};
-            equips[position] = item
-
-            if (item != null) {
-                // Unnequip positions used by current item
-                positionsUsedByItem(position, item).forEach(p => {
-                    // onEquipmentChanged(p as keyof CharacterEquipsType, undefined);
-                    equips[p as keyof CharacterEquipsType] = undefined;
-                });
+            if (item == null) {
+                const removedEquip = equipments.find(e => (e.sourceLocation & location) != 0)
+                if (removedEquip) onEquipmentRemoved(removedEquip);
+                return
             }
-            onEquipmentsChanged(equips);
+            equipments.filter(e => (e.location & item.location) !== 0).forEach(e => onEquipmentRemoved(e))
+            onEquipmentAdded(item);
         };
     }
 
-    Object.keys(positionsState).forEach(position => {
-        const positionState = positionsState[position as keyof CharacterEquipsType];
-        const positionEquipment = equipments[position as keyof CharacterEquipsType];
+    const equipmentsMap: {[k in ItemLocations]?: iEquipmentInstance} = {};
+    equipments.forEach(e => {
+        equipmentsMap[e.location] = e;
+    })
 
-        if (positionState.inUseByPosition) {
-            // Ensure that it's still getting used, unset otherwise.
-            const otherPositionEquip = equipments[positionState.inUseByPosition as keyof CharacterEquipsType]?.equipment;
-            const otherPositionState = positionsState[positionState.inUseByPosition as keyof CharacterEquipsType];
+    const findEquipment = (location: ItemLocations) => {
+        return equipments.find(e => (e.location & location) != 0);
+    }
 
-            if (otherPositionEquip == null || !(otherPositionEquip.allowedLocations?.some(l => l & positionState.location && l & otherPositionState.location))) {
-                positionState.inUseByPosition = undefined;
-            }
-        }
-
-        if (positionEquipment) {
-            positionsUsedByItem(position as keyof CharacterEquipsType, positionEquipment).forEach(otherPosition => {
-                positionsState[otherPosition as keyof CharacterEquipsType].inUseByPosition = position as keyof CharacterEquipsType;
-            });
-        }
-    });
-    // setPositionsState(positionsState);
 
     return (
         <div className="flex flex-row flex-wrap p-2 mt-1">
@@ -129,12 +41,12 @@ export const CharacterEquipmentsView = ({
                 <CharacterEquipmentCard
                     title="Topo"
                     allowedTypes={[ItemTypes.Armor]}
-                    allowedSubTypes={positionsState.top.allowedSubTypes}
-                    allowedLocations={[positionsState.top.location]}
-                    enabled={positionsState.top.inUseByPosition == null}
-                    equippedItem={positionsState.top.inUseByPosition ? equipments[positionsState.top.inUseByPosition] : equipments.top}
-                    onItemChanged={newEquipChangeHandler("top")}
-                    onItemRemoved={newEquipChangeHandler("top")}
+                    allowedSubTypes={[EquipmentSubTypes.Headgear]}
+                    location={ItemLocations.HeadUpper}
+                    enabled={(findEquipment(ItemLocations.HeadUpper)?.sourceLocation || ItemLocations.HeadUpper) === ItemLocations.HeadUpper}
+                    equippedItem={findEquipment(ItemLocations.HeadUpper)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.HeadUpper)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.HeadUpper)}
                 />
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
@@ -142,11 +54,11 @@ export const CharacterEquipmentsView = ({
                     title="Meio"
                     allowedTypes={[ItemTypes.Armor]}
                     allowedSubTypes={[EquipmentSubTypes.Headgear]}
-                    allowedLocations={[ItemLocations.HeadMid]}
-                    enabled={positionsState.mid.inUseByPosition == null}
-                    equippedItem={positionsState.mid.inUseByPosition ? equipments[positionsState.mid.inUseByPosition] : equipments.mid}
-                    onItemChanged={newEquipChangeHandler("mid")}
-                    onItemRemoved={newEquipChangeHandler("mid")}
+                    location={ItemLocations.HeadMid}
+                    enabled={(findEquipment(ItemLocations.HeadMid)?.sourceLocation || ItemLocations.HeadMid) === ItemLocations.HeadMid}
+                    equippedItem={findEquipment(ItemLocations.HeadMid)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.HeadMid)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.HeadMid)}
                 />
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
@@ -154,11 +66,11 @@ export const CharacterEquipmentsView = ({
                     title="Baixo"
                     allowedTypes={[ItemTypes.Armor]}
                     allowedSubTypes={[EquipmentSubTypes.Headgear]}
-                    allowedLocations={[ItemLocations.HeadBottom]}
-                    enabled={positionsState.bottom.inUseByPosition == null}
-                    equippedItem={positionsState.bottom.inUseByPosition ? equipments[positionsState.bottom.inUseByPosition] : equipments.bottom}
-                    onItemChanged={newEquipChangeHandler("bottom")}
-                    onItemRemoved={newEquipChangeHandler("bottom")}
+                    location={ItemLocations.HeadBottom}
+                    enabled={(findEquipment(ItemLocations.HeadBottom)?.sourceLocation || ItemLocations.HeadBottom) === ItemLocations.HeadBottom}
+                    equippedItem={findEquipment(ItemLocations.HeadBottom)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.HeadBottom)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.HeadBottom)}
                 />
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
@@ -166,11 +78,11 @@ export const CharacterEquipmentsView = ({
                     title="Mão Direita"
                     allowedTypes={[ItemTypes.Weapon]}
                     allowedSubTypes={AllWeaponSubTypes}
-                    allowedLocations={[ItemLocations.RightHand]}
-                    enabled={positionsState.rightHand.inUseByPosition == null}
-                    equippedItem={positionsState.rightHand.inUseByPosition ? equipments[positionsState.rightHand.inUseByPosition] : equipments.rightHand}
-                    onItemChanged={newEquipChangeHandler("rightHand")}
-                    onItemRemoved={newEquipChangeHandler("rightHand")}
+                    location={ItemLocations.RightHand}
+                    enabled={(findEquipment(ItemLocations.RightHand)?.sourceLocation || ItemLocations.RightHand) === ItemLocations.RightHand}
+                    equippedItem={findEquipment(ItemLocations.RightHand)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.RightHand)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.RightHand)}
                 />
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
@@ -178,11 +90,11 @@ export const CharacterEquipmentsView = ({
                     title="Mão Esquerda"
                     allowedTypes={[ItemTypes.Armor, ItemTypes.Weapon]}
                     allowedSubTypes={(AllWeaponSubTypes as ItemSubTypes[]).concat([EquipmentSubTypes.Shield])}
-                    allowedLocations={[ItemLocations.LeftHand]}
-                    enabled={positionsState.leftHand.inUseByPosition == null}
-                    equippedItem={positionsState.leftHand.inUseByPosition ? equipments[positionsState.leftHand.inUseByPosition] : equipments.leftHand}
-                    onItemChanged={newEquipChangeHandler("leftHand")}
-                    onItemRemoved={newEquipChangeHandler("leftHand")}
+                    location={ItemLocations.LeftHand}
+                    enabled={(findEquipment(ItemLocations.LeftHand)?.sourceLocation || ItemLocations.LeftHand) === ItemLocations.LeftHand}
+                    equippedItem={findEquipment(ItemLocations.LeftHand)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.LeftHand)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.LeftHand)}
                 />
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
@@ -190,11 +102,11 @@ export const CharacterEquipmentsView = ({
                     title="Armadura"
                     allowedTypes={[ItemTypes.Armor]}
                     allowedSubTypes={[EquipmentSubTypes.Armor]}
-                    allowedLocations={[ItemLocations.Armor]}
-                    enabled={positionsState.armor.inUseByPosition == null}
-                    equippedItem={positionsState.armor.inUseByPosition ? equipments[positionsState.armor.inUseByPosition] : equipments.armor}
-                    onItemChanged={newEquipChangeHandler("armor")}
-                    onItemRemoved={newEquipChangeHandler("armor")}
+                    location={ItemLocations.Armor}
+                    enabled={(findEquipment(ItemLocations.Armor)?.sourceLocation || ItemLocations.Armor) === ItemLocations.Armor}
+                    equippedItem={findEquipment(ItemLocations.Armor)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.Armor)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.Armor)}
                 />
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
@@ -202,11 +114,11 @@ export const CharacterEquipmentsView = ({
                     title="Capa"
                     allowedTypes={[ItemTypes.Armor]}
                     allowedSubTypes={[EquipmentSubTypes.Garment]}
-                    allowedLocations={[ItemLocations.Garment]}
-                    enabled={positionsState.garment.inUseByPosition == null}
-                    equippedItem={positionsState.garment.inUseByPosition ? equipments[positionsState.garment.inUseByPosition] : equipments.garment}
-                    onItemChanged={newEquipChangeHandler("garment")}
-                    onItemRemoved={newEquipChangeHandler("garment")}
+                    location={ItemLocations.Garment}
+                    enabled={(findEquipment(ItemLocations.Garment)?.sourceLocation || ItemLocations.Garment) === ItemLocations.Garment}
+                    equippedItem={findEquipment(ItemLocations.Garment)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.Garment)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.Garment)}
                 />
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
@@ -214,11 +126,11 @@ export const CharacterEquipmentsView = ({
                     title="Botas"
                     allowedTypes={[ItemTypes.Armor]}
                     allowedSubTypes={[EquipmentSubTypes.Shoes]}
-                    allowedLocations={[ItemLocations.Shoes]}
-                    enabled={positionsState.shoes.inUseByPosition == null}
-                    equippedItem={positionsState.shoes.inUseByPosition ? equipments[positionsState.shoes.inUseByPosition] : equipments.shoes}
-                    onItemChanged={newEquipChangeHandler("shoes")}
-                    onItemRemoved={newEquipChangeHandler("shoes")}
+                    location={ItemLocations.Shoes}
+                    enabled={(findEquipment(ItemLocations.Shoes)?.sourceLocation || ItemLocations.Shoes) === ItemLocations.Shoes}
+                    equippedItem={findEquipment(ItemLocations.Shoes)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.Shoes)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.Shoes)}
                 />
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
@@ -226,11 +138,11 @@ export const CharacterEquipmentsView = ({
                     title="Accessório Direito"
                     allowedTypes={[ItemTypes.Armor]}
                     allowedSubTypes={[EquipmentSubTypes.AccessoryRight, EquipmentSubTypes.Accessory]}
-                    allowedLocations={[ItemLocations.RightAccessory]}
-                    enabled={positionsState.rightAccessory.inUseByPosition == null}
-                    equippedItem={positionsState.rightAccessory.inUseByPosition ? equipments[positionsState.rightAccessory.inUseByPosition] : equipments.rightAccessory}
-                    onItemChanged={newEquipChangeHandler("rightAccessory")}
-                    onItemRemoved={newEquipChangeHandler("rightAccessory")}
+                    location={ItemLocations.RightAccessory}
+                    enabled={(findEquipment(ItemLocations.RightAccessory)?.sourceLocation || ItemLocations.RightAccessory) === ItemLocations.RightAccessory}
+                    equippedItem={findEquipment(ItemLocations.RightAccessory)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.RightAccessory)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.RightAccessory)}
                 />
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
@@ -238,11 +150,11 @@ export const CharacterEquipmentsView = ({
                     title="Acessório Esquerdo"
                     allowedTypes={[ItemTypes.Armor]}
                     allowedSubTypes={[EquipmentSubTypes.AccessoryLeft, EquipmentSubTypes.Accessory]}
-                    allowedLocations={[ItemLocations.LeftAccessory]}
-                    enabled={positionsState.leftAccessory.inUseByPosition == null}
-                    equippedItem={positionsState.leftAccessory.inUseByPosition ? equipments[positionsState.leftAccessory.inUseByPosition] : equipments.leftAccessory}
-                    onItemChanged={newEquipChangeHandler("leftAccessory")}
-                    onItemRemoved={newEquipChangeHandler("leftAccessory")}
+                    location={ItemLocations.LeftAccessory}
+                    enabled={(findEquipment(ItemLocations.LeftAccessory)?.sourceLocation || ItemLocations.LeftAccessory) === ItemLocations.LeftAccessory}
+                    equippedItem={findEquipment(ItemLocations.LeftAccessory)}
+                    onItemChanged={newEquipChangeHandler(ItemLocations.LeftAccessory)}
+                    onItemRemoved={newEquipChangeHandler(ItemLocations.LeftAccessory)}
                 />
             </div>
         </div>

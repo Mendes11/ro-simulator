@@ -1,106 +1,34 @@
-import { mockCharSummary } from "@/contants";
-import { SimulationSummary, MultipliersData, Simulate, SimulateResult } from "@/engine/simulation"
-import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
-import { AttributesData } from "@/types/attributes";
-import { CharacterData, CharacterEquipments, iCharacter } from "@/types/character";
-import { ItemTypes, iWeapon } from "@/types/equipment";
+import { SimulationSummary, SimulateResult } from "@/engine/simulation"
+import { AttackTypes } from "@/types/attackMultiplier";
+import { iCharacter } from "@/types/character";
+import { ElementTypes } from "@/types/element";
+import { RaceTypes } from "@/types/race";
+import { SizeTypes } from "@/types/size";
 import { iSkill, SkillTypes } from "@/types/skills";
-import { CharacterSubStatsData } from "@/types/stats";
+import { iTarget, TargetTypes } from "@/types/target";
 import { ChangeEvent, useEffect, useState } from "react";
 
 type Props = {
-    character: CharacterData;
+    character: iCharacter;
 }
 
-const getCharSummary = (character: CharacterData, skill?: iSkill): SimulationSummary => {
-  const summary: SimulationSummary = {
-    level: character.level,
-    attributes: character.baseAttrs,
-    subStats: {
-      eAtk: 0,
-      eMatk: 0,
-      crit: 0,
-      precision: 0,
-      perfectPrecision: 0,
-      softDef: 0,
-      hardDef: 0,
-      aspdPercent: 0,
-      aspdUnit: 0,
-      masteryAtk: 0,
-    },
-    attackInfo: {
-      defBypass: 0,
-      defMBypass: 0,
-      sizePenalty: 1,
-      thanatosEffect: false,
-      critable: true,
-      attackMultiplier: 1.0,
-      skill: false,
-      attackType: AttackTypes.Physical,
-      rightWeapon: {
-        wAtk: (character.equipments.rightHand?.equipment as iWeapon)?.weaponAtk ?? 0,
-        wMAtk: (character.equipments.rightHand?.equipment as iWeapon)?.weaponMAtk ?? 0,
-        refinement: character.equipments.rightHand?.refinement ?? 0,
-        weaponLevel: (character.equipments.rightHand?.equipment as iWeapon)?.weaponLevel ?? 1,
-      },
-      leftWeapon: undefined,
-    },
-    target: {
-      softDef: 65,
-      hardDef: 0,
-      softDefM: 65,
-      hardDefM: 0,
-      reductions: {
-          race: 0,
-          size: 0,
-          attackElement: 0,
-          targetElement: 0,
-          default: 0,
-          range: 0,
-      }
-    },
-    attackMultipliers: {
-      weaponAtk: 0,
+const DummyTarget: iTarget = {
+  element: ElementTypes.Neutral,
+  race: RaceTypes.Human,
+  size: SizeTypes.Medium,
+  type: TargetTypes.Boss,
+  softDef: 65,
+  hardDef: 0,
+  softDefM: 65,
+  hardDefM: 0,
+  reductions: {
       race: 0,
       size: 0,
-      attackElement: 0.0,
-      targetElement: 0.0,
-      default: 0.0,
-      range: 0.0,
-      crit: 0.0,
-      damage: 1.0,
-      weaponDamage: 0.0, // EDP
-      groupB: 0.0, // EDP
-      finalDamage: 0,
-      skill: 1.0,
-    }
-  };
-
-  if (character.equipments.leftHand && character.equipments.leftHand.equipment.type == ItemTypes.Weapon) {
-    summary.attackInfo.leftWeapon = {
-      wAtk: (character.equipments.leftHand?.equipment as iWeapon)?.weaponAtk ?? 0,
-      wMAtk: (character.equipments.leftHand?.equipment as iWeapon)?.weaponMAtk ?? 0,
-      refinement: character.equipments.leftHand?.refinement ?? 0,
-      weaponLevel: (character.equipments.leftHand?.equipment as iWeapon)?.weaponLevel ?? 1,
-    }
+      attackElement: 0,
+      targetElement: 0,
+      default: 0,
+      range: 0,
   }
-
-  if (skill) {
-    summary.attackInfo.skill = true
-    summary.attackInfo.critable = !!skill.critable;
-    summary.attackInfo.attackType = skill.attackType!;
-    summary.attackInfo.attackMultiplier = skill.attackMultiplier!(skill.maxLevel, summary);
-  }
-
-  Object.keys(character.equipments).forEach(k => {
-    const equip = character.equipments[k as keyof CharacterEquipments];
-    if (equip) {
-      equip.equipment?.apply(equip.refinement, character, summary);
-    }
-  })
-
-  console.log(summary);
-  return summary
 }
 
 export const SimulationView = ({
@@ -111,10 +39,11 @@ export const SimulationView = ({
     const [result, setResult] = useState<SimulateResult>();
 
     useEffect(() => {
-      const summary = getCharSummary(character, selectedSkill);
-      const result = Simulate(summary);
-      setResult(result);
-      setSummary(summary);
+      // const summary = getCharSummary(character, selectedSkill);
+      // const result = Simulate(summary);
+      const res = character.simulate(ElementTypes.Neutral, DummyTarget, selectedSkill ? {skill: selectedSkill!, level: 10} : undefined);
+      setResult(res);
+      setSummary(res.summary);
     }, [character, selectedSkill])
 
 
@@ -159,7 +88,7 @@ export const SimulationView = ({
             </p>
             <ul className="ml-2">
               <li>ATK = {result.upperBound.atk}</li>
-              <li>%ATK Habilidade = {summary.attackInfo.attackMultiplier * 100.0} %</li>
+              <li>%ATK Habilidade = {summary.attackMultipliers.skillAtk * 100.0} %</li>
               <p className="mt-2 inline-block border-b border-black mb-2">
                 {"Multiplicadores"}
               </p>

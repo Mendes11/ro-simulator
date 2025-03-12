@@ -12,7 +12,7 @@ type Props = {
   equipment?: iEquipmentInstance,
   searchTypes: ItemTypes[];
   searchSubTypes: ItemSubTypes[];
-  searchLocations?: ItemLocations[];
+  searchLocation: ItemLocations;
   onSave(equipment?: iEquipmentInstance): void
 }
 
@@ -21,6 +21,8 @@ type FormDataType = {
   equipment?: iEquipment
   refinement: number
   slots: iCard[]
+  location: ItemLocations
+  sourceLocation: ItemLocations
 }
 
 export default function EquipmentForm(props: Props) {
@@ -29,12 +31,16 @@ export default function EquipmentForm(props: Props) {
     equipment: props.equipment?.equipment,
     refinement: props.equipment?.refinement ?? 0,
     slots: props.equipment?.slots ?? [],
+    location: props.searchLocation,
+    sourceLocation: props.searchLocation,
   })
 
 
   const handleItemSelected = (item: iEquipment) => {
-    // const data = equipmentInstance ?? defaultEquipmentInstance;
-    setFormData({...formData, equipment: item})
+    const location = item.allowedLocations?.find(l => (l & props.searchLocation) != 0)
+    if (location) {
+      setFormData({...formData, equipment: item, location: location})
+    }
   }
 
   const handleRefinementSet = (value: number) => {
@@ -71,7 +77,7 @@ export default function EquipmentForm(props: Props) {
             equipment={formData.equipment}
             searchTypes={props.searchTypes}
             searchSubTypes={props.searchSubTypes}
-            searchLocations={props.searchLocations}
+            searchLocations={[props.searchLocation]}
             onEquipmentSelected={handleItemSelected}/>
         </div>
       </div>

@@ -1,9 +1,7 @@
-import { Equipment } from "@/engine/equipments/equipment";
 import { iCharacter } from "./character";
-import { iEquipment, ItemLocations, ModifierSourceData } from "./equipment";
+import { iEquipment, ModifierSourceData } from "./equipment";
 import { iTarget } from "./target";
 import { iCard } from "./card";
-import { AttackInfo } from "@/engine/simulation";
 import { RefinementConditionData } from "@/engine/modifiers/conditions/refinementCondition";
 import { EquipmentSetConditionData } from "@/engine/modifiers/conditions/equipmentSetCondition";
 import { TargetConditionData } from "@/engine/modifiers/conditions/targetCondition";
@@ -13,7 +11,6 @@ import { JobConditionData } from "@/engine/modifiers/conditions/jobCondition";
 import { LevelConditionData } from "@/engine/modifiers/conditions/levelCondition";
 import { SkillConditionData } from "@/engine/modifiers/conditions/skillCondition";
 import { AttackRangeTypes, AttackTypes } from "./attackMultiplier";
-import { ElementType } from "react";
 import { ElementTypes } from "./element";
 
 export enum ConditionTypes {

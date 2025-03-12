@@ -32,7 +32,7 @@ export default function SlotSearch({onItemSelected, autofocus, targetType, targe
       }, 500);
 
       return () => clearTimeout(debouncer);
-    }, [searchText, setVisibility]);
+    }, [searchText, targetType, targetSubType, setVisibility]);
 
   const setValue = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);

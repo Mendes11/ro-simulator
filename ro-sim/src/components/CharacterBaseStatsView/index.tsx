@@ -1,8 +1,7 @@
 import { Jobs } from "@/engine/jobs";
-import { AttackTypes } from "@/types/attackMultiplier";
 import { AttributesData } from "@/types/attributes"
 import { Job } from "@/types/jobs";
-import { ChangeEvent, SelectHTMLAttributes } from "react";
+import { ChangeEvent } from "react";
 
 type Props = {
     level: number;

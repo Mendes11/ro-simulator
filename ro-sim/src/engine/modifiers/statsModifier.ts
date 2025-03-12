@@ -1,16 +1,12 @@
-import { iAttackModifiers, iCharacterModifiers, iModifier, ModifierApplyData } from "@/types/equipment";
-import {  iCharacterSubStats, SubStatTypes } from "@/types/stats";
+import { iAttackModifiers, iCharacterModifiers } from "@/types/equipment";
+import {  iCharacterSubStats } from "@/types/stats";
 import {  iAttributes } from "@/types/attributes";
-import { AttackRangeTypes, AttackTypes, iAttackMultipliers } from "@/types/attackMultiplier";
+import { iAttackMultipliers } from "@/types/attackMultiplier";
 import { Attributes, AttributesData } from "../attributes";
 import { CharacterSubStats, CharacterSubStatsData } from "../subStats";
 import { AttackMultipliers, AttackMultipliersData } from "../attackMultipliers";
-import { RaceTypes } from "@/types/race";
-import { SizeTypes } from "@/types/size";
-import { ElementTypes } from "@/types/element";
-import { TargetTypes } from "@/types/target";
 import { BaseModifier } from "./base";
-import { ConditionData, iCondition } from "@/types/condition";
+import { ConditionData } from "@/types/condition";
 import { AttackModifiers, AttackModifiersData } from "../attackModifiers";
 import { CharacterModifiers } from "./characterModifiers";
 
@@ -35,12 +31,12 @@ export class StatsModifier extends BaseModifier {
         this.attackModifiers = data.attackModifiers ? new AttackModifiers(data.attackModifiers) : undefined;
     }
 
-    public mountModifier(data: ModifierApplyData): iCharacterModifiers | undefined {
-        return new CharacterModifiers(
-            this.attributes ?? new Attributes(), 
-            this.subStats ?? new CharacterSubStats(), 
-            this.attackMultipliers ?? new AttackMultipliers(), 
-            this.attackModifiers ?? new AttackModifiers(),
-        )
+    public mountModifier(): iCharacterModifiers | undefined {
+        return new CharacterModifiers({
+            attributes: this.attributes ?? new Attributes(), 
+            subStats: this.subStats ?? new CharacterSubStats(), 
+            attackMultipliers: this.attackMultipliers ?? new AttackMultipliers(), 
+            attackModifiers: this.attackModifiers ?? new AttackModifiers(),
+        })
     }
 }

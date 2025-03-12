@@ -9,7 +9,7 @@ type Props = {
   equippedItem?: iEquipmentInstance
   allowedTypes: ItemTypes[];
   allowedSubTypes: ItemSubTypes[];
-  allowedLocations?: ItemLocations[];
+  location: ItemLocations;
   enabled?: boolean;
   onItemChanged: (item: iEquipmentInstance) => void
   onItemRemoved: () => void
@@ -17,7 +17,7 @@ type Props = {
 
 export default function CharacterEquipmentCard({
   title, equippedItem, onItemChanged, onItemRemoved, enabled,
-  allowedTypes: allowedTypes, allowedSubTypes, allowedLocations
+  allowedTypes: allowedTypes, allowedSubTypes, location
 }: Props) {
   const [formVisibible, setFormVisible] = useState(false);
 
@@ -49,7 +49,7 @@ export default function CharacterEquipmentCard({
           <EquipmentForm
               searchTypes={allowedTypes}
               searchSubTypes={allowedSubTypes}
-              searchLocations={allowedLocations}
+              searchLocation={location}
               equipment={equippedItem} onSave={handleFormSave}
           />
           : <EquipmentInstanceCard item={equippedItem} clickable={enabled ?? true} onClick={() => setFormVisible(true)} />}
