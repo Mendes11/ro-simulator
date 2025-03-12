@@ -6,7 +6,7 @@ import path from "path";
 let file: string;
 
 if (process.env.NODE_ENV === "production") {
-    console.log("Loading equipments.json from Bucket");
+    console.log("Loading cards.json from Bucket");
     const url = "https://uhajjqevycyljnw0.public.blob.vercel-storage.com/cards-plaQctXTUfgv0sSni9e4qfYbWLxeXa.json"
     file = await fetch(url).then(res => res.text())
 } else {
