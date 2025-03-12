@@ -1,17 +1,24 @@
+import { AttackMultipliers } from "@/engine/attackMultipliers";
+import { Attributes } from "@/engine/attributes";
 import { SimulationSummary, Simulate } from "@/engine/simulation";
+import { CharacterSubStats } from "@/engine/subStats";
 import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
+import { ElementTypes } from "@/types/element";
+import { RaceTypes } from "@/types/race";
+import { SizeTypes } from "@/types/size";
+import { TargetTypes } from "@/types/target";
 
 const charSummary: SimulationSummary = {
     level: 99,
-    attributes: {
+    attributes: new Attributes({
         str: 99,
         dex: 16,
         luk: 68,
         int: 91,
         vit: 1,
         agi: 50,
-    },
-    subStats: {
+    }),
+    subStats: new CharacterSubStats({
         eAtk: 627,
         eMatk: 430,
         crit: 190,
@@ -22,14 +29,14 @@ const charSummary: SimulationSummary = {
         aspdPercent: 0,
         aspdUnit: 0,
         masteryAtk: 0,
-    },
+    }),
     attackInfo: {
+        element: ElementTypes.Neutral,
         defBypass: 0,
         defMBypass: 0,
         sizePenalty: 1,
         thanatosEffect: false,
         critable: true,
-        attackMultiplier: 15.74,
         skill: true,
         attackType: AttackTypes.Physical,
         rightWeapon: {
@@ -46,6 +53,10 @@ const charSummary: SimulationSummary = {
         },
     },
     target: {
+        element: ElementTypes.Neutral,
+        race: RaceTypes.Human,
+        size: SizeTypes.Medium,
+        type: TargetTypes.Normal,
         softDef: 65,
         hardDef: 0,
         softDefM: 65,
@@ -59,7 +70,7 @@ const charSummary: SimulationSummary = {
             range: 0,
         }
     },
-    attackMultipliers: {
+    attackMultipliers: new AttackMultipliers({
         weaponAtk: 0.32,
         race: 0.5,
         size: 0.63,
@@ -73,7 +84,8 @@ const charSummary: SimulationSummary = {
         groupB: 3.0, // EDP
         finalDamage: 0,
         skill: 1,
-    }
+        skillAtk: 15.74,
+    })
 }
 
 const res = Simulate(charSummary)
