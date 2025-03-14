@@ -9,6 +9,20 @@
         "cwd": "${workspaceFolder}/ro-sim",
       },
       {
+        "name": "Next.js: debug tests",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "nvm use && npm run test",
+        "cwd": "${workspaceFolder}/ro-sim",
+      },
+      {
+        "name": "Next.js: debug setup-db",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "nvm use && npm run setup-db",
+        "cwd": "${workspaceFolder}/ro-sim",
+      },
+      {
         "name": "Next.js: debug client-side",
         "type": "chrome",
         "request": "launch",

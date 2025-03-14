@@ -22,4 +22,15 @@ Se o Condition for considerado o objeto primário... Mas não são todos que pos
 
 TODO: 
 
-Modifier não deve retornar valid modifiers. É melhor que um modifier retorne um único CharacterModifiers, ou seja, se ele possui múltiplos internamente, ele deve me retornar a soma deles. Adicionalmente, devo fazer com que ele retorne ou o modifier ou nulo, para os casos em que os conditions não batem.
+Skills podem ter modifiers, mas o attackMultiplier DEVE vir após computarmos tudo, pois as skills podem se basear em atributos totais, como o SBK
+
+-> Adicionar um getModifiers provindo de skills ativas.
+    -> Skills podem aplicar modificadores que serão somados aos modificadores do Char.
+
+-> o AttackMultiplier está recebendo o summary, mas o summary é computado após o attackMultiplier (em tese), então talvez criar um type específico
+   pode até ter as informações do summary, mas ao menos é para ser semanticamente mais correto.
+
+-> Chamar o attackMultiplier da skill no método de simulação.
+
+-> SimulationSummary talvez deveria se chamar SimulationData, afinal é a entrada de dados da função Simulate().
+
