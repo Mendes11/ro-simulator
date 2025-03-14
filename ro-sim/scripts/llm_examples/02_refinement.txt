@@ -1,0 +1,78 @@
+DESCRIPTION:
+Uma pequena flor para decorar a cabeça.
+--------------------------
+^0000ffDano mágico +1%.^000000
+--------------------------
+A cada refino:
+^0000ffATQM +2.^000000
+--------------------------
+Tipo: ^777777Equip. para Cabeça^000000
+Equipa em: ^777777Topo^000000
+DEF: ^7777770^000000 DEFM: ^7777770^000000
+Peso: ^77777710^000000
+Nível necessário: ^777777120^000000
+Classes: ^777777Todas^000000
+
+REASONING:
+First we split by `--------------------------` this helps us understand each possible modifier or combo.
+
+Now, let's take the first one:
+^0000ffDano mágico +1%.^000000
+Let's remove the cursor formatting characters:
+Dano mágico +1%.
+Alright, this is in the CharacterModifiers structure, more specifically in the AttackMultipliers type.
+It says "Dano Mágico", and is not followed by any specification, which means I must use the "default" multiplier. Also, given it says "Dano Mágico", I have to add a condition of type "TargetCondition" specifying `attackType: AttackTypes.Magic`.
+
+--------------------------
+A cada refino:
+^0000ffATQM +2.^000000
+
+First, removing the formatting characters:
+
+A cada refino:
+ATQM +2.
+
+First row: "A cada refino:"
+Ok, this is a modifier that is going to be applied on another one that may come in the next row. More specifically, it is a Refinement modifier, with refinementStep set to 1.
+
+Next Row: "ATQM +2."
+This says ATQM, and I know it maps to eMAtk field in CharacterSubStats modifier, so I have to create a modifier with it. Also, because I had a refinement modifier above, this should be assigned under that one.
+
+--------------------------
+Tipo: ^777777Equip. para Cabeça^000000
+Equipa em: ^777777Topo^000000
+DEF: ^7777770^000000 DEFM: ^7777770^000000
+Peso: ^77777710^000000
+Nível necessário: ^777777120^000000
+Classes: ^777777Todas^000000
+
+I know this isn't part of the modifiers description, it's a description of other properties that I'm not interested at, because it starts with Tipo:, and has other equipment-related information such as weapon damage and etc. I MUST ignore this part.
+
+
+MODIFIERS:
+```json
+[
+    {
+            type: ModifierTypes.Stats,
+            data: {
+                attackMultipliers: {
+                    default: 1.0 / 100.0,
+                }
+            }
+        },
+        {
+            type: ModifierTypes.Refinement,
+            data: {
+                refinementSteps: 1,
+                modifier: {
+                    type: ModifierTypes.Stats,
+                    data: {
+                        subStats: {
+                            eMatk: 2,
+                        }
+                    }
+                }
+            }
+        }
+]
+```json

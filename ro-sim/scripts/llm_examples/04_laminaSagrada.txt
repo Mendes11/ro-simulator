@@ -1,0 +1,236 @@
+DESCRIPTION:
+Usada por um líder religioso, essa espada reflete a luz e a intensifica. O fenômeno parece um milagre divino, além de servir como tática para ofuscar a visão dos inimigos.
+--------------------------
+^a400cdIndestrutível em batalha.^000000
+--------------------------
+^0000ffFOR e INT +10.^000000
+--------------------------
+^0000ffAlcance de 3 células.^000000
+--------------------------
+^CD3278Nv. base 99:^000000
+A cada refino:
+^0000ffDano físico +3%.^000000
+-
+^CD3278Nv. base 100 ou mais:^000000
+A cada refino:
+^0000ffDano físico +10%.^000000
+--------------------------
+^FA4E09Conjunto^000000
+^FA4E09[Carta Valquíria Randgris]^000000
+^0000ffHabilita [Gênese] nv.5.^000000
+-
+^CD3278Nv. base 99:^000000
+^0000ffTolerância a Silêncio e Atordoamento +20%.^000000
+^0000ffDano mágico de propriedade Sagrado +30%.^000000
+-
+^CD3278Nv. base 100 ou mais:^000000
+^0000ffTolerância a Silêncio e Atordoamento +50%.^000000
+^0000ffDano mágico de propriedade Sagrado +100%.^000000
+--------------------------
+Tipo: ^777777Espada^000000
+ATQ ^777777200^000000 ATQM ^777777150^000000
+Propriedade: ^777777Sagrado^000000
+Peso: ^777777175^000000
+Nível da arma: ^7777774^000000
+Nível necessário: ^77777799^000000
+Classes: ^777777Aprendizes, Espadachins, Gatunos, Mercadores e evoluções^000000
+
+REASONING:
+First we split by `--------------------------` this helps us understand each possible modifier or combo.
+
+Now, let's take the first one:
+^a400cdIndestrutível em batalha.^000000
+Let's remove the formatting characters (4 hex characters prefixed by a ^)
+Indestrutível em batalha.
+This isn't a character modifier, just a description of a capability. Let's skip it.
+
+--------------------------
+^0000ffFOR e INT +10.^000000
+Remove the formatting characters:
+FOR e INT +10.
+This is a character effect, it has no conditions, and it's a simple stats modification, let's use the Stats modifier.
+--------------------------
+^0000ffAlcance de 3 células.^000000
+Remove the formatting characters:
+Alcance de 3 células.
+This isn't an effect covered in CharacterModifiers, I can skip it.
+--------------------------
+^CD3278Nv. base 99:^000000
+A cada refino:
+^0000ffDano físico +3%.^000000
+-
+^CD3278Nv. base 100 ou mais:^000000
+A cada refino:
+^0000ffDano físico +10%.^000000
+
+First, let's rewrite it without the cursor formatting
+
+Nv. base 99:
+A cada refino:
+Dano físico +3%.
+-
+Nv. base 100 ou mais:
+A cada refino:
+Dano físico +10%.
+
+Ok, that's better, let's begin with the first row:
+"Nv. base 99:"
+This means a condition on the character level. If the level is up to 99, the effects below apply.
+
+"A cada refino:"
+On this row, it says that for each equipment refinement something below will be applied, this means I need to use a Refinement modifier
+
+"Dano físico +3%."
+
+Ok, this is in the CharacterModifier, more specifically in the AttackMultipliers type, so we should use the Stats modifier.
+"Dano Físico", not followed by a target race, size or element means the "default" multiplier conditioned for attacks of type "Physical"
+This means that we have to add an AttackType condition to this modifier, with attackType equal to Physical.
+
+---
+Lastly, there's:
+
+Tipo: ^777777Espada^000000
+ATQ ^777777200^000000 ATQM ^777777150^000000
+Propriedade: ^777777Sagrado^000000
+Peso: ^777777175^000000
+Nível da arma: ^7777774^000000
+Nível necessário: ^77777799^000000
+Classes: ^777777Aprendizes, Espadachins, Gatunos, Mercadores e evoluções^000000
+
+I know this isn't part of the modifiers description, it's a description of other properties that I'm not interested at, because it starts with Tipo:, and has other equipment-related information such as weapon damage and etc. I MUST ignore this part.
+
+MODIFIERS:
+```ts
+[
+    // ^0000ffFOR e INT +10.^000000
+    {
+            type: ModifierTypes.Stats,
+            data: {
+                attributes: {
+                    str: 10, int: 10
+                }
+            }
+        },
+        // ^CD3278Nv. base 99:^000000
+        // A cada refino:
+        // ^0000ffDano físico +3%.^000000
+        // -
+        // ^CD3278Nv. base 100 ou mais:^000000
+        // A cada refino:
+        // ^0000ffDano físico +10%.^000000
+        {
+            type: ModifierTypes.Refinement,
+            data: {
+                refinementSteps: 1,
+                modifier: {
+                    type: ModifierTypes.Stats,
+                    data: {
+                        attackMultipliers: {default: 0.03}
+                    }
+                }
+            },
+            conditions: [
+                {
+                    type: ConditionTypes.Level,
+                    data: {
+                        level: 100,
+                        operator: ComparisonConditions.LT,
+                    }
+                }
+            ]
+        },
+        {
+            type: ModifierTypes.Refinement,
+            data: {
+                refinementSteps: 1,
+                modifier: {
+                    type: ModifierTypes.Stats,
+                    data: {
+                        attackMultipliers: {default: 0.10}
+                    }
+                }
+            },
+            conditions: [
+                {
+                    type: ConditionTypes.Level,
+                    data: {
+                        level: 100,
+                        operator: ComparisonConditions.GTE,
+                    }
+                }
+            ]
+        },
+        // ^FA4E09Conjunto^000000
+        // ^FA4E09[Carta Valquíria Randgris]^000000
+        // ^0000ffHabilita [Gênese] nv.5.^000000
+        // -
+        // ^CD3278Nv. base 99:^000000
+        // ^0000ffTolerância a Silêncio e Atordoamento +20%.^000000
+        // ^0000ffDano mágico de propriedade Sagrado +30%.^000000
+        // -
+        // ^CD3278Nv. base 100 ou mais:^000000
+        // ^0000ffTolerância a Silêncio e Atordoamento +50%.^000000
+        // ^0000ffDano mágico de propriedade Sagrado +100%.^000000
+        {
+            type: ModifierTypes.Combo,
+            data: {
+                modifiers: [
+                    {
+                        type: ModifierTypes.Stats,
+                        data: {
+                            attackMultipliers: {
+                                attackElement: 0.3
+                            }
+                        },
+                        conditions: [
+                            {
+                                type: ConditionTypes.Level,
+                                data: {
+                                    level: 100,
+                                    operator: ComparisonConditions.LT
+                                }
+                            },
+                            {
+                                type: ConditionTypes.AttackType,
+                                data: {
+                                    attackElement: ElementTypes.Holy,
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        type: ModifierTypes.Stats,
+                        data: {
+                            attackMultipliers: {
+                                attackElement: 1.0
+                            }
+                        },
+                        conditions: [
+                            {
+                                type: ConditionTypes.Level,
+                                data: {
+                                    level: 100,
+                                    operator: ComparisonConditions.GTE
+                                }
+                            },
+                            {
+                                type: ConditionTypes.AttackType,
+                                data: {
+                                    attackElement: ElementTypes.Holy,
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            conditions: [
+                {
+                    type: ConditionTypes.Card,
+                    data: {
+                        name: "Carta Valquíria Randgris"
+                    }
+                }
+            ]
+        }
+]
+```

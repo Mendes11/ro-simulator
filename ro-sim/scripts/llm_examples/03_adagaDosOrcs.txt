@@ -1,0 +1,182 @@
+DESCRIPTION:
+Encontrada na vila dos Orcs, essa arma é símbolo dos guerreiros que protegem a tribo.
+--------------------------
+A cada 3 refinos:
+^0000ffATQ e ATQM +40.^000000
+--------------------------
+Refino +6 ou mais:
+^0000ffDano físico e mágico contra todas as raças +10%.^000000
+Refino +9 ou mais:
+^0000ffDano físico e mágico contra todas as raças +15% adicional.^000000
+^0000ffAo realizar ataques físicos, 7% de chance de autoconjurar [Impacto Meteoro] nv.5. ^000000
+--------------------------
+^fa4e09Conjunto^000000
+^fa4e09[Anel dos Orcs]^000000
+^0000ffATQ e ATQM +70.^000000
+--------------------------
+Tipo: ^777777Adaga^000000
+ATQ: ^777777130^000000 ATQM: ^777777110^000000
+Peso: ^77777765^000000
+Nível da arma: ^7777774^000000
+Nível necessário: ^7777771^000000
+Classes: ^777777Aprendizes, Espadachins, Magos, Arqueiros, Mercadores, Gatunos, Espiritualistas, Ninjas e evoluções^000000
+
+REASONING:
+First we split by `--------------------------` this helps us understand each possible modifier or combo.
+
+Now, let's take the first one:
+
+A cada 3 refinos:
+^0000ffATQ e ATQM +40.^000000
+
+Ok, Let me rewrite this without the special cursor formatting characters:
+A cada 3 refinos:
+ATQ e ATQM +40.
+
+Now, analyzing the first row: 
+"A cada 3 refinos:"
+This row means that this is a refinement modifier that is applied to some other modifier below it. This refinement modifier in specific is applied at every 3 refinements, so I need to create it with a refinementStep of 3.
+
+Second row of the block:
+"ATQ e ATQM +40."
+Ok, this is in the CharacterModifier type, it maps to "eAtk" and "eMAtk" there so I'll use a Stats modifier with these subStats applied.
+
+--------------------------
+Refino +6 ou mais:
+^0000ffDano físico e mágico contra todas as raças +10%.^000000
+Refino +9 ou mais:
+^0000ffDano físico e mágico contra todas as raças +15% adicional.^000000
+^0000ffAo realizar ataques físicos, 7% de chance de autoconjurar [Impacto Meteoro] nv.5. ^000000
+
+First, let me rewrite it without the cursor formatting:
+
+Refino +6 ou mais:
+Dano físico e mágico contra todas as raças +10%.
+Refino +9 ou mais:
+Dano físico e mágico contra todas as raças +15% adicional.
+Ao realizar ataques físicos, 7% de chance de autoconjurar [Impacto Meteoro] nv.5. 
+
+I can see that this block has two distinct conditions applied to distinct modifiers: Refinement +6 and Refinement +9. This probably means that I have to create two modifier objects each with their own condition.
+
+First Row: "Refino +6 ou mais:"
+It is a condition on the Refinement being +6 or more, so whatever modifier that comes below, should get this condition added to it.
+
+Next Row: "Dano físico e mágico contra todas as raças +10%."
+Ok, this is a CharacterModifier, it says "Dano Físico e Mágico", followed by a target race property, which means I need to use the "race" multiplier, and include a TargetCondition.
+Let's split this a little bit more:
+"Dano Físico e Mágico" means that I need to specify the "attackType" attribute. And because it says "Dano Físico e Mágico" it means that I have to make use of the bitmask property and make it accept both by using: "attackType: AttackTypes.Physical | AttackTypes.Magic"
+"contra todas as raças" says I have to set the "race" attribute of TargetCondition. More specifically, given it says to all races, I can use `race: RaceTypes.All`.
+
+Next Row: "Refino +9 ou mais:"
+Alright, this is another condition and has nothing to do with what's above, so I'll have to create another top-level modifier with whatever comes after it, and apply the Refinement condition for refinement 9 or more.
+
+Next Row: "Dano físico e mágico contra todas as raças +15% adicional."
+Ok, this is a CharacterModifier that adds a 0.15 to race multiplier. It says "Dano Físico e Mágico", followed by a target race property, which means I need to use the "race" multiplier, and include a TargetCondition to specify the attackType and race attributes.
+Let's split this a little bit more:
+"Dano Físico e Mágico" means that I need to specify the "attackType" attribute. And because it says "Dano Físico e Mágico" it means that I have to make use of the bitmask property and make it accept both by using: "attackType: AttackTypes.Physical | AttackTypes.Magic"
+"contra todas as raças" says I have to set the "race" attribute of TargetCondition. More specifically, given it says to all races, I can use `race: RaceTypes.All`.
+
+Next Row: "Ao realizar ataques físicos, 7% de chance de autoconjurar [Impacto Meteoro] nv.5. "
+This is an effect that isn't in the CharacterModifiers structure, so I can skip it.
+
+--------------------------
+^fa4e09Conjunto^000000
+^fa4e09[Anel dos Orcs]^000000
+^0000ffATQ e ATQM +70.^000000
+
+Let's remove the formatting characters:
+
+Conjunto
+[Anel dos Orcs]
+ATQ e ATQM +70.
+
+It starts with "Conjunto", this means that what follows is conditioned to either an equipment or a card.
+Next row: "[Anel dos Orcs]"
+Ok, now it specifies what that Set is for, it is an EquipmentSet condition, for an equipment named "Anel dos Orcs". So I'll have to add this condition for the modifier below.
+
+Next Row: "ATQ e ATQM +70."
+This is in the CharacterModifiers structure, so I have to add a Stats modifier, and given I had the EquipmentSet condition above, this Stats modifier must have that condition added.
+
+--------------------------
+Tipo: ^777777Adaga^000000
+ATQ: ^777777130^000000 ATQM: ^777777110^000000
+Peso: ^77777765^000000
+Nível da arma: ^7777774^000000
+Nível necessário: ^7777771^000000
+Classes: ^777777Aprendizes, Espadachins, Magos, Arqueiros, Mercadores, Gatunos, Espiritualistas, Ninjas e evoluções^000000
+
+I know this isn't part of the modifiers description, it's a description of other properties that I'm not interested at, because it starts with Tipo:, and has other equipment-related information such as weapon damage and etc. I MUST ignore this part.
+
+
+MODIFIERS:
+[
+    {
+        type: ModifierTypes.Refinement, data: {
+            refinementSteps: 3, 
+            modifier: {
+                type: ModifierTypes.Stats,
+                data: {subStats: {eAtk: 40, eMatk: 40}}
+            }
+        }
+    },
+    {
+        type: ModifierTypes.Stats,
+        data: {
+            attackMultipliers: {
+                race: 0.1,
+            },
+        },
+        conditions: [{
+            type: ConditionTypes.Refinement,
+            data: {
+                refinement: 6,
+                condition: ComparisonConditions.GTE
+            }
+        }, {
+            type: ConditionTypes.AttackType,
+            data: {
+                attackType: AttackTypes.Physical || AttackTypes.Magic,
+            }
+        }, {
+            type: ConditionTypes.Target,
+            data: {
+                race: RaceTypes.All
+            }
+        }]
+    },
+    {
+        type: ModifierTypes.Stats,
+        data: {
+            attackMultipliers: {
+                race: 0.15,
+            },
+        },
+        conditions: [{
+            type: ConditionTypes.Refinement,
+            data: {
+                refinement: 9,
+                condition: ComparisonConditions.GTE
+            }
+        }, {
+            type: ConditionTypes.AttackType,
+            data: {
+                attackType: AttackTypes.Physical || AttackTypes.Magic,
+            }
+        }, {
+            type: ConditionTypes.Target,
+            data: {
+                race: RaceTypes.All
+            }
+        }]
+    },
+    {
+        type: ModifierTypes.Stats, 
+        data: {subStats: {eAtk: 70, eMatk: 70}},
+        conditions: [{
+            type: ConditionTypes.EquipmentSet,
+            data: {
+                name: "Anel dos Orcs" 
+            }
+        }]
+    }
+]
