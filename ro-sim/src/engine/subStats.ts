@@ -8,6 +8,8 @@ export type CharacterSubStatsData = {
     perfectPrecision?: number
     softDef?: number
     hardDef?: number
+    softDefM?: number;
+    hardDefM?: number,
     aspdPercent?: number
     aspdUnit?: number
     masteryAtk?: number
@@ -21,6 +23,8 @@ export class CharacterSubStats implements iCharacterSubStats {
     perfectPrecision: number = 0;
     softDef: number = 0;
     hardDef: number = 0;
+    softDefM: number = 0;
+    hardDefM: number = 0;
     aspdPercent: number = 0;
     aspdUnit: number = 0;
     masteryAtk: number = 0;
@@ -37,6 +41,8 @@ export class CharacterSubStats implements iCharacterSubStats {
         this.perfectPrecision = data?.perfectPrecision ?? 0;
         this.softDef = data?.softDef ?? 0;
         this.hardDef = data?.hardDef ?? 0;
+        this.softDefM = data?.softDefM ?? 0;
+        this.hardDefM = data?.hardDefM ?? 0;
         this.aspdPercent = data?.aspdPercent ?? 0;
         this.aspdUnit = data?.aspdUnit ?? 0;
         this.masteryAtk = data?.masteryAtk ?? 0;

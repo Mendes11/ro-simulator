@@ -23,7 +23,7 @@ interface MyFixtures {
 }
 
 export const engineTest = test.extend<MyFixtures>({
-    baseCharacter: async (_, use) => {
+    baseCharacter: async ({}, use) => {
         const character = new Character({
             level: 1,
             baseAttrs: Attributes.NewCharacterAttrs(),
@@ -33,7 +33,7 @@ export const engineTest = test.extend<MyFixtures>({
         await use(character);
 
     },
-    baseSource: async(_, use) => {
+    baseSource: async({}, use) => {
         const baseSource = {
             location: ItemLocations.RightHand,
             sourceLocation: ItemLocations.RightHand,
@@ -53,7 +53,7 @@ export const engineTest = test.extend<MyFixtures>({
         }
         use(baseSource);
     },
-    summary: async (_, use) => {
+    summary: async ({}, use) => {
         const summary = {
             level: 1,
             attributes: Attributes.NewCharacterAttrs(),
@@ -97,7 +97,7 @@ export const engineTest = test.extend<MyFixtures>({
         }
         await use(summary);
     },
-    target: async (_, use) => {
+    target: async ({}, use) => {
         const target = {
             race: RaceTypes.Human,
             element: ElementTypes.Neutral,

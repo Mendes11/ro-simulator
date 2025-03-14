@@ -8,25 +8,12 @@ import { iSkillInstance } from "./skills";
 import { iTarget } from "./target";
 import { ElementTypes } from "./element";
 
-export type CharacterEquipments = {
-    top?: iEquipmentInstance;
-    mid?: iEquipmentInstance;
-    bottom?: iEquipmentInstance;
-    armor?: iEquipmentInstance;
-    rightHand?: iEquipmentInstance;
-    leftHand?: iEquipmentInstance;
-    garment?: iEquipmentInstance;
-    shoes?: iEquipmentInstance;
-    rightAccessory?: iEquipmentInstance;
-    leftAccessory?: iEquipmentInstance;
-}
-
 export type CharacterData = {
     level: number;
     baseAttrs: AttributesData,
     equipments: iEquipmentInstance[];
     job: Job;
-    // shadowEquipments: CharacterEquipments;
+    // shadowEquipments: iEquipmentInstance;
     // job: Jobs
     // skills: iSkillInstance[]
 }

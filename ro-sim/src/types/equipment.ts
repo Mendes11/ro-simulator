@@ -111,17 +111,18 @@ export type ItemSubTypes = WeaponSubTypes | EquipmentSubTypes | ShadowEquipmentS
 //  If the item takes Upper and Mid, use HeadUpper | HeadMid
 //  If the item is a two handed sword, use RighHand | LeftHand
 export enum ItemLocations {
-    HeadUpper = 1 << 0,
-    HeadMid = 1 << 1,
-    HeadBottom = 1 << 2,
+    HeadUpper = 1 << 0, // Maps to Topo
+    HeadMid = 1 << 1, // Maps to Meio
+    HeadBottom = 1 << 2, // Maps to Baixo
 
-    Armor = 1 << 3,
-    RightHand = 1 << 4,
-    LeftHand = 1 << 5,
-    Garment = 1 << 6,
-    Shoes = 1 << 7,
-    RightAccessory = 1 << 8,
-    LeftAccessory = 1 << 9,
+    Armor = 1 << 3, // Maps to Armadura
+    RightHand = 1 << 4, // Maps to Mão Direita
+    LeftHand = 1 << 5, // Maps to Mão Esquerda
+    Garment = 1 << 6, // Maps to Capa
+    Shoes = 1 << 7, // Maps to Sapatos
+    // LLM Hint: When the accessory placement doesn't matter, use RightAcessory | LeftAccessory to account for both.
+    RightAccessory = 1 << 8, // Maps to Acessório Direito
+    LeftAccessory = 1 << 9, // Maps to Acessório Esquerdo
     Ammo = 1 << 10,
 
     // Composed Locations

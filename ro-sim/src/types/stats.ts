@@ -1,28 +1,13 @@
-
-export enum SubStatTypes {
-    wAtk = "wAtk",
-    eAtk = "eAtk",
-    wMatk = "wMatk",
-    eMatk = "eMatk",
-    crit = "crit",
-    precision = "precision",
-    perfectPrecision = "perfectPrecision",
-    softDef = "softDef",
-    hardDef = "hardDef",
-    aspdPercent = "aspdPercent",
-    aspdUnit = "aspdUnit",
-}
-
 export type CharacterSubStatsData = {
-    eAtk: number
-    eMatk: number
+    eAtk: number // Maps to ATQ+
+    eMatk: number // Maps to MATQ+
     crit: number
-    precision: number
-    perfectPrecision: number
+    precision: number // Maps to Precisão
+    perfectPrecision: number // Maps to Precisão Perfeita
     softDef: number
-    hardDef: number
-    aspdPercent: number
-    aspdUnit: number
+    hardDef: number // Maps to DEF+
+    aspdPercent: number // Maps to Velocidade de Ataque + x%
+    aspdUnit: number // Maps to Velocidade de Ataque + x
     masteryAtk: number
 }
 

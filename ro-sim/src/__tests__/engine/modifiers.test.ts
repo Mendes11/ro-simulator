@@ -8,6 +8,11 @@ import { ItemLocations, ItemTypes } from '@/types/equipment'
 import { EquipmentSetCondition } from '@/engine/modifiers/conditions/equipmentSetCondition'
 import { StatsModifier } from '@/engine/modifiers/statsModifier'
 import { CharacterModifiers } from '@/engine/modifiers/characterModifiers'
+import { ElementTypes } from '@/types/element'
+import { Attributes } from '@/engine/attributes'
+import { CharacterSubStats } from '@/engine/subStats'
+import { AttackMultipliers } from '@/engine/attackMultipliers'
+import { AttackModifiers } from '@/engine/attackModifiers'
 
 
 /*
@@ -25,7 +30,8 @@ engineTest('Test Chapéu do Torneio: Coragem id=5857', ({applyData}) => {
     const data: ModifierData = {
         type: ModifierTypes.Stats,
         data: {
-            attributes: {str: 2, int: 1, vit: 1, dex: 2, agi: 2, luk: 2}
+            attributes: {str: 2, int: 1, vit: 1, dex: 2, agi: 2, luk: 2},
+            subStats: {hardDefM: 1}
         }
     }
     const modifier = newModifier(data)
@@ -352,17 +358,252 @@ engineTest('AttackMultipliers against correct target applied', ({applyData}) => 
 });
 
 
-// TODO: Lâmina Sagrada
+/* Lâmina Sagrada
 
-// Posso até colocar isso em um Condition, acho que vale o teste. Eu só não quero que fique confuso.
+Usada por um líder religioso, essa espada reflete a luz e a intensifica. O fenômeno parece um milagre divino, além de servir como tática para ofuscar a visão dos inimigos.
+--------------------------
+^a400cdIndestrutível em batalha.^000000
+--------------------------
+^0000ffFOR e INT +10.^000000
+--------------------------
+^0000ffAlcance de 3 células.^000000
+--------------------------
+^CD3278Nv. base 99:^000000
+A cada refino:
+^0000ffDano físico +3%.^000000
+-
+^CD3278Nv. base 100 ou mais:^000000
+A cada refino:
+^0000ffDano físico +10%.^000000
+--------------------------
+^FA4E09Conjunto^000000
+^FA4E09[Carta Valquíria Randgris]^000000
+^0000ffHabilita [Gênese] nv.5.^000000
+-
+^CD3278Nv. base 99:^000000
+^0000ffTolerância a Silêncio e Atordoamento +20%.^000000
+^0000ffDano mágico de propriedade Sagrado +30%.^000000
+-
+^CD3278Nv. base 100 ou mais:^000000
+^0000ffTolerância a Silêncio e Atordoamento +50%.^000000
+^0000ffDano mágico de propriedade Sagrado +100%.^000000
+--------------------------
+Tipo: ^777777Espada^000000
+ATQ ^777777200^000000 ATQM ^777777150^000000
+Propriedade: ^777777Sagrado^000000
+Peso: ^777777175^000000
+Nível da arma: ^7777774^000000
+Nível necessário: ^77777799^000000
+Classes: ^777777Aprendizes, Espadachins, Gatunos, Mercadores e evoluções^000000\"
+*/
 
+engineTest("Lâmina Sagrada - All Modifiers - id=500009 ", ({applyData}) => {
+    const modifiers: ModifierData[] = [
+        // ^0000ffFOR e INT +10.^000000
+        {
+            type: ModifierTypes.Stats,
+            data: {
+                attributes: {
+                    str: 10, int: 10
+                }
+            }
+        },
+        // ^CD3278Nv. base 99:^000000
+        // A cada refino:
+        // ^0000ffDano físico +3%.^000000
+        // -
+        // ^CD3278Nv. base 100 ou mais:^000000
+        // A cada refino:
+        // ^0000ffDano físico +10%.^000000
+        {
+            type: ModifierTypes.Refinement,
+            data: {
+                refinementSteps: 1,
+                modifier: {
+                    type: ModifierTypes.Stats,
+                    data: {
+                        attackMultipliers: {default: 0.03}
+                    }
+                }
+            },
+            conditions: [
+                {
+                    type: ConditionTypes.Level,
+                    data: {
+                        level: 100,
+                        operator: ComparisonConditions.LT,
+                    }
+                }
+            ]
+        },
+        {
+            type: ModifierTypes.Refinement,
+            data: {
+                refinementSteps: 1,
+                modifier: {
+                    type: ModifierTypes.Stats,
+                    data: {
+                        attackMultipliers: {default: 0.10}
+                    }
+                }
+            },
+            conditions: [
+                {
+                    type: ConditionTypes.Level,
+                    data: {
+                        level: 100,
+                        operator: ComparisonConditions.GTE,
+                    }
+                }
+            ]
+        },
+        // ^FA4E09Conjunto^000000
+        // ^FA4E09[Carta Valquíria Randgris]^000000
+        // ^0000ffHabilita [Gênese] nv.5.^000000
+        // -
+        // ^CD3278Nv. base 99:^000000
+        // ^0000ffTolerância a Silêncio e Atordoamento +20%.^000000
+        // ^0000ffDano mágico de propriedade Sagrado +30%.^000000
+        // -
+        // ^CD3278Nv. base 100 ou mais:^000000
+        // ^0000ffTolerância a Silêncio e Atordoamento +50%.^000000
+        // ^0000ffDano mágico de propriedade Sagrado +100%.^000000
+        {
+            type: ModifierTypes.Combo,
+            data: {
+                modifiers: [
+                    {
+                        type: ModifierTypes.Stats,
+                        data: {
+                            attackMultipliers: {
+                                attackElement: 0.3
+                            }
+                        },
+                        conditions: [
+                            {
+                                type: ConditionTypes.Level,
+                                data: {
+                                    level: 100,
+                                    operator: ComparisonConditions.LT
+                                }
+                            },
+                            {
+                                type: ConditionTypes.AttackType,
+                                data: {
+                                    attackElement: ElementTypes.Holy,
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        type: ModifierTypes.Stats,
+                        data: {
+                            attackMultipliers: {
+                                attackElement: 1.0
+                            }
+                        },
+                        conditions: [
+                            {
+                                type: ConditionTypes.Level,
+                                data: {
+                                    level: 100,
+                                    operator: ComparisonConditions.GTE
+                                }
+                            },
+                            {
+                                type: ConditionTypes.AttackType,
+                                data: {
+                                    attackElement: ElementTypes.Holy,
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            conditions: [
+                {
+                    type: ConditionTypes.Card,
+                    data: {
+                        name: "Carta Valquíria Randgris"
+                    }
+                }
+            ]
+        }
+    ]
 
+    let charModifiers = modifiers.map(m => newModifier(m).getModifier(applyData))
+    let modifiersSum = charModifiers.filter(m => m != null).reduce((l, r) => l.sum(r))
 
-// TODO2: Implementar condição de cartas ex: Carta Crux Findel + Helmut
+    expect(modifiersSum.attributes).toMatchObject(new Attributes({str: 10, int: 10}));
+    expect(modifiersSum.subStats).toMatchObject(new CharacterSubStats());
+    expect(modifiersSum.attackModifiers).toMatchObject(new AttackModifiers());
+    expect(modifiersSum.attackMultipliers).toMatchObject(new AttackMultipliers());
 
-// TODO3:
-//   - Para a interface, seria interessante os equipamentos possuírem combos,
-//     e os combos possuírem um `active` flag.
-//     Assim, eu poderia retornar todos os combos e iterar os combos na interface e mostrar o que está válido ou não.
+    // Test Level 99-
+    applyData.character.level = 99
+    applyData.source.instance.refinement = 10
+    charModifiers = modifiers.map(m => newModifier(m).getModifier(applyData))
+    modifiersSum = charModifiers.filter(m => m != null).reduce((l, r) => l.sum(r))
 
-// TODO4: A UI pode atribuír um modifier próprio, pra ser adicionado ao final no summary.
+    expect(modifiersSum.attributes).toMatchObject(new Attributes({str: 10, int: 10}));
+    expect(modifiersSum.subStats).toMatchObject(new CharacterSubStats());
+    expect(modifiersSum.attackModifiers).toMatchObject(new AttackModifiers());
+    expect(modifiersSum.attackMultipliers).toMatchObject(new AttackMultipliers({default: 0.3}));
+
+    // Test Level 100+
+    applyData.character.level = 101
+    applyData.source.instance.refinement = 10
+    charModifiers = modifiers.map(m => newModifier(m).getModifier(applyData))
+    modifiersSum = charModifiers.filter(m => m != null).reduce((l, r) => l.sum(r))
+
+    expect(modifiersSum.attributes).toMatchObject(new Attributes({str: 10, int: 10}));
+    expect(modifiersSum.subStats).toMatchObject(new CharacterSubStats());
+    expect(modifiersSum.attackModifiers).toMatchObject(new AttackModifiers());
+    expect(modifiersSum.attackMultipliers).toMatchObject(new AttackMultipliers({default: 1.0}));
+
+    // Test Conjunto Valquíria Randgris
+    applyData.attackInfo.element = ElementTypes.Holy
+    applyData.character.equipments.push({
+        equipment: {
+            description: "",
+            id: 0,
+            minLevel: 0,
+            name: "Test Equipment",
+            slots: 1,
+            type: ItemTypes.Weapon,
+            weight: 0,
+        },
+        location: ItemLocations.RightHand | ItemLocations.LeftHand,
+        sourceLocation: ItemLocations.RightHand,
+        refinement: 0,
+        slots: [{
+            name: "Carta Valquíria Randgris",
+            description: "",
+            id: 123,
+            type: ItemTypes.Card,
+            targetType: ItemTypes.Weapon,
+        }],
+    })
+    
+    // Test Level 99-
+    applyData.character.level = 99
+    applyData.source.instance.refinement = 10;
+    charModifiers = modifiers.map(m => newModifier(m).getModifier(applyData))
+    modifiersSum = charModifiers.filter(m => m != null).reduce((l, r) => l.sum(r))
+
+    expect(modifiersSum.attributes).toMatchObject(new Attributes({str: 10, int: 10}));
+    expect(modifiersSum.subStats).toMatchObject(new CharacterSubStats());
+    expect(modifiersSum.attackModifiers).toMatchObject(new AttackModifiers());
+    expect(modifiersSum.attackMultipliers).toMatchObject(new AttackMultipliers({default: 0.3, attackElement: 0.3})); 
+    
+    // Test Level 100+
+    applyData.character.level = 100
+    applyData.sets = []; // Clear the set due to previous iteration
+    charModifiers = modifiers.map(m => newModifier(m).getModifier(applyData))
+    modifiersSum = charModifiers.filter(m => m != null).reduce((l, r) => l.sum(r))
+
+    expect(modifiersSum.attributes).toMatchObject(new Attributes({str: 10, int: 10}));
+    expect(modifiersSum.subStats).toMatchObject(new CharacterSubStats());
+    expect(modifiersSum.attackModifiers).toMatchObject(new AttackModifiers());
+    expect(modifiersSum.attackMultipliers).toMatchObject(new AttackMultipliers({default: 1.0, attackElement: 1.0})); 
+})

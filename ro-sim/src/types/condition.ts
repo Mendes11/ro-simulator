@@ -14,25 +14,25 @@ import { AttackRangeTypes, AttackTypes } from "./attackMultiplier";
 import { ElementTypes } from "./element";
 
 export enum ConditionTypes {
-    Refinement,
-    EquipmentSet,
-    Target,
-    AttackType,
-    Level,
-    Card,
-    Job,
-    Skill,
+    Refinement = "refinement",
+    EquipmentSet = "equipmentSet",
+    Target = "target",
+    AttackType = "attackType",
+    Level = "level",
+    Card = "card",
+    Job = "job",
+    Skill = "skill",
     // TODO: Enchants aren't implemented yet
     // Enchant,
 }
 
 export enum ComparisonConditions {
-    EQ,
-    GT,
-    GTE,
-    LT,
-    LTE,
-    NEQ
+    EQ = "eq",
+    GT = "gt",
+    GTE = "gte",
+    LT = "lt",
+    LTE = "lte",
+    NEQ = "neq"
 }
 
 
@@ -42,6 +42,7 @@ export type EquipmentSet = {
     condition: iCondition
 }
 
+// Condition data has the JSON representation of all possible conditions
 export type ConditionData =
     | { type: ConditionTypes.Refinement, data: RefinementConditionData }
     | { type: ConditionTypes.EquipmentSet, data: EquipmentSetConditionData}

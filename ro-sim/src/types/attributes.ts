@@ -1,19 +1,10 @@
-export enum AttributeTypes {
-    FOR,
-    AGI,
-    VIT,
-    INT,
-    DEX,
-    LUCK,
-}
-
 export type AttributesData = {
-    str: number;
-    agi: number;
-    vit: number;
-    int: number;
-    dex: number;
-    luk: number;
+    str: number; // Maps to FOR
+    agi: number; // Maps to AGI
+    vit: number; // Maps to VIT
+    int: number; // Maps to INT
+    dex: number; // Maps to DES
+    luk: number; // Maps to SOR
 }
 
 export interface iAttributes extends AttributesData {

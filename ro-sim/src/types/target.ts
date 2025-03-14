@@ -11,9 +11,9 @@ import { SizeTypes } from "./size";
 //    - multiplierType: Default
 export enum TargetTypes {
     All,
-    Normal,
-    SemiBoss,
-    Boss,
+    Normal, // Maps to Normal
+    SemiBoss, // LLM Hint: Not used
+    Boss, // Maps to Chefe
 
 }
 

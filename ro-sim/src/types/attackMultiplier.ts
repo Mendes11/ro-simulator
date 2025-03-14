@@ -21,20 +21,20 @@ export enum AttackRangeTypes {
 
 // Multipliers are any type of damage multiplication factor that comes from skills and equipments
 export type AttackMultipliersData = {
-    weaponAtk: number; // Weapon Atk%
-    race: number;
-    size: number;
-    attackElement: number;
-    targetElement: number;
-    default: number;
-    range: number;
-    crit: number;
-    damage: number; // Or 0 and use (1 + x) in the formula. -- Frenesi / Força violentíssima
-    finalDamage: number;
-    weaponDamage: number; // Eg: EDP, MagnumBreak
-    groupB: number; // Eg: EDP
-    skillAtk: number; // This is the percentage of ATK from a skill -- From iSkill's attackMultiplier
-    skill: number; // This is a multiplier over the skill's attack multiplier -- eg: "Increases damage of <skill> by 10%"
+    weaponAtk: number; // ATQ da Arma +x%
+    race: number; // Maps to Dano contra Raça
+    size: number; // Maps to Dano contra Tamanho
+    attackElement: number; // Maps to Dano de elemento X
+    targetElement: number; // Maps to Dano contra Elemento X
+    default: number; // Maps to "Dano Físico" OR "Dano Mágico" not followed to any other of the above -- The condition will tell which of the two (or both)
+    range: number; // Maps to "Dano Corpo a Corpo" or "Dano a Distância" -- The condition will tell which of the two
+    crit: number; // Maps to "Dano Crítico + x%"
+    damage: number; // LLM Hint: Do not fill. -- Frenesi / Força violentíssima
+    finalDamage: number; // LLM Hint: Do not fill.
+    weaponDamage: number; // LLM Hint: Do not fill. Eg: EDP, MagnumBreak
+    groupB: number; // LLM Hint: Do not fill -- Eg: EDP
+    skillAtk: number; // LLM Hint: Do not fill -- This is the percentage of ATK from a skill -- From iSkill's attackMultiplier
+    skill: number; // Maps to "Aumenta o dano da Habilidade <Nome> em X%"
 }
 
 export interface iAttackMultipliers extends AttackMultipliersData {
