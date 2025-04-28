@@ -1,5 +1,8 @@
-import { ConditionData, EquipmentSet, iCondition } from "@/types/condition";
-import { iCharacterModifiers, iModifier, ModifierApplyData } from "@/types/equipment";
+import { iCondition } from "./conditions/types/engine";
+import { ConditionData } from "./conditions/types/config";
+import { EquipmentSet } from "./conditions/types/config";
+import { iCharacterModifiers, ModifierApplyData } from "../types/equipment";
+import { iModifier } from "./types/engine";
 import { newCondition } from "./utils";
 
 export abstract class BaseModifier implements iModifier {
@@ -25,12 +28,22 @@ export abstract class BaseModifier implements iModifier {
                 target: data.target, 
                 attackInfo: data.attackInfo,
                 setAlreadyInUse: (set: EquipmentSet) => {
-                    return data.sets.find(s => (s.condition !== c) && (s.source.name === set.source.name) && s.target.name === set.target.name) != null
+                    return data.sets.find(s => 
+                        (s.condition !== c) 
+                        && (s.source.name === set.source.name) 
+                        && this.compareArray(s.targets.map(t => t.name), set.targets.map(t => t.name))
+                    ) != null
                 },
                 addSet: (set: EquipmentSet) => {
                     data.sets.push(set);
                 }
             })
         );
+    }
+
+    private compareArray(a: string[], b: string[]){
+        b.sort();
+        a.sort();
+        return a.every((v, idx) => b[idx] == v);
     }
 }

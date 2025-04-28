@@ -1,4 +1,4 @@
-import { iSkill, SkillTypes } from "@/types/skills";
+import { iSkill, SkillTypes } from "@engine/types/skills";
 import { CharacterModifiers } from "../modifiers/characterModifiers";
 import { AttackMultipliers } from "../attackMultipliers";
 

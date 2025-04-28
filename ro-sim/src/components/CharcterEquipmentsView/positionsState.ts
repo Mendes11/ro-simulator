@@ -1,4 +1,5 @@
-import { ItemLocations, ItemSubTypes } from "@/types/equipment";
+import { ItemSubTypes } from "@engine/types/equipment";
+import { ItemLocations } from "@/engine/types/enums";
 
 type PositionState = {
     inUseByPosition?: keyof PositionsState;

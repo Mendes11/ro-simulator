@@ -1,4 +1,5 @@
-import { iArmor, iEquipment, iItem, ItemLocations, ItemSubTypes, ItemTypes, iWeapon, WeaponSubTypes } from "@/types/equipment";
+import { iArmor, iEquipment, iItem, ItemSubTypes, ItemTypes, iWeapon, WeaponSubTypes } from "@/types/equipment";
+import { ItemLocations } from "@/engine/types/enums";
 import { matchInt, matchString } from "./util";
 import { cardPlacementMap, subTypeToAttackRange, typeLocationMap, typesMap } from "./typesMap";
 import { iCard } from "@/types/card";

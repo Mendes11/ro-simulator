@@ -1,5 +1,6 @@
-import { AllWeaponSubTypes, EquipmentSubTypes, ItemLocations, ItemSubTypes, ItemTypes } from "@/types/equipment";
-import { iEquipmentInstance } from "@/types/equipmentInstance";
+import { AllWeaponSubTypes, EquipmentSubTypes, ItemSubTypes, ItemTypes } from "@engine/types/equipment";
+import { ItemLocations } from "@/engine/types/enums";
+import { iEquipmentInstance } from "@engine/types/equipmentInstance";
 import CharacterEquipmentCard from "../CharacterEquipmentCard";
 
 type CharacterEquipmentsProps = {

@@ -1,4 +1,5 @@
-import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "./equipment";
+import { ItemSubTypes, ItemTypes, iEquipment } from "./equipment";
+import { ItemLocations } from "@/engine/types/enums";
 import { iCard } from "./card";
 
 export type EquipmentSearchArgs = {
@@ -15,6 +16,7 @@ export type CardSearchArgs = {
 }
 
 export interface iEquipmentRepository {
+    All(): Promise<iEquipment[]>;
     Find(id: number): Promise<iEquipment>;
     Search(query: EquipmentSearchArgs): Promise<iEquipment[]>;
 }

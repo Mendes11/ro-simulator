@@ -1,6 +1,6 @@
 import { Jobs } from "@/engine/jobs";
-import { AttributesData } from "@/types/attributes"
-import { Job } from "@/types/jobs";
+import { AttributesData } from "@/engine/types/attributes";
+import { Job } from "@/engine/types/jobs";
 import { ChangeEvent } from "react";
 
 type Props = {

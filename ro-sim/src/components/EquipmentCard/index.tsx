@@ -1,4 +1,4 @@
-import { iEquipment } from "@/types/equipment";
+import { iEquipment } from "@engine/types/equipment";
 import ItemIcon, { ItemType } from "../ItemIcon";
 
 interface Props {

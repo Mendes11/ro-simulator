@@ -1,11 +1,9 @@
-import { ConditionData } from "@/types/condition";
-import { iModifier, ModifierApplyData } from "@/types/equipment";
-import { ModifierData, newModifier } from "./utils";
+import { ConditionData } from "./conditions/types/config";
+import { ModifierApplyData } from "../types/equipment";
+import { iModifier } from "./types/engine";
+import { newModifier } from "./utils";
+import { ComboModifierData } from "./types/config";
 import { BaseModifier } from "./base";
-
-export type ComboModifierData = {
-    modifiers: ModifierData[];
-}
 
 // A Combo holds multiple modifiers under the same condition
 export class Combo extends BaseModifier {

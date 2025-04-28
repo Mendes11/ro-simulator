@@ -1,6 +1,6 @@
-import { iSkill, SkillTypes } from "@/types/skills";
+import { iSkill, SkillTypes } from "@engine/types/skills";
 import { SimulationSummary } from "../simulation";
-import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
+import { AttackRangeTypes, AttackTypes } from "../types/config";
 
 export const ASC_METEORASSAULT: iSkill = {
     id: "ASC_METEORASSAULT",

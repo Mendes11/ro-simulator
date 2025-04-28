@@ -1,12 +1,8 @@
-import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
-import { ConditionCheckData, iCondition } from "@/types/condition";
-import { ElementTypes } from "@/types/element";
-
-export type AttackTypeConditionData = {
-    attackType?: AttackTypes;
-    attackRangeType?: AttackRangeTypes;
-    attackElement?: ElementTypes;
-}
+import { AttackRangeTypes, AttackTypes } from "@/engine/types/config";
+import { iCondition } from "./types/engine";
+import { ConditionCheckData } from "./types/engine";
+import { ElementTypes } from "@/engine/types/config/element";
+import { AttackTypeConditionData } from "./types/config";
 
 export class AttackTypeCondition implements iCondition {
     attackType?: AttackTypes;

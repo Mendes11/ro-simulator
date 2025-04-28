@@ -1,12 +1,11 @@
 import { iEquipmentInstance } from "./equipmentInstance";
 import { iCard } from "./card";
-import { AttributesData } from "./attributes";
+import { AttributesData } from "@/engine/types/attributes";
 import { Job } from "./jobs";
 import { SimulateResult } from "@/engine/simulation";
-import { ItemLocations } from "./equipment";
+import { ElementTypes, ItemLocations } from "@/engine/types/enums";
 import { iSkillInstance } from "./skills";
 import { iTarget } from "./target";
-import { ElementTypes } from "./element";
 
 export type CharacterData = {
     level: number;

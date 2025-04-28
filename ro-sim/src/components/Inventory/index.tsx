@@ -1,4 +1,4 @@
-import { iEquipmentInstance } from '@/types/equipmentInstance'
+import { iEquipmentInstance } from '@engine/types/equipmentInstance'
 import EquipmentInstanceCard from '../EquipmentInstanceCard'
 
 

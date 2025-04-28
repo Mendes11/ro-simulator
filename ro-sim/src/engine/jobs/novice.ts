@@ -1,4 +1,4 @@
-import { JobIds } from "@/types/jobs";
+import { JobIds } from "../types/enums";
 
 export const Novice = {
     id: JobIds.Novice,

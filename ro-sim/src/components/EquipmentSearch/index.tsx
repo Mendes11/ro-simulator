@@ -1,7 +1,8 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import EquipmentList from "./EquipmentList";
 import UseComponentVisibility from "@/hooks/UseClickOutside";
-import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "@/types/equipment";
+import { ItemSubTypes, ItemTypes, iEquipment } from "@engine/types/equipment";
+import { ItemLocations } from "@/engine/types/enums";
 import { searchEquipments } from "@/actions/search";
 
 

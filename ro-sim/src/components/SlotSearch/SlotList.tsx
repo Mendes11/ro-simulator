@@ -1,4 +1,4 @@
-import { iCard } from "@/types/card"
+import { iCard } from "@engine/types/card"
 import SlotCard from "../SlotCard"
 
 type Props = {

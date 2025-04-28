@@ -1,11 +1,8 @@
-import { ComparisonConditions, ConditionCheckData, iCondition } from "@/types/condition";
+import { iCondition } from "./types/engine";
+import { ConditionCheckData } from "./types/engine";
+import { ComparisonConditions } from "./types/config";
 import { compareValues } from "./utils";
-
-export type SkillConditionData = {
-    id: string;
-    level?: number
-    levelComparisonOperator?: ComparisonConditions;
-}
+import { SkillConditionData } from "./types/config";
 
 export class SkillCondition implements iCondition {
     skillId: string;

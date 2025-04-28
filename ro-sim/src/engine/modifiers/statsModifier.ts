@@ -1,21 +1,16 @@
-import { iAttackModifiers, iCharacterModifiers } from "@/types/equipment";
-import {  iCharacterSubStats } from "@/types/stats";
-import {  iAttributes } from "@/types/attributes";
-import { iAttackMultipliers } from "@/types/attackMultiplier";
-import { Attributes, AttributesData } from "../attributes";
-import { CharacterSubStats, CharacterSubStatsData } from "../subStats";
-import { AttackMultipliers, AttackMultipliersData } from "../attackMultipliers";
+import { iCharacterModifiers } from "../types/equipment";
+import { iAttackModifiers } from "../types/attackModifier";
+import {  iCharacterSubStats } from "../types/stats";
+import { iAttributes } from "../types/attributes";
+import { iAttackMultipliers } from "../types/attackMultiplier";
+import { Attributes } from "../attributes";
+import { CharacterSubStats } from "../subStats";
+import { AttackMultipliers } from "../attackMultipliers";
 import { BaseModifier } from "./base";
-import { ConditionData } from "@/types/condition";
-import { AttackModifiers, AttackModifiersData } from "../attackModifiers";
+import { ConditionData } from "./conditions/types/config";
+import { AttackModifiers } from "../attackModifiers";
 import { CharacterModifiers } from "./characterModifiers";
-
-export interface StatsModifierData {
-    attributes?: AttributesData;
-    subStats?: CharacterSubStatsData;
-    attackMultipliers?: AttackMultipliersData;
-    attackModifiers?: AttackModifiersData;
-}
+import { StatsModifierData } from "./types/config";
 
 export class StatsModifier extends BaseModifier {
     attributes?: iAttributes;

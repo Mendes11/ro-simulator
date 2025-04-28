@@ -1,13 +1,5 @@
-import { iAttributes } from "@/types/attributes";
-
-export type AttributesData = {
-    str?: number;
-    agi?: number;
-    vit?: number;
-    int?: number;
-    dex?: number;
-    luk?: number;
-}
+import { iAttributes } from "./types/attributes";
+import { AttributesData } from "./types/config";
 
 export class Attributes implements iAttributes {
     str: number = 0;

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import EquipmentForm from "../EquipmentForm";
 import EquipmentInstanceCard from "../EquipmentInstanceCard";
-import { iEquipmentInstance } from "@/types/equipmentInstance";
-import { ItemLocations, ItemSubTypes, ItemTypes } from "@/types/equipment";
+import { iEquipmentInstance } from "@engine/types/equipmentInstance";
+import { ItemSubTypes, ItemTypes } from "@engine/types/equipment";
+import { ItemLocations } from "@/engine/types/enums";
 
 type Props = {
   title: string

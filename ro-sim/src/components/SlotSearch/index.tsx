@@ -2,8 +2,8 @@ import { searchCards } from "@/actions/search";
 import UseComponentVisibility from "@/hooks/UseClickOutside";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SlotList } from "./SlotList";
-import { iCard } from "@/types/card";
-import { ItemSubTypes, ItemTypes } from "@/types/equipment";
+import { iCard } from "@engine/types/card";
+import { ItemSubTypes, ItemTypes } from "@engine/types/equipment";
 
 
 type Props = {

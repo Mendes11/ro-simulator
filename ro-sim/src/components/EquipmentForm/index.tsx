@@ -3,9 +3,10 @@ import CardSelector from "./CardSelector";
 import EquipmentSelector from "./EquipmentSelector";
 import { Priority } from "@/contants";
 import AppButton from "../common/AppButton";
-import { iEquipmentInstance } from "@/types/equipmentInstance";
-import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "@/types/equipment";
-import { iCard } from "@/types/card";
+import { iEquipmentInstance } from "@engine/types/equipmentInstance";
+import { ItemSubTypes, ItemTypes, iEquipment } from "@engine/types/equipment";
+import { ItemLocations } from "@/engine/types/enums";
+import { iCard } from "@engine/types/card";
 
 
 type Props = {

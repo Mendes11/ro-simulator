@@ -1,15 +1,10 @@
-import { ConditionCheckData, iCondition } from "@/types/condition";
-import { ElementTypes } from "@/types/element";
-import { RaceTypes } from "@/types/race";
-import { SizeTypes } from "@/types/size";
-import { TargetTypes } from "@/types/target";
-
-export type TargetConditionData = {
-    race?: RaceTypes;
-    size?: SizeTypes;
-    element?: ElementTypes;
-    type?: TargetTypes;
-}
+import { iCondition } from "./types/engine";
+import { ConditionCheckData } from "./types/engine";
+import { ElementTypes } from "@/engine/types/config/element";
+import { RaceTypes } from "@/engine/types/enums";
+import { SizeTypes } from "@/engine/types/enums";
+import { TargetTypes } from "@/engine/types/enums";
+import { TargetConditionData } from "./types/config";
 
 // TargetCondition checks the given target against specific attributes such as race, size, element, and target-type
 export class TargetCondition implements iCondition {

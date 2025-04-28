@@ -1,6 +1,7 @@
-import { AttackRangeTypes, AttackTypes, iAttackMultipliers } from "@/types/attackMultiplier";
-import { AttributesData, iAttributes } from "@/types/attributes"
-import { ElementTypes } from "@/types/element";
+import { iAttackMultipliers } from "@/types/attackMultiplier";
+import { AttackRangeTypes, AttackTypes } from "./types/config";
+import { AttributesData, iAttributes } from "./types/attributes";
+import { ElementTypes } from "./types/enums";
 import { iCharacterSubStats } from "@/types/stats"
 import { iTarget } from "@/types/target";
 

@@ -1,5 +1,5 @@
 
-import { iEquipment } from "@/types/equipment";
+import { iEquipment } from "@engine/types/equipment";
 import EquipmentCard from "../EquipmentCard";
 
 type Props = {

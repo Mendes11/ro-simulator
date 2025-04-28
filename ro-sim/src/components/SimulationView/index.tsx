@@ -1,11 +1,11 @@
 import { SimulationSummary, SimulateResult } from "@/engine/simulation"
-import { AttackTypes } from "@/types/attackMultiplier";
-import { iCharacter } from "@/types/character";
-import { ElementTypes } from "@/types/element";
-import { RaceTypes } from "@/types/race";
-import { SizeTypes } from "@/types/size";
-import { iSkill, SkillTypes } from "@/types/skills";
-import { iTarget, TargetTypes } from "@/types/target";
+import { AttackTypes } from "@/engine/types/config";
+import { iCharacter } from "@engine/types/character";
+import { ElementTypes, RaceTypes } from "@/engine/types/enums";
+import { SizeTypes } from "@/engine/types/enums";
+import { iSkill, SkillTypes } from "@engine/types/skills";
+import { iTarget } from "@engine/types/target";
+import { TargetTypes } from "@/engine/types/enums";
 import { ChangeEvent, useEffect, useState } from "react";
 
 type Props = {

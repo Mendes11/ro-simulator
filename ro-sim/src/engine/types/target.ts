@@ -1,21 +1,5 @@
-import { ElementTypes } from "./element";
-import { RaceTypes } from "./race";
-import { SizeTypes } from "./size";
-
-// TargetTypes indicates that the multiplier will be applied to
-// a specific type of monster.
-// Eg: Abysmal Knight:
-//    - multiplier = 25%
-//    - attackType: Physical
-//    - targetType: Boss
-//    - multiplierType: Default
-export enum TargetTypes {
-    All,
-    Normal, // Maps to Normal
-    SemiBoss, // LLM Hint: Not used
-    Boss, // Maps to Chefe
-
-}
+import { ElementTypes, RaceTypes, TargetTypes } from "@/engine/types/enums";
+import { SizeTypes } from "@/engine/types/enums";
 
 export type TargetData = {
     type: TargetTypes

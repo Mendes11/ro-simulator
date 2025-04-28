@@ -1,10 +1,8 @@
-import { ComparisonConditions, ConditionCheckData, iCondition } from "@/types/condition";
+import { iCondition } from "./types/engine";
+import { ConditionCheckData } from "./types/engine";
+import { ComparisonConditions } from "./types/config";
 import { compareValues } from "./utils";
-
-export type LevelConditionData = {
-    level: number;
-    operator: ComparisonConditions;
-}
+import { LevelConditionData } from "./types/config";
 
 export class LevelCondition implements iCondition {
     level: number;

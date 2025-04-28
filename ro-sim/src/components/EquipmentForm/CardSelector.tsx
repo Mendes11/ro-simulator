@@ -2,8 +2,8 @@ import UseComponentVisibility from "@/hooks/UseClickOutside";
 import SlotSearch from "../SlotSearch";
 import SlotCard from "../SlotCard";
 import { useState } from "react";
-import { iCard } from "@/types/card";
-import { iEquipment } from "@/types/equipment";
+import { iCard } from "@engine/types/card";
+import { iEquipment } from "@engine/types/equipment";
 
 type Props = {
   equipment: iEquipment;

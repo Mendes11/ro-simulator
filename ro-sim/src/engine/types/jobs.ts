@@ -1,12 +1,6 @@
-import { AttributesData } from "./attributes";
+import { AttributesData } from "@/engine/types/attributes";
 import { iSkill } from "./skills";
-
-export enum JobIds {
-    Novice = "Novice",
-    Assassin = "Assassin",
-    AssassinCross = "AssassinCross"
-}
-
+import { JobIds } from "@/engine/types/enums";
 
 export interface Job {
     id: JobIds,

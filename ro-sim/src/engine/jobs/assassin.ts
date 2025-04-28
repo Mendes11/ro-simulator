@@ -1,4 +1,4 @@
-import { JobIds } from "@/types/jobs";
+import { JobIds } from "../types/enums";
 import { AS_SONICBLOW } from "../skills/as_sonicblow";
 
 export const Assassin = {

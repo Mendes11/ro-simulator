@@ -1,7 +1,8 @@
 import EquipmentCard from "../EquipmentCard"
 import UseComponentVisibility from "@/hooks/UseClickOutside"
 import EquipmentSearch from "../EquipmentSearch"
-import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "@/types/equipment"
+import { ItemSubTypes, ItemTypes, iEquipment } from "@engine/types/equipment"
+import { ItemLocations } from "@/engine/types/enums"
 
 type Props = {
   equipment?: iEquipment

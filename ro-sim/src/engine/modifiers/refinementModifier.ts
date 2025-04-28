@@ -1,14 +1,9 @@
-import { iModifier, ModifierApplyData } from "@/types/equipment";
-import { ModifierData, newModifier } from "./utils";
+import { ModifierApplyData } from "../types/equipment";
+import { iModifier } from "./types/engine";
+import { newModifier } from "./utils";
+import { ModifierData, RefinementModifierData } from "./types/config";
 import { BaseModifier } from "./base";
-import { ConditionData } from "@/types/condition";
-
-export type RefinementModifierData = {
-    refinementSteps: number;
-    minRefinement?: number;
-    maxRefinement?: number;
-    modifier: iModifier | ModifierData;
-}
+import { ConditionData } from "./conditions/types/config";
 
 // RefinementModifier is used to compute a multiplier on top of another modifier.
 // Used for items with descriptions such as
@@ -35,7 +30,10 @@ export class RefinementModifier extends BaseModifier {
     }
 
     mountModifier(data: ModifierApplyData) {
-        const multiplier = Math.round(data.source.instance.refinement / this.refinementSteps);
-        return this.modifier.getModifier(data)?.mul(multiplier);
+      let value = data.source.instance.refinement;
+      // Cap the value based on min/max limits.
+      value = value < this.minRefinement ? 0 : value > this.maxRefinement ? this.maxRefinement : value;
+      const multiplier = Math.round(value / this.refinementSteps);
+      return this.modifier.getModifier(data)?.mul(multiplier);
     }
 }

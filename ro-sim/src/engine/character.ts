@@ -1,22 +1,26 @@
-import { iAttributes } from "@/types/attributes";
-import { iCard } from "@/types/card";
-import { CharacterData, iCharacter } from "@/types/character";
-import { iAttackModifiers, iCharacterModifiers, ItemLocations, iWeapon, ModifierApplyData } from "@/types/equipment";
-import { iEquipmentInstance } from "@/types/equipmentInstance";
-import { Job } from "@/types/jobs";
-import { iSkillInstance } from "@/types/skills";
-import { iTarget } from "@/types/target";
+import { iAttributes } from "./types/attributes";
+import { ItemLocations } from "./types/enums";
+import { iAttackModifiers } from "./types/attackModifier";
+import { CharacterData } from "./types/character";
+
 import { AttackInfo, Simulate, SimulationSummary } from "./simulation";
 import { Attributes } from "./attributes";
-import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
-import { ElementTypes } from "@/types/element";
+import { AttackRangeTypes, AttackTypes } from "./types/config";
+import { ElementTypes } from "./types/enums";
 import { CharacterModifiers } from "./modifiers/characterModifiers";
 import { CharacterSubStats } from "./subStats";
 import { AttackMultipliers } from "./attackMultipliers";
 import { AttackModifiers } from "./attackModifiers";
 import { newModifier } from "./modifiers/utils";
 import { Novice } from "./jobs/novice";
-import { EquipmentSet } from "@/types/condition";
+import { EquipmentSet } from "./modifiers/conditions/types/config";
+import { iCharacter } from "./types/character";
+import { iEquipmentInstance } from "./types/equipmentInstance";
+import { Job } from "./types/jobs";
+import { iCard } from "./types/card";
+import { iTarget } from "./types/target";
+import { iSkillInstance } from "./types/skills";
+import { iCharacterModifiers, iWeapon, ModifierApplyData } from "./types/equipment";
 
 export class Character implements iCharacter {
     level: number;

@@ -7,9 +7,9 @@ import { SimulationView } from "@/components/SimulationView";
 import { Attributes } from "@/engine/attributes";
 import { Character } from "@/engine/character";
 import { Novice } from "@/engine/jobs/novice";
-import { AttributesData } from "@/types/attributes";
-import { iEquipmentInstance } from "@/types/equipmentInstance";
-import { Job } from "@/types/jobs";
+import { AttributesData } from "@/engine/types/attributes";
+import { iEquipmentInstance } from "@/engine/types/equipmentInstance";
+import { Job } from "@/engine/types/jobs";
 import { useState } from "react";
 
 

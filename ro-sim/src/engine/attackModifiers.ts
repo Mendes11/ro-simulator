@@ -1,11 +1,5 @@
-import { iAttackModifiers } from "@/types/equipment";
-
-export type AttackModifiersData = {
-    defBypass?: number;
-    defMBypass?: number;
-    sizePenalty?: number;
-    thanatosEffect?: boolean;
-}
+import { iAttackModifiers } from "./types/attackModifier";
+import { AttackModifiersData } from "./types/config";
 
 export class AttackModifiers implements iAttackModifiers {
     defBypass: number = 0;

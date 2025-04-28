@@ -1,9 +1,9 @@
 import { SimulationSummary } from "@/engine/simulation";
-import { AttackTypes, AttackRangeTypes } from "./attackMultiplier"
+import { AttackTypes, AttackRangeTypes } from "@/engine/types/config";
 import { iCharacterModifiers } from "./equipment";
 import { iCharacter } from "./character";
 import { iTarget } from "./target";
-import { ElementTypes } from "./element";
+import { ElementTypes } from "@/engine/types/config/element";
 
 export enum SkillTypes {
     AttackSkill,

@@ -1,9 +1,7 @@
-import { ConditionCheckData, iCondition } from "@/types/condition";
-import { JobIds } from "@/types/jobs";
-
-export type JobConditionData = {
-    jobs: JobIds[]
-}
+import { iCondition } from "./types/engine";
+import { ConditionCheckData } from "./types/engine";
+import { JobIds } from "@/engine/types/enums";
+import { JobConditionData } from "./types/config";
 
 export class JobCondition implements iCondition {
     jobs: JobIds[]

@@ -1,5 +1,5 @@
-import { iCard } from "@/types/card";
-import { CardSearchArgs } from "@/types/repositories"
+import { iCard } from "@/engine/types/card";
+import { CardSearchArgs } from "@/engine/types/repositories";
 import { promises as fs } from "fs";
 import path from "path";
 

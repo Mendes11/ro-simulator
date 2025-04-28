@@ -1,6 +1,6 @@
-import { iEquipmentInstance } from "@/types/equipmentInstance";
+import { iEquipmentInstance } from "@engine/types/equipmentInstance";
 import ItemIcon, { ItemType } from "../ItemIcon"
-import { ItemTypes } from "@/types/equipment";
+import { ItemTypes } from "@engine/types/equipment";
 
 type Props = {
   item?: iEquipmentInstance

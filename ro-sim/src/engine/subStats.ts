@@ -1,19 +1,5 @@
-import { iCharacterSubStats } from "@/types/stats";
-
-export type CharacterSubStatsData = {
-    eAtk?: number
-    eMatk?: number
-    crit?: number
-    precision?: number
-    perfectPrecision?: number
-    softDef?: number
-    hardDef?: number
-    softDefM?: number;
-    hardDefM?: number,
-    aspdPercent?: number
-    aspdUnit?: number
-    masteryAtk?: number
-}
+import { CharacterSubStatsData } from "./types/config";
+import { iCharacterSubStats } from "./types/stats";
 
 export class CharacterSubStats implements iCharacterSubStats {
     eAtk: number = 0;
@@ -28,6 +14,13 @@ export class CharacterSubStats implements iCharacterSubStats {
     aspdPercent: number = 0;
     aspdUnit: number = 0;
     masteryAtk: number = 0;
+    hpUnit: number = 0;
+    hpPercent: number = 0.0;
+    spUnit: number = 0;
+    spPercent: number = 0.0;
+    variableCast: number = 0.0;
+    fixedCastUnit: number = 0.0;
+    fixedCastPercent: number = 0.0;
 
     public constructor(data?: CharacterSubStatsData) {
         this.setData(data);
@@ -46,6 +39,13 @@ export class CharacterSubStats implements iCharacterSubStats {
         this.aspdPercent = data?.aspdPercent ?? 0;
         this.aspdUnit = data?.aspdUnit ?? 0;
         this.masteryAtk = data?.masteryAtk ?? 0;
+        this.hpUnit = data?.hpUnit ?? 0;
+        this.hpPercent = data?.hpPercent ?? 0.0;
+        this.spUnit = data?.spUnit ?? 0;
+        this.spPercent = data?.spPercent ?? 0.0;
+        this.variableCast = data?.variableCast ?? 0.0;
+        this.fixedCastPercent = data?.fixedCastPercent ?? 0.0;
+        this.fixedCastUnit = data?.fixedCastUnit ?? 0.0;
     }
 
     sum(other: iCharacterSubStats) {
@@ -60,6 +60,13 @@ export class CharacterSubStats implements iCharacterSubStats {
             aspdPercent: this.aspdPercent + other.aspdPercent,
             aspdUnit: this.aspdUnit + other.aspdUnit,
             masteryAtk: this.masteryAtk + other.masteryAtk,
+            hpUnit: this.hpUnit + other.hpUnit,
+            hpPercent: this.hpPercent + other.hpPercent,
+            spUnit: this.spUnit + other.spUnit,
+            spPercent: this.spPercent + other.spPercent,
+            variableCast: this.variableCast + other.variableCast,
+            fixedCastPercent: this.fixedCastPercent + other.fixedCastPercent,
+            fixedCastUnit: this.fixedCastPercent + other.fixedCastUnit,
         });
     }
 
@@ -75,6 +82,13 @@ export class CharacterSubStats implements iCharacterSubStats {
             aspdPercent: this.aspdPercent * n,
             aspdUnit: this.aspdUnit * n,
             masteryAtk: this.masteryAtk * n,
+            hpUnit: this.hpUnit * n,
+            hpPercent: this.hpPercent * n,
+            spUnit: this.spUnit * n,
+            spPercent: this.spPercent * n,
+            variableCast: this.variableCast * n,
+            fixedCastPercent: this.fixedCastPercent * n,
+            fixedCastUnit: this.fixedCastPercent * n,
         });
     }
 }

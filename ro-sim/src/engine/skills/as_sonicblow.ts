@@ -1,5 +1,5 @@
-import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
-import { iSkill, SkillTypes } from "@/types/skills";
+import { AttackRangeTypes, AttackTypes } from "../types/config";
+import { iSkill, SkillTypes } from "@engine/types/skills";
 
 export const AS_SONICBLOW: iSkill = {
     id: "AS_SONICBLOW",

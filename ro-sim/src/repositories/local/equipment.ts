@@ -1,17 +1,21 @@
-import { ItemLocations, ItemSubTypes, ItemTypes, iEquipment } from "@/types/equipment"
-import { EquipmentSearchArgs } from "@/types/repositories"
+import { ItemLocations } from "@/engine/types/enums";
+import { iEquipment, ItemSubTypes, ItemTypes } from "@/engine/types/equipment";
+import { EquipmentSearchArgs } from "@/engine/types/repositories";
 import { promises as fs } from "fs";
 import path from "path";
 
 let file: string;
+let modifiersFile: string;
 
 if (process.env.NODE_ENV === "production") {
     console.log("Loading equipments.json from Bucket");
     const url = "https://uhajjqevycyljnw0.public.blob.vercel-storage.com/equipments-oOSw0T5xmKFjIxM942MeVrgmwEqFPE.json"
     file = await fetch(url).then(res => res.text())
+    modifiersFile = await fs.readFile(path.join(process.cwd(), "equipments-modifiers.json"), 'utf-8');
 } else {
     console.log('Loading %s', path.join(process.cwd(), "equipments.json"));
     file = await fs.readFile(path.join(process.cwd(), "equipments.json"), 'utf-8');
+    modifiersFile = await fs.readFile(path.join(process.cwd(), "equipments-modifiers.json"), 'utf-8');
 }
 
 export class LocalEquipmentRepository {
@@ -23,6 +27,12 @@ export class LocalEquipmentRepository {
 
     public constructor() {
         this.equipments = JSON.parse(file);
+        const modifiers = JSON.parse(modifiersFile);
+        Object.keys(modifiers).forEach(id => {
+            if (modifiers[id].status != "failed") {
+                this.equipments[id].modifiers = modifiers[id].modifiers;
+            }
+        })
         this.typeIndex = new Map();
         this.subTypeIndex = new Map();
         this.locationIndex = new Map();
@@ -56,6 +66,15 @@ export class LocalEquipmentRepository {
         })
         console.log("Finished Indexing Equipments.");
 
+    }
+
+    async All(): Promise<iEquipment[]> {
+        return new Promise((resolve) => {
+            resolve(
+                Object.keys(this.equipments).map(k => this.equipments[k] as iEquipment)
+            )
+        })
+        
     }
 
     async Find(id: number): Promise<iEquipment> {

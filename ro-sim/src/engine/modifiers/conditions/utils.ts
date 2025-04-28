@@ -1,4 +1,4 @@
-import { ComparisonConditions } from "@/types/condition";
+import { ComparisonConditions } from "./types/config";
 
 export const compareValues = (value: number, operator: ComparisonConditions, target: number) => {
     switch(operator) {

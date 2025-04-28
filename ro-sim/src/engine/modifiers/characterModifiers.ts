@@ -1,7 +1,8 @@
-import { iAttackMultipliers } from "@/types/attackMultiplier";
-import { iAttributes } from "@/types/attributes";
-import { iAttackModifiers, iCharacterModifiers } from "@/types/equipment";
-import { iCharacterSubStats } from "@/types/stats";
+import { iAttackMultipliers } from "../types/attackMultiplier";
+import { iAttributes } from "../types/attributes";
+import { iCharacterModifiers } from "../types/equipment";
+import { iAttackModifiers } from "../types/attackModifier";
+import { iCharacterSubStats } from "../types/stats";
 import { Attributes } from "../attributes";
 import { CharacterSubStats } from "../subStats";
 import { AttackMultipliers } from "../attackMultipliers";

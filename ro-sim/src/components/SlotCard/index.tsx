@@ -1,4 +1,4 @@
-import { iCard } from "@/types/card";
+import { iCard } from "@engine/types/card";
 import ItemIcon, { ItemType } from "../ItemIcon";
 
 export default function SlotCard({item}: {item?: iCard}) {

@@ -1,14 +1,9 @@
-import { ComparisonConditions, ConditionCheckData, iCondition } from "@/types/condition";
-import { ItemLocations } from "@/types/equipment";
+import { iCondition } from "./types/engine";
+import { ConditionCheckData } from "./types/engine";
+import { ComparisonConditions } from "./types/config";
+import { ItemLocations } from "@/engine/types/enums";
 import { compareValues } from "./utils";
-
-export interface RefinementConditionData {
-    // If the condition is on another equipment
-    // Use location to point to it.
-    location?: ItemLocations
-    refinement: number
-    condition: ComparisonConditions
-}
+import { RefinementConditionData } from "./types/config";
 
 export class RefinementCondition implements iCondition{
     location?: ItemLocations;

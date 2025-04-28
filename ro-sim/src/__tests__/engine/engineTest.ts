@@ -5,13 +5,15 @@ import { Character } from "@/engine/character";
 import { Jobs } from "@/engine/jobs";
 import { SimulationSummary } from "@/engine/simulation";
 import { CharacterSubStats } from "@/engine/subStats";
-import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
-import { iCharacter } from "@/types/character";
-import { ElementTypes } from "@/types/element";
-import { ItemLocations, ItemTypes, ModifierApplyData, ModifierSourceData, WeaponSubTypes } from "@/types/equipment";
-import { RaceTypes } from "@/types/race";
-import { SizeTypes } from "@/types/size";
-import { iTarget, TargetTypes } from "@/types/target";
+import { AttackRangeTypes, AttackTypes } from "@/engine/types/config";
+import { iCharacter } from "@engine/types/character";
+
+import { ItemTypes, ModifierApplyData, ModifierSourceData, WeaponSubTypes } from "@engine/types/equipment";
+import { ElementTypes, ItemLocations } from "@/engine/types/enums";
+import { RaceTypes } from "@/engine/types/enums";
+import { SizeTypes } from "@/engine/types/enums";
+import { iTarget } from "@engine/types/target";
+import { TargetTypes } from "@/engine/types/enums";
 import { test } from "vitest";
 
 interface MyFixtures {

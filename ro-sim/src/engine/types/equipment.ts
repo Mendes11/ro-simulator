@@ -1,10 +1,14 @@
 import { iCharacter } from "./character";
-import { AttackRangeTypes, iAttackMultipliers } from "./attackMultiplier";
+import { iAttackMultipliers } from "./attackMultiplier";
+import { AttackRangeTypes } from "@/engine/types/config";
 import { iTarget } from "./target";
-import { ConditionAttackinfo, EquipmentSet } from "./condition";
-import { iAttributes } from "./attributes";
+import { ConditionAttackinfo } from "@/engine/modifiers/conditions/types/engine";
+import { iAttributes } from "@/engine/types/attributes";
 import { iCharacterSubStats } from "./stats";
-import { ModifierData } from "@/engine/modifiers/utils";
+import { ModifierData } from "@/engine/modifiers/types/config";
+import { EquipmentSet } from "@/engine/modifiers/conditions/types/config";
+import { iAttackModifiers } from "@/engine/types/attackModifier";
+import { ItemLocations } from "@/engine/types/enums";
 
 export enum ItemTypes {
     Weapon,
@@ -106,35 +110,6 @@ export enum CardSubTypes {
 export type ItemSubTypes = WeaponSubTypes | EquipmentSubTypes | ShadowEquipmentSubTypes | AmmoSubTypes | CardSubTypes;
 
 
-// ItemLocations allow for use of OR operation for items that require multiple slots
-// Eg:
-//  If the item takes Upper and Mid, use HeadUpper | HeadMid
-//  If the item is a two handed sword, use RighHand | LeftHand
-export enum ItemLocations {
-    HeadUpper = 1 << 0, // Maps to Topo
-    HeadMid = 1 << 1, // Maps to Meio
-    HeadBottom = 1 << 2, // Maps to Baixo
-
-    Armor = 1 << 3, // Maps to Armadura
-    RightHand = 1 << 4, // Maps to Mão Direita
-    LeftHand = 1 << 5, // Maps to Mão Esquerda
-    Garment = 1 << 6, // Maps to Capa
-    Shoes = 1 << 7, // Maps to Sapatos
-    // LLM Hint: When the accessory placement doesn't matter, use RightAcessory | LeftAccessory to account for both.
-    RightAccessory = 1 << 8, // Maps to Acessório Direito
-    LeftAccessory = 1 << 9, // Maps to Acessório Esquerdo
-    Ammo = 1 << 10,
-
-    // Composed Locations
-    BothHands = RightHand | LeftHand,
-    HeadUpperMid = HeadUpper | HeadMid,
-    HeadUpperMidBottom = HeadUpper | HeadMid | HeadBottom,
-    HeadUpperBottom = HeadUpper | HeadBottom,
-    HeadMidBottom = HeadMid | HeadBottom,
-
-}
-
-
 export interface iItem {
     type: ItemTypes;
     subType?: ItemSubTypes;
@@ -175,18 +150,6 @@ export type ModifierApplyData = {
     sets: EquipmentSet[],
 }
 
-export type AttackModifiersData = {
-    defBypass: number;
-    defMBypass: number;
-    sizePenalty: number; // 1.0 for 100% damage
-    thanatosEffect: boolean;
-}
-
-export interface iAttackModifiers extends AttackModifiersData {
-    sum: (other: iAttackModifiers, inplace?: boolean) => iAttackModifiers;
-    mul: (n: number, inplace?: boolean) => iAttackModifiers;
-}
-
 export interface iCharacterModifiers {
     attributes: iAttributes;
     subStats: iCharacterSubStats;
@@ -196,14 +159,6 @@ export interface iCharacterModifiers {
     sum: (other: iCharacterModifiers) => iCharacterModifiers;
     mul: (n: number) => iCharacterModifiers;
 }
-
-// A Modifier returns the CharacterModifier structure based on implementation rules.
-// As part of those rules, it may require conditions to be checked prior to that.
-// If those conditions do not check, it shouldn't return any modifier.
-export interface iModifier {
-    getModifier: (data: ModifierApplyData) => iCharacterModifiers | undefined;
-}
-
 
 // Equipment has the basic characteristics of any equipment item in the game.
 export type iEquipment = EquipmentData

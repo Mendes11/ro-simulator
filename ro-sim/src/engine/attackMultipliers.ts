@@ -1,22 +1,6 @@
-import { iAttackMultipliers } from "@/types/attackMultiplier";
 
-export type AttackMultipliersData = {
-    weaponAtk?: number; // Weapon Atk%
-    race?: number;
-    size?: number;
-    attackElement?: number;
-    targetElement?: number;
-    default?: number;
-    range?: number;
-    crit?: number;
-    damage?: number; // Or 0 and use (1 + x) in the formula. -- Frenesi / Força violentíssima
-    finalDamage?: number;
-    weaponDamage?: number; // Eg?: EDP, MagnumBreak
-    groupB?: number; // Eg?: EDP
-    skillAtk?: number; // This is the percentage of ATK from a skill -- From iSkill's attackMultiplier
-    skill?: number; // This is a multiplier over the skill's attack multiplier -- eg: "Increases damage of <skill> by 10%"
-}
-
+import { iAttackMultipliers } from "./types/attackMultiplier";
+import { AttackMultipliersData } from "./types/config";
 
 export class AttackMultipliers implements iAttackMultipliers {
     weaponAtk = 0.0; // Weapon Atk%
