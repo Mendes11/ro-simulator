@@ -108,7 +108,7 @@ Classes: ^777777Aprendizes, Espadachins, Magos, Arqueiros, Mercadores, Gatunos, 
 I know this isn't part of the modifiers description, it's a description of other properties that I'm not interested at, because it starts with Tipo:, and has other equipment-related information such as weapon damage and etc. I MUST ignore this part.
 
 
-MODIFIERS:
+FINAL_ANSWER:
 [
     {
         type: ModifierTypes.Refinement, data: {
@@ -120,12 +120,6 @@ MODIFIERS:
         }
     },
     {
-        type: ModifierTypes.Stats,
-        data: {
-            attackMultipliers: {
-                race: 0.1,
-            },
-        },
         conditions: [{
             type: ConditionTypes.Refinement,
             data: {
@@ -142,15 +136,15 @@ MODIFIERS:
             data: {
                 race: RaceTypes.All
             }
-        }]
-    },
-    {
+        }],
         type: ModifierTypes.Stats,
         data: {
             attackMultipliers: {
-                race: 0.15,
+                race: 0.1,
             },
         },
+    },
+    {
         conditions: [{
             type: ConditionTypes.Refinement,
             data: {
@@ -167,16 +161,23 @@ MODIFIERS:
             data: {
                 race: RaceTypes.All
             }
-        }]
+        }],
+        type: ModifierTypes.Stats,
+        data: {
+            attackMultipliers: {
+                race: 0.15,
+            },
+        },
     },
     {
-        type: ModifierTypes.Stats, 
-        data: {subStats: {eAtk: 70, eMatk: 70}},
         conditions: [{
             type: ConditionTypes.EquipmentSet,
             data: {
-                name: "Anel dos Orcs" 
+                names: ["Anel dos Orcs"]
             }
-        }]
+        }],
+        type: ModifierTypes.Stats, 
+        data: {subStats: {eAtk: 70, eMatk: 70}},
+        
     }
 ]

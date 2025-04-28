@@ -49,10 +49,15 @@ Classes: ^777777Todas^000000
 I know this isn't part of the modifiers description, it's a description of other properties that I'm not interested at, because it starts with Tipo:, and has other equipment-related information such as weapon damage and etc. I MUST ignore this part.
 
 
-MODIFIERS:
-```json
+FINAL_ANSWER:
 [
     {
+            conditions: [{
+                type: ConditionTypes.AttackType,
+                data: {
+                    attackType: AttackTypes.Magic,
+                }
+            }],
             type: ModifierTypes.Stats,
             data: {
                 attackMultipliers: {
@@ -75,4 +80,3 @@ MODIFIERS:
             }
         }
 ]
-```json

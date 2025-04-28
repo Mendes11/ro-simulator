@@ -1,0 +1,71 @@
+Arma forjada com pedaços de Rubi. Emana um brilho vermelho.
+--------------------------
+^0000ffA cada 10 níveis de base a partir do 70: ATQ +5.^000000
+--------------------------
+Bônus de acordo com o refino até o +15:
+^0000ffATQ +(refino × refino).^000000
+--------------------------
+Tipo: ^777777Lança de Duas Mãos^000000
+ATQ: ^777777175^000000 ATQM: ^7777770^000000
+Peso: ^777777175^000000
+Nível da arma: ^7777773^000000
+Nível necessário: ^77777770^000000
+Classes: ^777777Espadachins e evoluções^000000\"
+
+REASONING
+First block has:
+--------------------------
+A cada 10 níveis de base a partir do 70: ATQ +5.
+--------------------------
+
+It's a status increase whose amount is based on the character level, so I'll use LevelSteps modifier type, with 10 for levelSteps, and minLevel set to 70.
+And for the downstream modifier, I'll use Stats modifier type. I see ATQ + 5, and ATQ maps to eAtk attribute, so eAtk: 5
+
+Now, for the second block:
+Bônus de acordo com o refino até o +15:
+^0000ffATQ +(refino × refino).^000000
+
+This is a refinement bonus whose value is dependant on a formula.
+There is currently no way of applying a formula, but on this case in specific, I can use two Refinement modifier types stacked, which would end up having the same effect as refinement x refinement.
+Therefore I'll set a Refinement modifier type with maxRefinement set to 15 and refinementStep to 1. Then, the downstream modifier is another Refinement step, with same configurations.
+Finally, the downstream modifier of it will be a Stats modifier, with eAtk set to 1.
+
+FINAL_ANSWER:
+[
+    // --------------------------
+    // ^0000ffA cada 10 níveis de base a partir do 70: ATQ +5.^000000
+    // --------------------------
+    {
+      type: ModifierTypes.LevelSteps,
+      data: {
+        levelSteps: 10,
+        minLevel: 70,
+        modifier: {
+          type: ModifierTypes.Stats,
+          data: {subStats: {eAtk: 5}}
+        }
+      }
+    },
+    // --------------------------
+    // Bônus de acordo com o refino até o +15:
+    // ^0000ffATQ +(refino × refino).^000000
+    // --------------------------
+    {
+      type: ModifierTypes.Refinement,
+      data: {
+        refinementSteps: 1,
+        maxRefinement: 15,
+        modifier: {
+          type: ModifierTypes.Refinement,
+          data: {
+            refinementSteps: 1,
+            maxRefinement: 15,
+            modifier: {
+              type: ModifierTypes.Stats,
+              data: {subStats: {eAtk: 1}}
+            }
+          }
+        }
+      }
+    }
+  ]

@@ -2,11 +2,11 @@ import { AttackMultipliers } from "@/engine/attackMultipliers";
 import { Attributes } from "@/engine/attributes";
 import { SimulationSummary, Simulate } from "@/engine/simulation";
 import { CharacterSubStats } from "@/engine/subStats";
-import { AttackRangeTypes, AttackTypes } from "@/types/attackMultiplier";
-import { ElementTypes } from "@/types/element";
-import { RaceTypes } from "@/types/race";
-import { SizeTypes } from "@/types/size";
-import { TargetTypes } from "@/types/target";
+import { AttackRangeTypes, AttackTypes } from "@/engine/types/config";
+import { ElementTypes } from "@/engine/types/config/element";
+import { RaceTypes } from "@/engine/types/enums";
+import { SizeTypes } from "@/engine/types/enums";
+import { TargetTypes } from "@/engine/types/enums";
 
 const charSummary: SimulationSummary = {
     level: 99,

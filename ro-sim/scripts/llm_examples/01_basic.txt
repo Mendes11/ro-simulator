@@ -23,8 +23,7 @@ FOR +2, INT +1, VIT +1, DES +2, AGI +2, SOR +2, DEFM +1.
 I know that "FOR" maps to "str", "INT" maps to "int", "DES" maps to "dex", "AGI" maps to "agi", "SOR" maps to "luk", and "DEFM" maps to "hardDefM".
 These are all attributes in the CharacterModifiers structure. It has all attributes from Attributes modifier, and hardDefM from CharacterSubStats.
 
-MODIFIERS:
-```json
+FINAL_ANSWER:
 [
     {
         type: ModifierTypes.Stats,
@@ -34,4 +33,3 @@ MODIFIERS:
         }
     }
 ]
-```

@@ -1,0 +1,157 @@
+DESCRIPTION:
+Equipamento feito em homenagem ao Rei Tristan III e dada como agradecimento aos caçadores que mostraram habilidades notáveis em competições de caça.
+--------------------------
+^0000ffDano físico e mágico contra as raças Bruto e Inseto +7%.^000000
+--------------------------
+^0000ffHP máx. +500.^000000
+^0000ffSP máx. +100.^000000
+A cada 3 refinos:
+^0000ffHP máx. +50.^000000
+^0000ffSP máx. +20.^000000
+--------------------------
+^FA4E09Conjunto^000000
+^FA4E09[Botas do Monarca]^000000
+^FA4E09[Manto do Monarca]^000000
+^0000ffConjuração variável -7%.^000000
+Botas, Manto e Armadura no refino +9 ou mais:
+^0000ffConjuração variável -5% adicional.^000000
+--------------------------
+Tipo: ^777777Armadura^000000
+DEF: ^77777725^000000 DEFM: ^7777770^000000
+Peso: ^77777790^000000
+Nível necessário: ^77777750^000000
+Classes: ^777777Todas^000000\
+
+FINAL_ANSWER:
+[
+    // --------------------------
+    // ^0000ffDano físico e mágico contra as raças Bruto e Inseto +7%.^000000
+    // --------------------------
+    {
+        conditions: [
+            {
+                // Dano Físico e Mágico
+                type: ConditionTypes.AttackType,
+                data: {
+                    attackType: AttackTypes.Physical | AttackTypes.Magic,
+                }
+            }, {
+                // Contra Raça Bruto e Inseto
+                type: ConditionTypes.Target,
+                data: {
+                    race: RaceTypes.Insect | RaceTypes.Brute // bitmask to include both races
+                }
+            }
+        ],
+        type: ModifierTypes.Stats,
+        data: {
+            attackMultipliers: {
+                race: 0.07, // Dano [attackType condition] contra raça [Target Race condition]
+            },
+            
+        },
+    },
+    // --------------------------
+    // ^0000ffHP máx. +500.^000000
+    // ^0000ffSP máx. +100.^000000
+    // A cada 3 refinos:
+    // ^0000ffHP máx. +50.^000000
+    // ^0000ffSP máx. +20.^000000
+    // --------------------------
+    {
+        type: ModifierTypes.Stats,
+        data: {
+            subStats: {
+                hpUnit: 500,
+                spUnit: 100
+            }
+        }
+    },
+    {
+        type: ModifierTypes.Refinement,
+        data: {
+            refinementSteps: 3,
+            modifier: {
+                type: ModifierTypes.Stats,
+                data: {
+                    subStats: {
+                        hpUnit: 50,
+                        spUnit: 20
+                    }
+                }
+            }
+        }
+    },
+    // --------------------------
+    // ^FA4E09Conjunto^000000
+    // ^FA4E09[Botas do Monarca]^000000
+    // ^FA4E09[Manto do Monarca]^000000
+    // ^0000ffConjuração variável -7%.^000000
+    // Botas, Manto e Armadura no refino +9 ou mais:
+    // ^0000ffConjuração variável -5% adicional.^000000
+    // --------------------------
+    {
+        conditions: [
+            // ^FA4E09Conjunto^000000
+            // ^FA4E09[Botas do Monarca]^000000
+            // ^FA4E09[Manto do Monarca]^000000
+            {
+                type: ConditionTypes.EquipmentSet,
+                data: {
+                    names: ["Botas do Monarca", "Manto do Monarca"]
+                }
+            },
+        ],
+        type: ModifierTypes.Combo,
+        data: {
+            modifiers: [
+                // ^0000ffConjuração variável -7%.^000000
+                {
+                    type: ModifierTypes.Stats,
+                    data: {
+                        subStats: {
+                            variableCast: -0.07
+                        }
+                    }
+                },
+                // Botas, Manto e Armadura no refino +9 ou mais:
+                // ^0000ffConjuração variável -5% adicional.^000000
+                {
+                    conditions: [
+                        // Botas, Manto e Armadura no refino +9 ou mais:
+                        {
+                            type: ConditionTypes.Refinement,
+                            data: {
+                                refinement: 9,
+                                condition:  ComparisonConditions.GTE,
+                                location: ItemLocations.Shoes
+                            }
+                        },
+                        {
+                            type: ConditionTypes.Refinement,
+                            data: {
+                                refinement: 9,
+                                condition:  ComparisonConditions.GTE,
+                                location: ItemLocations.Garment
+                            }
+                        },
+                        {
+                            type: ConditionTypes.Refinement,
+                            data: {
+                                refinement: 9,
+                                condition:  ComparisonConditions.GTE,
+                                location: ItemLocations.Armor
+                            }
+                        }
+                    ],
+                    type: ModifierTypes.Stats,
+                    data: {
+                        subStats: {
+                            variableCast: -0.05
+                        }
+                    },
+                }
+            ]
+        }
+    }
+]

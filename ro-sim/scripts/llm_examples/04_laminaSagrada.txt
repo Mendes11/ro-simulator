@@ -99,8 +99,7 @@ Classes: ^777777Aprendizes, Espadachins, Gatunos, Mercadores e evoluções^00000
 
 I know this isn't part of the modifiers description, it's a description of other properties that I'm not interested at, because it starts with Tipo:, and has other equipment-related information such as weapon damage and etc. I MUST ignore this part.
 
-MODIFIERS:
-```ts
+FINAL_ANSWER:
 [
     // ^0000ffFOR e INT +10.^000000
     {
@@ -119,6 +118,15 @@ MODIFIERS:
         // A cada refino:
         // ^0000ffDano físico +10%.^000000
         {
+            conditions: [
+                {
+                    type: ConditionTypes.Level,
+                    data: {
+                        level: 100,
+                        operator: ComparisonConditions.LT,
+                    }
+                }
+            ],
             type: ModifierTypes.Refinement,
             data: {
                 refinementSteps: 1,
@@ -129,17 +137,17 @@ MODIFIERS:
                     }
                 }
             },
+        },
+        {
             conditions: [
                 {
                     type: ConditionTypes.Level,
                     data: {
                         level: 100,
-                        operator: ComparisonConditions.LT,
+                        operator: ComparisonConditions.GTE,
                     }
                 }
-            ]
-        },
-        {
+            ],
             type: ModifierTypes.Refinement,
             data: {
                 refinementSteps: 1,
@@ -150,15 +158,6 @@ MODIFIERS:
                     }
                 }
             },
-            conditions: [
-                {
-                    type: ConditionTypes.Level,
-                    data: {
-                        level: 100,
-                        operator: ComparisonConditions.GTE,
-                    }
-                }
-            ]
         },
         // ^FA4E09Conjunto^000000
         // ^FA4E09[Carta Valquíria Randgris]^000000
@@ -172,16 +171,18 @@ MODIFIERS:
         // ^0000ffTolerância a Silêncio e Atordoamento +50%.^000000
         // ^0000ffDano mágico de propriedade Sagrado +100%.^000000
         {
+            conditions: [
+                {
+                    type: ConditionTypes.Card,
+                    data: {
+                        names: ["Carta Valquíria Randgris"]
+                    }
+                }
+            ],
             type: ModifierTypes.Combo,
             data: {
                 modifiers: [
                     {
-                        type: ModifierTypes.Stats,
-                        data: {
-                            attackMultipliers: {
-                                attackElement: 0.3
-                            }
-                        },
                         conditions: [
                             {
                                 type: ConditionTypes.Level,
@@ -196,15 +197,15 @@ MODIFIERS:
                                     attackElement: ElementTypes.Holy,
                                 }
                             }
-                        ]
-                    },
-                    {
+                        ],
                         type: ModifierTypes.Stats,
                         data: {
                             attackMultipliers: {
-                                attackElement: 1.0
+                                attackElement: 0.3
                             }
                         },
+                    },
+                    {
                         conditions: [
                             {
                                 type: ConditionTypes.Level,
@@ -219,18 +220,16 @@ MODIFIERS:
                                     attackElement: ElementTypes.Holy,
                                 }
                             }
-                        ]
+                        ],
+                        type: ModifierTypes.Stats,
+                        data: {
+                            attackMultipliers: {
+                                attackElement: 1.0
+                            }
+                        },
                     }
                 ]
             },
-            conditions: [
-                {
-                    type: ConditionTypes.Card,
-                    data: {
-                        name: "Carta Valquíria Randgris"
-                    }
-                }
-            ]
         }
 ]
-```
+
