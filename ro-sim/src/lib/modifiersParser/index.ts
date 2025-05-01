@@ -1,3 +1,5 @@
+/* eslint-disable unused-imports/no-unused-imports */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { iItem } from "@/engine/types/equipment";
 import * as engineConfigs from "@/engine/types/config";
 import * as engineEnums from "@engine/types/enums";
