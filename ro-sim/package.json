@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "cleanup-openai-storage": "tsx scripts/cleanupOpenAIStorage.ts",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
@@ -12,6 +13,7 @@
     "test": "vitest",
     "setup-db": "tsx scripts/setupDB.ts",
     "parse-modifiers": "tsx scripts/parseModifiers.ts",
+    "parse-modifiers-batch": "tsx scripts/parseModifiersBatch.ts",
     "simulate": "tsx scripts/simulate.ts"
   },
   "dependencies": {
