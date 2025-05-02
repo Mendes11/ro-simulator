@@ -80,5 +80,7 @@ export function newCondition(c: ConditionData): iCondition {
         case "Skill":
         case ConditionTypes.Skill:
             return new SkillCondition(c.data);
+        default:
+            throw new Error(`Unsupported Condition Type: ${c.type}`)
     }
 }

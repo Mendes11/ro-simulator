@@ -1,7 +1,7 @@
 import { iCondition } from "./types/engine";
 import { ConditionCheckData } from "./types/engine";
-import { ElementTypes } from "@/engine/types/config/element";
-import { RaceTypes } from "@/engine/types/enums";
+
+import { ElementTypes, RaceTypes } from "@/engine/types/enums";
 import { SizeTypes } from "@/engine/types/enums";
 import { TargetTypes } from "@/engine/types/enums";
 import { TargetConditionData } from "./types/config";

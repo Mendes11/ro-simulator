@@ -3,7 +3,7 @@ import { AttackTypes, AttackRangeTypes } from "@/engine/types/config";
 import { iCharacterModifiers } from "./equipment";
 import { iCharacter } from "./character";
 import { iTarget } from "./target";
-import { ElementTypes } from "@/engine/types/config/element";
+import { ElementTypes } from "./enums";
 
 export enum SkillTypes {
     AttackSkill,

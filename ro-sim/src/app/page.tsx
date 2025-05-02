@@ -1,6 +1,4 @@
 "use client";
-
-
 import { CharacterBaseStatsView } from "@/components/CharacterBaseStatsView";
 import { CharacterEquipmentsView } from "@/components/CharcterEquipmentsView";
 import { SimulationView } from "@/components/SimulationView";
@@ -10,7 +8,7 @@ import { Novice } from "@/engine/jobs/novice";
 import { AttributesData } from "@/engine/types/attributes";
 import { iEquipmentInstance } from "@/engine/types/equipmentInstance";
 import { Job } from "@/engine/types/jobs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import { CharacterShadowEquipmentsView } from "@/components/CharcterShadowEquipmentsView";
 
@@ -32,8 +30,15 @@ export default function Home() {
   const [equipments, setEquipments] = useState<iEquipmentInstance[]>([]);
   const [shadowEquipments, setShadowEquipments] = useState<iEquipmentInstance[]>([]);
   const [charAttributes, setCharAttributes] = useState<AttributesData>(Attributes.NewCharacterAttrs());
-  const [selectedTab, setSelectedTab] = useState<string>(tabs.find(t => t.href === window.location.hash)?.id || tabs[0].id);
+  const [selectedTab, setSelectedTab] = useState<string>(tabs[0].id);
 
+  useEffect(() => {
+    if (window.location.hash) {
+      setSelectedTab(window.location.hash.substring(1));
+    } else {
+      setSelectedTab(tabs[0].id);
+    }
+  }, []);
   const onEquipmentAdded = (e: iEquipmentInstance) => {
     setEquipments([...equipments, e]);
   }

@@ -1,9 +1,9 @@
-import { iAttackMultipliers } from "@/types/attackMultiplier";
 import { AttackRangeTypes, AttackTypes } from "./types/config";
 import { AttributesData, iAttributes } from "./types/attributes";
 import { ElementTypes } from "./types/enums";
-import { iCharacterSubStats } from "@/types/stats"
-import { iTarget } from "@/types/target";
+import { iAttackMultipliers } from "./types/attackMultiplier";
+import { iCharacterSubStats } from "./types/stats";
+import { iTarget } from "./types/target";
 
 const BaseCriticalMultiplier = 1.4;
 
