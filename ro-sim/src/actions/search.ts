@@ -10,7 +10,9 @@ import fs from "fs";
 export async function searchEquipments(args: EquipmentSearchArgs): Promise<iEquipment[]> {
   console.log(args);
   const file = fs.readFileSync(process.cwd() + "/src/lib/repositories/local/equipments.json", 'utf-8');
-  console.log("File Loaded" + file.length)
+  const cardsfile = fs.readFileSync(process.cwd() + "/src/lib/repositories/local/cards.json", 'utf-8');
+  const modifiersfile = fs.readFileSync(process.cwd() + "/src/lib/repositories/local/equipments-modifiers.json", 'utf-8');
+  console.log("File Loaded" + file.length + cardsfile.length + modifiersfile.length);
   const equipments = await equipmentRepository.Search(args);
   console.log(`Found ${equipments.length}`)
   return equipmentRepository.Search(args)
