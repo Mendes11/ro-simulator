@@ -1,17 +1,17 @@
-import { AllWeaponSubTypes, EquipmentSubTypes, ItemSubTypes, ItemTypes } from "@engine/types/equipment";
+import { ItemTypes, ShadowEquipmentSubTypes } from "@engine/types/equipment";
 import { ItemLocations } from "@/engine/types/enums";
 import { iEquipmentInstance } from "@engine/types/equipmentInstance";
 import CharacterEquipmentCard from "../CharacterEquipmentCard";
 
-type CharacterEquipmentsProps = {
+type CharacterShadowEquipmentsProps = {
     equipments: iEquipmentInstance[];
     onEquipmentAdded(equipment: iEquipmentInstance): void;
     onEquipmentRemoved(equipment: iEquipmentInstance): void;
 }
 
-export const CharacterEquipmentsView = ({
+export const CharacterShadowEquipmentsView = ({
     equipments, onEquipmentAdded, onEquipmentRemoved
-}: CharacterEquipmentsProps) => {
+}: CharacterShadowEquipmentsProps) => {
     const newEquipChangeHandler = (location: ItemLocations) => {
         return (item?: iEquipmentInstance) => {
             if (item == null) {
@@ -38,45 +38,9 @@ export const CharacterEquipmentsView = ({
         <div className="flex flex-row flex-wrap p-2 mt-1">
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
                 <CharacterEquipmentCard
-                    title="Topo"
-                    allowedTypes={[ItemTypes.Armor]}
-                    allowedSubTypes={[EquipmentSubTypes.Headgear]}
-                    location={ItemLocations.HeadUpper}
-                    enabled={(findEquipment(ItemLocations.HeadUpper)?.sourceLocation || ItemLocations.HeadUpper) === ItemLocations.HeadUpper}
-                    equippedItem={findEquipment(ItemLocations.HeadUpper)}
-                    onItemChanged={newEquipChangeHandler(ItemLocations.HeadUpper)}
-                    onItemRemoved={newEquipChangeHandler(ItemLocations.HeadUpper)}
-                />
-            </div>
-            <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
-                <CharacterEquipmentCard
-                    title="Meio"
-                    allowedTypes={[ItemTypes.Armor]}
-                    allowedSubTypes={[EquipmentSubTypes.Headgear]}
-                    location={ItemLocations.HeadMid}
-                    enabled={(findEquipment(ItemLocations.HeadMid)?.sourceLocation || ItemLocations.HeadMid) === ItemLocations.HeadMid}
-                    equippedItem={findEquipment(ItemLocations.HeadMid)}
-                    onItemChanged={newEquipChangeHandler(ItemLocations.HeadMid)}
-                    onItemRemoved={newEquipChangeHandler(ItemLocations.HeadMid)}
-                />
-            </div>
-            <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
-                <CharacterEquipmentCard
-                    title="Baixo"
-                    allowedTypes={[ItemTypes.Armor]}
-                    allowedSubTypes={[EquipmentSubTypes.Headgear]}
-                    location={ItemLocations.HeadBottom}
-                    enabled={(findEquipment(ItemLocations.HeadBottom)?.sourceLocation || ItemLocations.HeadBottom) === ItemLocations.HeadBottom}
-                    equippedItem={findEquipment(ItemLocations.HeadBottom)}
-                    onItemChanged={newEquipChangeHandler(ItemLocations.HeadBottom)}
-                    onItemRemoved={newEquipChangeHandler(ItemLocations.HeadBottom)}
-                />
-            </div>
-            <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
-                <CharacterEquipmentCard
-                    title="Mão Direita"
-                    allowedTypes={[ItemTypes.Weapon]}
-                    allowedSubTypes={AllWeaponSubTypes}
+                    title="Luva Sombria"
+                    allowedTypes={[ItemTypes.ShadowEquipment]}
+                    allowedSubTypes={[ShadowEquipmentSubTypes.ShadowWeapon]}
                     location={ItemLocations.RightHand}
                     enabled={(findEquipment(ItemLocations.RightHand)?.sourceLocation || ItemLocations.RightHand) === ItemLocations.RightHand}
                     equippedItem={findEquipment(ItemLocations.RightHand)}
@@ -86,9 +50,9 @@ export const CharacterEquipmentsView = ({
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
                 <CharacterEquipmentCard
-                    title="Mão Esquerda"
-                    allowedTypes={[ItemTypes.Armor, ItemTypes.Weapon]}
-                    allowedSubTypes={(AllWeaponSubTypes as ItemSubTypes[]).concat([EquipmentSubTypes.Shield])}
+                    title="Escudo Sombrio"
+                    allowedTypes={[ItemTypes.ShadowEquipment]}
+                    allowedSubTypes={[ShadowEquipmentSubTypes.ShadowShield]}
                     location={ItemLocations.LeftHand}
                     enabled={(findEquipment(ItemLocations.LeftHand)?.sourceLocation || ItemLocations.LeftHand) === ItemLocations.LeftHand}
                     equippedItem={findEquipment(ItemLocations.LeftHand)}
@@ -98,9 +62,9 @@ export const CharacterEquipmentsView = ({
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
                 <CharacterEquipmentCard
-                    title="Armadura"
-                    allowedTypes={[ItemTypes.Armor]}
-                    allowedSubTypes={[EquipmentSubTypes.Armor]}
+                    title="Armadura Sombria"
+                    allowedTypes={[ItemTypes.ShadowEquipment]}
+                    allowedSubTypes={[ShadowEquipmentSubTypes.ShadowArmor]}
                     location={ItemLocations.Armor}
                     enabled={(findEquipment(ItemLocations.Armor)?.sourceLocation || ItemLocations.Armor) === ItemLocations.Armor}
                     equippedItem={findEquipment(ItemLocations.Armor)}
@@ -110,21 +74,9 @@ export const CharacterEquipmentsView = ({
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
                 <CharacterEquipmentCard
-                    title="Capa"
-                    allowedTypes={[ItemTypes.Armor]}
-                    allowedSubTypes={[EquipmentSubTypes.Garment]}
-                    location={ItemLocations.Garment}
-                    enabled={(findEquipment(ItemLocations.Garment)?.sourceLocation || ItemLocations.Garment) === ItemLocations.Garment}
-                    equippedItem={findEquipment(ItemLocations.Garment)}
-                    onItemChanged={newEquipChangeHandler(ItemLocations.Garment)}
-                    onItemRemoved={newEquipChangeHandler(ItemLocations.Garment)}
-                />
-            </div>
-            <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
-                <CharacterEquipmentCard
-                    title="Botas"
-                    allowedTypes={[ItemTypes.Armor]}
-                    allowedSubTypes={[EquipmentSubTypes.Shoes]}
+                    title="Botas Sombrias"
+                    allowedTypes={[ItemTypes.ShadowEquipment]}
+                    allowedSubTypes={[ShadowEquipmentSubTypes.ShadowShoes]}
                     location={ItemLocations.Shoes}
                     enabled={(findEquipment(ItemLocations.Shoes)?.sourceLocation || ItemLocations.Shoes) === ItemLocations.Shoes}
                     equippedItem={findEquipment(ItemLocations.Shoes)}
@@ -134,9 +86,9 @@ export const CharacterEquipmentsView = ({
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
                 <CharacterEquipmentCard
-                    title="Accessório Direito"
-                    allowedTypes={[ItemTypes.Armor]}
-                    allowedSubTypes={[EquipmentSubTypes.AccessoryRight, EquipmentSubTypes.Accessory]}
+                    title="Brinco Sombrio"
+                    allowedTypes={[ItemTypes.ShadowEquipment]}
+                    allowedSubTypes={[ShadowEquipmentSubTypes.ShadowRightAcessory]}
                     location={ItemLocations.RightAccessory}
                     enabled={(findEquipment(ItemLocations.RightAccessory)?.sourceLocation || ItemLocations.RightAccessory) === ItemLocations.RightAccessory}
                     equippedItem={findEquipment(ItemLocations.RightAccessory)}
@@ -146,9 +98,9 @@ export const CharacterEquipmentsView = ({
             </div>
             <div className="flex-grow basis-full md:basis-1/2 lg:basis-1/3">
                 <CharacterEquipmentCard
-                    title="Acessório Esquerdo"
-                    allowedTypes={[ItemTypes.Armor]}
-                    allowedSubTypes={[EquipmentSubTypes.AccessoryLeft, EquipmentSubTypes.Accessory]}
+                    title="Colar Sombrio"
+                    allowedTypes={[ItemTypes.ShadowEquipment]}
+                    allowedSubTypes={[ShadowEquipmentSubTypes.ShadowLeftAccessory]}
                     location={ItemLocations.LeftAccessory}
                     enabled={(findEquipment(ItemLocations.LeftAccessory)?.sourceLocation || ItemLocations.LeftAccessory) === ItemLocations.LeftAccessory}
                     equippedItem={findEquipment(ItemLocations.LeftAccessory)}

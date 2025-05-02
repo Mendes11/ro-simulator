@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 
 import { AttackMultipliers } from "@/engine/attackMultipliers";
 import { Attributes } from "@/engine/attributes";
@@ -82,13 +83,13 @@ export const engineTest = test.extend<MyFixtures>({
                 race: RaceTypes.Human,
                 size: SizeTypes.Medium,
                 element: ElementTypes.Neutral,
-                type: TargetTypes.Boss, 
-                softDef: 10, 
-                hardDef: 10, 
+                type: TargetTypes.Boss,
+                softDef: 10,
+                hardDef: 10,
                 softDefM: 10,
                 hardDefM: 10,
                 reductions: {
-                    race: 0, 
+                    race: 0,
                     size: 0,
                     attackElement: 0,
                     targetElement: 0,
@@ -122,10 +123,10 @@ export const engineTest = test.extend<MyFixtures>({
     },
     applyData: async({baseSource, baseCharacter, target}, use) => {
         await use({
-            source: baseSource, 
-            character: baseCharacter, 
+            source: baseSource,
+            character: baseCharacter,
             attackInfo: {
-                attackRangeType: AttackRangeTypes.Melee, 
+                attackRangeType: AttackRangeTypes.Melee,
                 attackType: AttackTypes.Physical,
                 element: ElementTypes.Neutral,
             },

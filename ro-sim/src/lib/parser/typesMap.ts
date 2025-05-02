@@ -1,6 +1,6 @@
 import { AttackRangeTypes } from "@/engine/types/config";
-import { ItemTypes, ItemSubTypes, WeaponSubTypes, EquipmentSubTypes, CardSubTypes, AmmoSubTypes, ShadowEquipmentSubTypes } from "@/types/equipment";
 import { ItemLocations } from "@/engine/types/enums";
+import { AmmoSubTypes, CardSubTypes, EquipmentSubTypes, ItemSubTypes, ItemTypes, ShadowEquipmentSubTypes, WeaponSubTypes } from "@/engine/types/equipment";
 
 type typesMapType = {
     [k: string]: {

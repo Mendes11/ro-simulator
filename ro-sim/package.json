@@ -17,6 +17,7 @@
     "simulate": "tsx scripts/simulate.ts"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@next/eslint-plugin-next": "^15.2.2",
     "@vercel/blob": "^0.27.0",
     "next": "^15.1.7",
@@ -24,8 +25,8 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@next/env": "^15.2.2",
     "@eslint/js": "^9.22.0",
+    "@next/env": "^15.2.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "@types/node": "^20",

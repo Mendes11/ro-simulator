@@ -1,8 +1,8 @@
-import { iArmor, iEquipment, iItem, ItemSubTypes, ItemTypes, iWeapon, WeaponSubTypes } from "@/types/equipment";
 import { ItemLocations } from "@/engine/types/enums";
 import { matchInt, matchString } from "./util";
 import { cardPlacementMap, subTypeToAttackRange, typeLocationMap, typesMap } from "./typesMap";
-import { iCard } from "@/types/card";
+import { iArmor, iEquipment, iItem, ItemSubTypes, ItemTypes, iWeapon, WeaponSubTypes } from "@/engine/types/equipment";
+import { iCard } from "@/engine/types/card";
 
 type ItemBlock = {
     id: number;
@@ -90,6 +90,8 @@ export class ItemParser {
             return this.parseWeaponData(item);
         case ItemTypes.Card:
             return this.parseCardData(item);
+        case ItemTypes.ShadowEquipment:
+            return this.parseShadowEquipmentData(item);
         default:
             return
         }
@@ -160,9 +162,6 @@ export class ItemParser {
     }
 
     protected parseCardData(item: Item): iCard | undefined {
-        if (item.name === "Carta Kiel-D-01") {
-            console.log("break");
-        }
         const locationStr = matchString(item.description, "Equipado em", "Equipa em", "Posi[çc][aã]o");
         if (locationStr == null) return;
         if (locationStr != null) {
@@ -178,6 +177,19 @@ export class ItemParser {
             type: item.type!,
             subType: item.subType,
             ...cardPlacementMap[locationStr]
+        }
+    }
+
+    protected parseShadowEquipmentData(item: Item): iEquipment | undefined {
+        if (item.subType == null || item.allowedLocations == null) {
+            const ret = this.parseLocation(item.type!, item);
+            if (ret == null) return;
+            if (item.subType == null) item.subType = ret.subType;
+            item.allowedLocations = ret.locations;
+        }
+        return {
+            ...this.parseEquipmentData(item),
+            slots: 0,
         }
     }
 

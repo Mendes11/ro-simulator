@@ -1,8 +1,8 @@
 import { AttackRangeTypes, AttackTypes } from "@/engine/types/config";
 import { iCondition } from "./types/engine";
 import { ConditionCheckData } from "./types/engine";
-import { ElementTypes } from "@/engine/types/config/element";
 import { AttackTypeConditionData } from "./types/config";
+import { ElementTypes } from "@/engine/types/enums";
 
 export class AttackTypeCondition implements iCondition {
     attackType?: AttackTypes;

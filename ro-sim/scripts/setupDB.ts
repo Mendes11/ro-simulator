@@ -1,8 +1,8 @@
-import { iEquipment, ItemTypes } from "@/types/equipment";
-import { iCard } from "@/types/card";
-import { readFileSync, writeFileSync } from "fs";
+import { iCard } from "@/engine/types/card";
+import { iEquipment, ItemTypes } from "@/engine/types/equipment";
 import { ItemParser } from "@/lib/parser";
-import { intMatcher, matchInt } from "@/lib/parser/util";
+import { readFileSync, writeFileSync } from "fs";
+
 
 const files = [
     {path: process.cwd() + "/../scrapper/iteminfo_new.lub", encoding: "utf-8"}
