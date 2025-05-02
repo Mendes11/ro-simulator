@@ -6,8 +6,7 @@ const nextConfig: NextConfig = {
   // },
   /* config options here */
   outputFileTracingIncludes: {
-    '/': ['./src/lib/repositories/local/*.json', "./equipments.json"],
-    '/app': ['./src/lib/repositories/local/*.json', "./**/*.json"],
+    '/': ['./src/lib/repositories/local/*.json'],
   },
   images: {
     remotePatterns: [
