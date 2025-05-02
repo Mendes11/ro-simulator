@@ -23,7 +23,7 @@
       "@app/*": ["./src/app/*"],
       "@engine/*": ["./src/engine/*"],
       "@types/*": ["./src/types/*"],
-      "@repositories/*": ["./src/repositories/local/*"],
+      "@repositories/*": ["./src/lib/repositories/local/*"],
     },
     "typeRoots": ["./node_modules/@types", "./types"],
   },
