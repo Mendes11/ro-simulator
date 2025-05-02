@@ -5,8 +5,6 @@ import { iEquipment } from "@/engine/types/equipment";
 import { EquipmentSearchArgs, CardSearchArgs } from "@/engine/types/repositories";
 import { cardRepository, equipmentRepository } from "@/lib/repositories";
 import { promises as fs } from 'fs';
-import path from "path";
-
 
 export async function searchEquipments(args: EquipmentSearchArgs): Promise<iEquipment[]> {
   console.log(args);
