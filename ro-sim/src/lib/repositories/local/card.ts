@@ -2,10 +2,6 @@ import { iCard } from "@/engine/types/card";
 import { CardSearchArgs } from "@/engine/types/repositories";
 import fs from "fs";
 
-export async function loadCardsFileAsync(): Promise<string> {
-    'use server'
-    return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/cards.json", 'utf-8');
-}
 
 function loadCardsFile(): string {
     return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/cards.json", 'utf-8');
