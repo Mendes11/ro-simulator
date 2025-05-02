@@ -3,6 +3,12 @@ import { iEquipment, ItemSubTypes, ItemTypes } from "@/engine/types/equipment";
 import { EquipmentSearchArgs } from "@/engine/types/repositories";
 import fs from "fs";
 
+
+export async function loadEquipmentsFileAsync(): Promise<string> {
+    'use server'
+    return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/equipments.json", 'utf-8');
+}
+
 function loadEquipmentsFile(): string {
     return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/equipments.json", 'utf-8');
 }
@@ -19,6 +25,7 @@ export class LocalEquipmentRepository {
 
 
     public constructor() {
+        loadEquipmentsFileAsync().then((v) => console.log("Loaded!" + v.length));
         this.equipments = JSON.parse(loadEquipmentsFile());
         const modifiers = JSON.parse(loadModifiersFile());
         Object.keys(modifiers).forEach(id => {
