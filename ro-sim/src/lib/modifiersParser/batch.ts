@@ -20,9 +20,9 @@ export class BatchManager {
     private runId: string;
     private stateDir: string;
     private stateFile: string;
-    private currentBatchIndex: number; // Track the current batch index
-    private equipmentsToProcess: iItem[]; // Store equipments to process
+    private equipmentsToProcess: Set<iItem>; // Store equipments to process
     private submittedEquipmentIds: Set<string>; // Track submitted equipment IDs
+    private batchEquipments: Map<string, string[]>; // Map of batch ID to submitted equipment IDs
     private batchDir: string;
     private resultsDir: string;
     private completedResults: { [batchId: string]: any[] } = {}; // Loaded from disk
@@ -36,9 +36,9 @@ export class BatchManager {
         this.batchDir = `${this.stateDir}/batches`;
         this.resultsDir = `${this.batchDir}/results`;
         this.batches = new Map();
-        this.currentBatchIndex = 0;
-        this.equipmentsToProcess = [];
+        this.equipmentsToProcess = new Set();
         this.submittedEquipmentIds = new Set();
+        this.batchEquipments = new Map();
         // Ensure all directories exist
         if (!existsSync("tmp")) {
             mkdirSync("tmp");
@@ -60,7 +60,7 @@ export class BatchManager {
         const stateObject = {
             batches: Object.fromEntries(this.batches),
             submittedEquipmentIds: Array.from(this.submittedEquipmentIds),
-            currentBatchIndex: this.currentBatchIndex
+            batchEquipments: Object.fromEntries(this.batchEquipments),
         };
         writeFileSync(this.stateFile, JSON.stringify(stateObject, null, 2));
         console.log(`Batch state saved to ${this.stateFile}`);
@@ -80,10 +80,10 @@ export class BatchManager {
         } else {
             this.submittedEquipmentIds = new Set();
         }
-        if (stateObject.currentBatchIndex != null) {
-            this.currentBatchIndex = parseInt(stateObject.currentBatchIndex);
+        if (stateObject.batchEquipments) {
+            this.batchEquipments = new Map(Object.entries(stateObject.batchEquipments));
         } else {
-            this.currentBatchIndex = 0;
+            this.batchEquipments = new Map();
         }
         console.log(`Batch state loaded from ${this.stateFile}`);
     }
@@ -107,6 +107,19 @@ export class BatchManager {
         }
     }
 
+    private getNextBatch(): iItem[] {
+        const endIdx = Math.min(BATCH_SIZE, this.equipmentsToProcess.size);
+        return Array.from(this.equipmentsToProcess.values()).slice(0, endIdx);
+    }
+
+    private registerSubmittedEquipments(batchId: string, equipments: iItem[]) {
+        equipments.forEach(e => {
+            this.submittedEquipmentIds.add(e.id.toString());
+            this.equipmentsToProcess.delete(e)
+        })
+        this.batchEquipments.set(batchId, equipments.map(e => e.id.toString()));
+    }
+
 
     /**
      * Submits all batches sequentially and waits for each to complete before submitting the next.
@@ -115,39 +128,42 @@ export class BatchManager {
     async createBatches(equipments: iItem[]) {
         // Only process equipment not already submitted
         const allToProcess = equipments.filter(e => !this.submittedEquipmentIds.has(e.id.toString()));
-        this.equipmentsToProcess = allToProcess;
+        this.equipmentsToProcess = new Set(allToProcess);
         // Start with already completed results
         const results: { [batchId: string]: any[] } = { ...this.completedResults };
-        while (this.currentBatchIndex < this.equipmentsToProcess.length) {
+        while (this.equipmentsToProcess.size > 0) {
             // If there's an in progress batch, skip batch creation and start polling it
             let batchId = this.findPendingBatch();
+            let currentBatchEquipments: iItem[] = [];
             if (batchId == null) {
                 // Submit the next batch
-                const startIdx = this.currentBatchIndex;
-                const endIdx = Math.min(startIdx + BATCH_SIZE, this.equipmentsToProcess.length);
-                const currentBatchEquipments = this.equipmentsToProcess.slice(startIdx, endIdx);
-                const batchFile = this.prepareAndWriteBatchFile(currentBatchEquipments, startIdx, endIdx);
+                currentBatchEquipments = this.getNextBatch()
+                const batchFileId = Date.now().toString();
+                const batchFile = this.prepareAndWriteBatchFile(currentBatchEquipments, batchFileId);
                 const fileId = await this.submitBatchFile(batchFile);
                 batchId = await this.createBatch(fileId);
-                currentBatchEquipments.forEach(e => this.submittedEquipmentIds.add(e.id.toString()));
+                this.registerSubmittedEquipments(batchId, currentBatchEquipments);
                 this.saveStateToFile();
             } else {
                 console.log("Resuming from In Progress Batch: " + batchId);
+                const batchEquipmentIds = this.batchEquipments.get(batchId);
+                if (batchEquipmentIds != null) {
+                    currentBatchEquipments = batchEquipmentIds.map(id => equipments.find(e => e.id.toString() === id)).filter(e => e != null);
+                }
             }
 
             // Poll and persist results
-            const batchResult = await this.pollBatchUntilComplete(batchId);
+            const batchResult = await this.pollBatchUntilComplete(batchId, currentBatchEquipments);
             if (batchResult) {
                 this.persistBatchResults(batchId, batchResult);
                 results[batchId] = batchResult;
             }
-            this.currentBatchIndex += BATCH_SIZE;
             this.saveStateToFile();
         }
         return results;
     }
 
-    private prepareAndWriteBatchFile(equipments: iItem[], startIdx: number, endIdx: number): string {
+    private prepareAndWriteBatchFile(equipments: iItem[], batchFileId: string): string {
         const data = equipments.map(e => (
             JSON.stringify({
                 custom_id: `request-${this.runId}-${e.id}`,
@@ -163,7 +179,7 @@ export class BatchManager {
                 }
             })
         ));
-        const filename = `${this.batchDir}/${this.modelName}-${startIdx}To${endIdx}.jsonl`;
+        const filename = `${this.batchDir}/${this.modelName}-${batchFileId}.jsonl`;
         writeFileSync(filename, data.join("\n"));
         return filename;
     }
@@ -187,7 +203,7 @@ export class BatchManager {
         return batch.id;
     }
 
-    private async pollBatchUntilComplete(batchId: string): Promise<any[] | null> {
+    private async pollBatchUntilComplete(batchId: string, batchEquipments: iItem[]): Promise<any[] | null> {
         let batchStatus = "validating";
         let batchResult: any = null;
         const nonTerminalStatuses = ["validating", "in_progress", "finalizing"];
@@ -196,7 +212,6 @@ export class BatchManager {
             const batchInfo = await this.client.batches.retrieve(batchId);
             batchStatus = batchInfo.status;
             this.batches.set(batchId, batchStatus);
-            this.saveStateToFile();
             console.log(`Batch ${batchId} status: ${batchStatus}`);
         }
         // Handle terminal statuses
@@ -206,20 +221,16 @@ export class BatchManager {
             const fileResponse = await this.client.files.content(batchInfo.output_file_id);
             const content = await fileResponse.text();
             batchResult = this.parseBatchResults(content);
+            this.saveStateToFile();
             return batchResult;
         } else if (["failed", "expired", "cancelled"].includes(batchStatus)) {
-            let errorDetails = `Batch ${batchId} failed with status: ${batchStatus}`;
-            if (batchInfo.error_file_id) {
-                try {
-                    const errorFileResponse = await this.client.files.content(batchInfo.error_file_id);
-                    const errorContent = await errorFileResponse.text();
-                    errorDetails += `\nError file contents:\n${errorContent}`;
-                } catch (err) {
-                    errorDetails += `\nFailed to retrieve error file: ${err}`;
-                }
-            }
-            throw new Error(errorDetails);
+            console.error(`Batch ${batchId} failed with status: ${batchStatus}`);
+            console.log(`Adding ${batchEquipments.length} equipments back to queue`);
+            this.equipmentsToProcess.union(new Set(batchEquipments));
+            this.saveStateToFile();
+            return null;
         }
+        this.saveStateToFile();
         return null;
     }
 
@@ -235,13 +246,16 @@ export class BatchManager {
         const lines = content.split("\n").filter(line => line.trim() !== "");
         return lines.map(line => {
             const parsedLine = JSON.parse(line);
-            const llmResponse = parsedLine.choices[0].message.content;
-
+            const llmResponse = parsedLine.response.body.choices[0].message.content;
+            const ids = parsedLine.custom_id.split("-");
+            const equipmentId = ids[ids.length - 1];
             if (!llmResponse) {
                 return {
-                    status: "failed",
-                    error: "Failed to get LLM content",
-                    llm_response: "",
+                    [equipmentId]: {
+                        status: "failed",
+                        error: "Failed to get LLM content",
+                        llm_response: "",
+                    }
                 };
             }
 
@@ -249,33 +263,45 @@ export class BatchManager {
             const matchs = matcher.exec(llmResponse);
             if (!matchs) {
                 return {
-                    status: "failed",
-                    error: "Failed to match the response to expected format",
-                    llm_response: llmResponse,
+                    [equipmentId]: {
+                        status: "failed",
+                        error: "Failed to match the response to expected format",
+                        llm_response: llmResponse,
+                    }
                 };
             }
-
-            const response = evaluateObjectString(matchs[1], {
-                ModifierTypes: modifiersConfig.ModifierTypes,
-                AttackMultiplierTypes: engineConfigs.AttackMultiplierTypes,
-                AttackTypes: engineConfigs.AttackTypes,
-                AttackRangeTypes: engineConfigs.AttackRangeTypes,
-                ElementTypes: engineEnums.ElementTypes,
-                ItemLocations: engineEnums.ItemLocations,
-                JobIds: engineEnums.JobIds,
-                RaceTypes: engineEnums.RaceTypes,
-                SizeTypes: engineEnums.SizeTypes,
-                TargetTypes: engineEnums.TargetTypes,
-                ComparisonConditions: conditionsConfig.ComparisonConditions,
-                ConditionTypes: conditionsConfig.ConditionTypes,
-            });
-
-            return {
-                status: response.status,
-                modifiers: response.modifiers,
-                error: response.error,
-                llm_response: llmResponse,
-            };
+            try{
+                const response = evaluateObjectString(matchs[1], {
+                    ModifierTypes: modifiersConfig.ModifierTypes,
+                    AttackMultiplierTypes: engineConfigs.AttackMultiplierTypes,
+                    AttackTypes: engineConfigs.AttackTypes,
+                    AttackRangeTypes: engineConfigs.AttackRangeTypes,
+                    ElementTypes: engineEnums.ElementTypes,
+                    ItemLocations: engineEnums.ItemLocations,
+                    JobIds: engineEnums.JobIds,
+                    RaceTypes: engineEnums.RaceTypes,
+                    SizeTypes: engineEnums.SizeTypes,
+                    TargetTypes: engineEnums.TargetTypes,
+                    ComparisonConditions: conditionsConfig.ComparisonConditions,
+                    ConditionTypes: conditionsConfig.ConditionTypes,
+                });
+                return {
+                    [equipmentId]: {
+                        status: response.status,
+                        modifiers: response.modifiers,
+                        error: response.error,
+                        llm_response: llmResponse,
+                    }
+                };
+            } catch (e) {
+                return {
+                    [equipmentId]: {
+                        status: "failed",
+                        error: "Failed to evaluate the response: " + e,
+                        llm_response: llmResponse,
+                    }
+                };
+            }
         });
     }
 
