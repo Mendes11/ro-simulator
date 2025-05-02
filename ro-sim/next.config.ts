@@ -5,9 +5,6 @@ const nextConfig: NextConfig = {
   //   ignoreDuringBuilds: true,
   // },
   /* config options here */
-  outputFileTracingIncludes: {
-    './src/lib/repositories/local/equipments.ts': ['./src/lib/repositories/local/*.json'],
-  },
   images: {
     remotePatterns: [
       {
