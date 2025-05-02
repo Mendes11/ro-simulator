@@ -10,6 +10,7 @@ export async function loadCardsFileAsync(): Promise<string> {
 function loadCardsFile(): string {
     return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/cards.json", 'utf-8');
 }
+
 export class LocalCardRepository {
     cards: {[k: string]: iCard}
 
