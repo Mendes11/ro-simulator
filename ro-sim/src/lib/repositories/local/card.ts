@@ -1,14 +1,20 @@
 import { iCard } from "@/engine/types/card";
 import { CardSearchArgs } from "@/engine/types/repositories";
-import { promises as fs } from "fs";
+import fs from "fs";
 
-const file: string = await fs.readFile(process.cwd() + "/src/lib/repositories/local/cards.json", 'utf-8');
+export async function loadCardsFileAsync(): Promise<string> {
+    'use server'
+    return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/cards.json", 'utf-8');
+}
 
+function loadCardsFile(): string {
+    return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/cards.json", 'utf-8');
+}
 export class LocalCardRepository {
     cards: {[k: string]: iCard}
 
     public constructor() {
-        this.cards = JSON.parse(file);
+        this.cards = JSON.parse(loadCardsFile());
         console.log(`Loaded ${Object.keys(this.cards).length} cards`)
         console.log("Indexing Cards...");
         console.log("Finished Indexing Equipments.");
