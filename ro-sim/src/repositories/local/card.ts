@@ -3,15 +3,7 @@ import { CardSearchArgs } from "@/engine/types/repositories";
 import { promises as fs } from "fs";
 import path from "path";
 
-let file: string;
-
-if (process.env.NODE_ENV === "production") {
-    console.log("Loading cards.json from Bucket");
-    const url = "https://uhajjqevycyljnw0.public.blob.vercel-storage.com/cards-plaQctXTUfgv0sSni9e4qfYbWLxeXa.json"
-    file = await fetch(url).then(res => res.text())
-} else {
-    file = await fs.readFile(path.join(process.cwd(), "cards.json"), 'utf-8');
-}
+const file: string = await fs.readFile(path.join(process.cwd(), "cards.json"), 'utf-8');
 
 export class LocalCardRepository {
     cards: {[k: string]: iCard}

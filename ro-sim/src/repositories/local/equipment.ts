@@ -4,20 +4,8 @@ import { EquipmentSearchArgs } from "@/engine/types/repositories";
 import { promises as fs } from "fs";
 import path from "path";
 
-let file: string;
-let modifiersFile: string;
-
-if (process.env.NODE_ENV === "production") {
-    console.log("Loading equipments.json from Bucket");
-    const url = "https://uhajjqevycyljnw0.public.blob.vercel-storage.com/equipments-oOSw0T5xmKFjIxM942MeVrgmwEqFPE.json"
-    file = await fetch(url).then(res => res.text())
-    modifiersFile = await fs.readFile(path.join(process.cwd(), "equipments-modifiers.json"), 'utf-8');
-} else {
-    console.log('Loading %s', path.join(process.cwd(), "equipments.json"));
-    file = await fs.readFile(path.join(process.cwd(), "equipments.json"), 'utf-8');
-    modifiersFile = await fs.readFile(path.join(process.cwd(), "equipments-modifiers.json"), 'utf-8');
-}
-
+const file: string = await fs.readFile(path.join(process.cwd(), "equipments.json"), 'utf-8');
+const modifiersFile: string = await fs.readFile(path.join(process.cwd(), "equipments-modifiers.json"), 'utf-8');
 export class LocalEquipmentRepository {
     equipments: {[k: string]: iEquipment}
     typeIndex: Map<ItemTypes, string[]>;
@@ -74,7 +62,7 @@ export class LocalEquipmentRepository {
                 Object.keys(this.equipments).map(k => this.equipments[k] as iEquipment)
             )
         })
-        
+
     }
 
     async Find(id: number): Promise<iEquipment> {
