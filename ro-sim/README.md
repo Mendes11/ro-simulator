@@ -1,13 +1,74 @@
 # RO Simulator
 
-Ragnarok Online Simulator, currently dedicated for Brazil Ragnarok Online server (bRO)
+[![Build Status](#)](#) [![License](#)](#)
+
+A simulator for Ragnarok Online, currently focused on the Brazil Ragnarok Online server (bRO). RO Simulator allows users to simulate character builds, equipment, and modifiers without manually inputting all item effects.
+
+---
+
+## Table of Contents
+
+- [RO Simulator](#ro-simulator)
+  - [Table of Contents](#table-of-contents)
+  - [About](#about)
+  - [Features](#features)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+    - [Running the Simulator](#running-the-simulator)
+  - [Usage](#usage)
+  - [Data Extraction Pipeline](#data-extraction-pipeline)
+    - [1. Equipment/Cards Base Info](#1-equipmentcards-base-info)
+    - [2. Combo/Modifiers Extraction](#2-combomodifiers-extraction)
+  - [Project Structure](#project-structure)
+  - [Contributing](#contributing)
+  - [License](#license)
+
+---
 
 ## About
 
-This project aim is to enable users to simulate their characters without requiring them to fill all the equipments modifiers by themselves. All combos and item effects are already implemented into the system, all you have to do is just add the items.
+Ragnarok Online is a classic MMORPG with a rich equipment and card system. The aim of this project is to let users simulate their characters with all item combos and effects automatically included—no need to manually enter modifiers.
+
+---
+
+## Features
+
+- Full simulation of characters, equipment, cards, and modifiers
+- Automatic extraction and parsing of item effects and combos
+- Support for bRO item data
 
 
-## Run
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (vXX+)
+- npm, yarn, pnpm, or bun
+- Access to `item_info.lub` from the bRO GRF
+- OpenAI API key (for data extraction)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/ro-simulator.git
+cd ro-simulator
+
+# Install dependencies
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+### Running the Simulator
 
 ```bash
 npm run dev
@@ -19,31 +80,65 @@ pnpm dev
 bun dev
 ```
 
-## Developers
+---
 
-Some important information for developers
+## Usage
 
+- Add your items or equipment as instructed by the UI or CLI.
+- The simulator will automatically apply all known combos and modifiers.
+- For advanced usage and data extraction, see below.
 
-### Items / Effects and Combos Extraction
->[!Important]
-Some steps below require an OpenAI API key, and will cost you money to run.
+---
 
-As mentioned, the aim of this project is to have all combos/effects already implemented in the system, so we need to extract it ourselves.
+## Data Extraction Pipeline
 
-The data extraction pipeline is as follows:
+> [!Note]
+> Some steps require an OpenAI API key and may incur costs.
 
-#### 1. Equipment/Cards Base info
+### 1. Equipment/Cards Base Info
 
-Extract cards and equipments data from `item_info.lub` file in the GRF, and store them into `equipments.json`, and `cards.json`.
+Extract cards and equipment data from `item_info.lub` (from the GRF) and store in `equipments.json` and `cards.json`. These files contain basic info (name, description, base stats, slots, etc.), but not combos/modifiers.
 
-These files will have basic information such as name, description, base def/atk, how many slots, name and etc... Note that no combos/modifiers are available in this step.
+### 2. Combo/Modifiers Extraction
 
-#### 2. Combo/Modifiers extraction
+Use LLMs to extract structured data from item descriptions.
 
-Extracting structured data out of unstructured data is what LLMs do best nowadays. What used to be a extremely difficult problem, now became trivial.
+To extract all combos and modifiers, run:
 
-To extract all combos and modifiers, use the `scripts/parseModifiersBatch.ts <name>` script (name will be used to generate a folder in `./tmp/<name>` where all the parser states will be stored).
+```bash
+npm run parse-modifiers-batch <name>
+```
 
-It requires an OpenAI API key (with credits of course), and will cost around 18 USD. This script will call the Batch API from OpenAI, and ask an LLM to fit the combos and effects in the item description into the `ModifierData` type structure created (see `engine` folder for all types, and `lib/modifiersParser` for all the parsing logic and prompts).
+- `<name>`: Used to create a folder in `./tmp/<name>` for parser states.
+- Requires an OpenAI API key (set as an environment variable).
+- Estimated cost: ~$18 USD for a full run.
+- The script is resumable; if interrupted, rerun to continue from the last state.
 
-The script itself is resumable, so you can kill it and once you call it again, it should resume from where it stopped (assuming you still have the states stored in the temporary folder as mentioned at the beginning of the topic).
+For type definitions, see the `engine` folder. Parsing logic and prompts are in `lib/modifiersParser`.
+
+---
+
+## Project Structure
+
+```
+ro-sim/
+├── engine/              # Core simulation logic and types
+├── lib/                 # Parsing logic, prompts, utilities
+├── scripts/             # Data extraction and batch processing scripts
+├── tmp/                 # Temporary files for extraction state
+├── public/              # Static assets (if applicable)
+├── src/                 # Frontend or CLI source code
+└── README.md
+```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+---
+
+## License
+
+[MIT](./LICENSE)
