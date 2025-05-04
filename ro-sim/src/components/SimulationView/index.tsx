@@ -55,7 +55,7 @@ export const SimulationView = ({
     return (
         <div className="p-2">
           <div>
-            <label htmlFor="attackType">Habilidade: </label>
+            <label htmlFor="attackType">Habilidadee: </label>
             <select value={selectedSkill?.id ?? ""}
               onChange={handleSkillSelected}
             className="border-2 rounded-md p-1" name="attackType">
@@ -96,12 +96,12 @@ export const SimulationView = ({
               <li>%Tamanho = {summary.attackMultipliers.size * 100.0}%</li>
               <li>%Elemento (Oponente) = {summary.attackMultipliers.targetElement * 100.0}%</li>
               <li>%Elemento (Ataque) = {summary.attackMultipliers.attackElement * 100.0}%</li>
-              <li>%Dano {summary.attackInfo.attackType == AttackTypes.Magic ? 'Mágico' : 'Físico'} = {summary.attackMultipliers.default}%</li>
+              <li>%Dano {summary.attackInfo.attackType == AttackTypes.Magic ? 'Mágico' : 'Físico'} = {summary.attackMultipliers.default * 100.0}%</li>
               <li>%Atq Arma = {summary.attackMultipliers.weaponAtk * 100.0}%</li>
               <li>%Dano Dist/Corpo a Corpo = {summary.attackMultipliers.range * 100.0}%</li>
               <li>%Multiplicadores (Grupo A) = {summary.attackMultipliers.weaponDamage * 100.0}%</li>
               <li>%Multiplicadores (Grupo B) = {summary.attackMultipliers.groupB * 100.0}%</li>
-              <li>%Dano Crítico = {summary.attackMultipliers.crit}%</li>
+              <li>%Dano Crítico = {summary.attackMultipliers.crit * 100.0}%</li>
               <li>%Habilidade = {summary.attackMultipliers.skill * 100.0}%</li>
               <li>Grupo A = {result.upperBound.groupA}</li>
               <li>Grupo B = {result.upperBound.groupB}</li>
