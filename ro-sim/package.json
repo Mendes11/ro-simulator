@@ -14,6 +14,7 @@
     "setup-db": "tsx scripts/setupDB.ts",
     "parse-modifiers": "tsx scripts/parseModifiers.ts",
     "parse-modifiers-batch": "tsx scripts/parseModifiersBatch.ts",
+    "generate-items-modifiers": "tsx scripts/generateItemsModifiers.ts",
     "simulate": "tsx scripts/simulate.ts"
   },
   "dependencies": {
