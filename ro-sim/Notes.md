@@ -20,7 +20,21 @@ Se o Condition for considerado o objeto primário... Mas não são todos que pos
 ---
 
 
-TODO: 
+## TODO:
+
+1. Maybe move the active modifiers logic to an instance of iEquipmentInstance?
+2. Implement Skills Tab
+   1. Should show the combo required skills, so the user can pick which level
+   2. Should show all other buff-type skills (independent of job) (non required)
+   3. Allow for searchable skills, to speed up (UX -- can leave for later)
+3. Implement Extras Tab
+   1. Create a form with all CharacterModifierData inputs
+4. Implement Element Selector in the simulator view.
+5. Add Enchantments to Weapons
+   1. Search for way to discover the available enchantments from the files (or at least how many)
+   2. Add enchantments to cards.json (or another file?)
+
+---
 
 Skills podem ter modifiers, mas o attackMultiplier DEVE vir após computarmos tudo, pois as skills podem se basear em atributos totais, como o SBK
 
