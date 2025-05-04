@@ -1,6 +1,7 @@
 // Parse Modifiers through an LLM to configure the structure
 import { EquipmentData, iEquipment } from "@/engine/types/equipment";
-import { ParsedModifiers, parseItemModifiers } from "@/lib/modifiersParser";
+import { parseItemModifiers } from "@/lib/modifiersParser";
+import { ParsedItemModifiers, ParsedModifiers } from "@/lib/modifiersParser/types";
 import nextEnv from "@next/env";
 import { promises as fs } from "fs";
 const { loadEnvConfig } = nextEnv;
@@ -18,16 +19,16 @@ console.log("Retry Failed = " + retryFailed);
 // Load Databases
 
 const equipments = await loadEquipments();
-let parsedModifiers = await loadParsedModifiers();
+const parsedModifiers = await loadParsedModifiers();
 console.log("Total Equipments = " + Object.keys(equipments).length);
 console.log("Total Parsed Modifiers = " + Object.keys(parsedModifiers).length);
 
 // Data preparation
 
-let equipmentsList = Object.keys(equipments).map(e => equipments[e]);
-// There are a lot of equipments that are the same item but with different Ids. 
+const equipmentsList = Object.keys(equipments).map(e => equipments[e]);
+// There are a lot of equipments that are the same item but with different Ids.
 // I'll create a memory hash of those descriptions to map to an already processed modifier.
-const cachedDescriptions = cacheDescriptions(equipments, parsedModifiers); 
+const cachedDescriptions = cacheDescriptions(equipments, parsedModifiers);
 
 
 try{
@@ -55,7 +56,7 @@ try{
     await storeParsedModifiers(parsedModifiers);
 }
 
-async function callParser(client: OpenAI, modelName: string, equipment: iEquipment): Promise<ParsedModifiers> {
+async function callParser(client: OpenAI, modelName: string, equipment: iEquipment): Promise<ParsedItemModifiers> {
     for(let i=0; i<3; i++) {
         try {
             return await parseItemModifiers(client, modelName, equipment);
@@ -75,11 +76,11 @@ async function loadEquipments(): Promise<{[k: string]: EquipmentData}> {
     return JSON.parse(file)
 }
 
-async function storeParsedModifiers(parsedModifiers: {[k: string]: ParsedModifiers}) {
+async function storeParsedModifiers(parsedModifiers: ParsedModifiers) {
     await fs.writeFile("equipments-modifiers.json", JSON.stringify(parsedModifiers));
 }
 
-async function loadParsedModifiers(): Promise<{[k: string]: ParsedModifiers}> {
+async function loadParsedModifiers(): Promise<ParsedModifiers> {
     try {
         return JSON.parse(await fs.readFile(path.join(process.cwd(), "equipments-modifiers.json"), "utf-8"));
     } catch {
@@ -87,10 +88,10 @@ async function loadParsedModifiers(): Promise<{[k: string]: ParsedModifiers}> {
     }
 }
 
-function cacheDescriptions(equipments: {[k: string]: EquipmentData}, parsedModifiers: {[k: string]: ParsedModifiers}): {[k: string]: ParsedModifiers} {
-    const cachedDescriptions: {[k: string]: ParsedModifiers} = {} 
+function cacheDescriptions(equipments: {[k: string]: EquipmentData}, parsedModifiers: ParsedModifiers): ParsedModifiers {
+    const cachedDescriptions: ParsedModifiers = {}
     Object.keys(parsedModifiers).forEach(id => {
-        if (parsedModifiers[id].status === "success" && !(equipments[id].description in cachedDescriptions)) {
+        if ((parsedModifiers[id].status === "success") && !(equipments[id].description in cachedDescriptions)) {
             cachedDescriptions[equipments[id].description] = parsedModifiers[id];
         }
     })
