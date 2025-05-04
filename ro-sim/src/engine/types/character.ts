@@ -12,8 +12,7 @@ export type CharacterData = {
     baseAttrs: AttributesData,
     equipments: iEquipmentInstance[];
     job: Job;
-    // shadowEquipments: iEquipmentInstance;
-    // job: Jobs
+    shadowEquipments: iEquipmentInstance[];
     // skills: iSkillInstance[]
 }
 export interface iCharacter extends CharacterData {

@@ -26,13 +26,19 @@ export class Character implements iCharacter {
     level: number;
     baseAttrs: iAttributes;
     equipments: iEquipmentInstance[];
+    shadowEquipments: iEquipmentInstance[];
     job: Job;
 
     public constructor(data?: CharacterData){
         this.level = data?.level ?? 1;
         this.baseAttrs = new Attributes(data?.baseAttrs);
         this.equipments = data?.equipments ?? [];
+        this.shadowEquipments = data?.shadowEquipments ?? [];
         this.job = data?.job ?? Novice;
+    }
+
+    allEquipments(): iEquipmentInstance[] {
+        return [...this.equipments, ...this.shadowEquipments];
     }
 
     findSkill(){
@@ -41,7 +47,7 @@ export class Character implements iCharacter {
     }
 
     findEquipmentByName(name: string){
-        return this.equipments.find(e => e.equipment.name === name);
+        return this.allEquipments().find(e => e.equipment.name === name);
     }
 
     findEquipmentByLocation(location: ItemLocations){
@@ -51,7 +57,7 @@ export class Character implements iCharacter {
     findCardByName(name: string): { slot: iCard; equipmentInstance: iEquipmentInstance; } | undefined {
         return this.cardsList().find(({slot}) => slot.name === name);
     }
-    
+
     cardsList(): { slot: iCard, equipmentInstance: iEquipmentInstance}[] {
         return this.equipments.flatMap(e => e.slots.flatMap(slot => ({slot: slot, equipmentInstance: e})))
     }
@@ -61,7 +67,7 @@ export class Character implements iCharacter {
         // Run through all Equipments and Cards modifiers and call their `.getModifier` method to check if they are valid or not
         // returning the sum of all modifiers per equipment.
         // NOTE: It may be interesting to split this between equipment and card modifiers when thinking about the presentation layer.
-        return this.equipments.map(eqp => {
+        return this.allEquipments().map(eqp => {
             const applyData: ModifierApplyData = {
                 character: this,
                 sets: sets,
@@ -76,15 +82,23 @@ export class Character implements iCharacter {
                     location: eqp.location
                 }
             }
-            
+
             const equipmentModifiers = eqp.equipment.modifiers
                 ?.map(mod => newModifier(mod).getModifier(applyData))
                 ?.filter(m => m != null) ?? []
 
-            const cardsModifiers = eqp.slots.flatMap(slot => 
-                slot.modifiers
-                    ?.map(mod => newModifier(mod).getModifier(applyData))
-                    ?.filter(m => m != null) ?? []
+            const cardsModifiers = eqp.slots.flatMap(slot => {
+                if (slot.name === "Carta Crux Findel") {
+                    console.log("Findel Breakpoint");
+                    const modifiers = slot.modifiers?.map(mod => newModifier(mod));
+                    const appliedModifiers = modifiers?.map(m => m.getModifier(applyData));
+                    console.log(appliedModifiers);
+                }
+                return slot.modifiers
+                ?.map(mod => newModifier(mod).getModifier(applyData))
+                ?.filter(m => m != null) ?? []
+            }
+
             );
             if (equipmentModifiers.length > 0 || cardsModifiers.length > 0) {
                 let modifiers: iCharacterModifiers = new CharacterModifiers()
@@ -93,7 +107,7 @@ export class Character implements iCharacter {
                 return {eqp: eqp, charModifiers: modifiers}
             }
             return
-            
+
         }).filter(m => m != null);
     }
 
@@ -108,7 +122,7 @@ export class Character implements iCharacter {
         if (mods.length > 0) {
             charModifiers = mods.map(m => m.charModifiers).reduce((l, r) => l.sum(r), charModifiers);
         }
-        
+
         const summary: SimulationSummary = {
             level: this.level,
             target: target,
@@ -116,6 +130,9 @@ export class Character implements iCharacter {
             attackMultipliers: charModifiers.attackMultipliers,
             attributes: charModifiers.attributes,
             subStats: charModifiers.subStats,
+        }
+        if (skill != null) {
+            summary.attackMultipliers.skillAtk = skill.skill.attackMultiplier!(skill.level, summary);
         }
         return Simulate(summary);
     }

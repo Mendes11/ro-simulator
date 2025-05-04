@@ -46,9 +46,9 @@ FINAL_ANSWER:
 3. Replace the content tag above with one of the typescript object structures below:
     - For when you are able to extract everything:
         {status: "success", modifiers: [<modifiers>]
-    - For when you believe some parts of the description weren't able to fit in the code snippets you were given:
+    - For when you were not able to extract all modifiers into the existing data structure:
         {status: "partial", modifiers: [<modifiers>], error: "Place here why its partial"}
-    - For when you couldn't fit the description into the existing types from the code snippets you were given:
+    - For when you couldn't fit the whole description into the existing types from the code snippets you were given:
         {status: "failed", error: "<some description to allow the user to identify why it failed>"}
 
 4. You can ignore the resistance effects that aren't mapped, but only the resistance.
@@ -71,4 +71,5 @@ FINAL_ANSWER:
     Classes: ^777777Todas^000000
 8. When creating a modifier object, it must either be complete (catching everything from that block), or in case something won't exactly fit, you skip that part and assign status to partial, explaining what's missing. Don't try to half-bake the object.
    because it'll hurt more if results in weird outcomes rather than not having it at all.
+9. When generating the typescript objects, you MUST CALL the enum, NOT use its value. Eg: use {type: ModifierTypes.Refinement}, instead of its value representation {type: "refinement"}.
 `

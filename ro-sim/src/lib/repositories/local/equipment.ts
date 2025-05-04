@@ -2,6 +2,7 @@ import { ItemLocations } from "@/engine/types/enums";
 import { iEquipment, ItemSubTypes, ItemTypes } from "@/engine/types/equipment";
 import { EquipmentSearchArgs } from "@/engine/types/repositories";
 import { loadEquipmentsFile, loadModifiersFile } from "./utils";
+import { ModifierData } from "@/engine/modifiers/types/config";
 
 export class LocalEquipmentRepository {
     equipments: {[k: string]: iEquipment}
@@ -13,9 +14,9 @@ export class LocalEquipmentRepository {
     public constructor() {
         this.equipments = JSON.parse(loadEquipmentsFile());
         const modifiers = JSON.parse(loadModifiersFile());
-        Object.keys(modifiers).forEach(id => {
-            if (this.equipments[id] && modifiers[id].status != "failed") {
-                this.equipments[id].modifiers = modifiers[id].modifiers;
+        Object.entries(modifiers).forEach(([id, modifiers]) => {
+            if (this.equipments[id] && modifiers != null) {
+                this.equipments[id].modifiers = modifiers as ModifierData[];
             }
         })
         this.typeIndex = new Map();

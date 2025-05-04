@@ -1,6 +1,7 @@
 import { iCard } from "@/engine/types/card";
 import { CardSearchArgs } from "@/engine/types/repositories";
 import { loadCardsFile, loadModifiersFile } from "./utils";
+import { ModifierData } from "@/engine/modifiers/types/config";
 
 
 export class LocalCardRepository {
@@ -9,11 +10,11 @@ export class LocalCardRepository {
     public constructor() {
         this.cards = JSON.parse(loadCardsFile());
         const modifiers = JSON.parse(loadModifiersFile());
-        Object.keys(modifiers).forEach(id => {
-            if (this.cards[id] && modifiers[id].status != "failed") {
-                this.cards[id].modifiers = modifiers[id].modifiers;
+        Object.entries(modifiers).forEach(([id, modifiers]) => {
+            if (this.cards[id] && modifiers != null) {
+                this.cards[id].modifiers = modifiers as ModifierData[];
             }
-        })  
+        })
         console.log(`Loaded ${Object.keys(this.cards).length} cards`)
         console.log("Indexing Cards...");
         console.log("Finished Indexing Cards.");

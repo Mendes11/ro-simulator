@@ -122,7 +122,7 @@ export default function Home() {
             }
             {selectedTab === "shadow" && (
             <CharacterShadowEquipmentsView
-                equipments={equipments}
+                equipments={shadowEquipments}
                 onEquipmentAdded={onShadowEquipmentAdded}
                 onEquipmentRemoved={onShadowEquipmentRemoved}
             />
@@ -139,6 +139,7 @@ export default function Home() {
           character={new Character({
             baseAttrs: charAttributes,
             equipments: equipments,
+            shadowEquipments: shadowEquipments,
             level: level,
             job: job,
           })}

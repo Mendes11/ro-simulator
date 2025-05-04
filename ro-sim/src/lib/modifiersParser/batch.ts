@@ -1,18 +1,17 @@
 
 import OpenAI from "openai";
 import { SystemPrompt } from "./systemPrompt";
-import { userPrompt } from "./utils";
+import { parseModifiersFromResponse, userPrompt } from "./utils";
 import { iItem } from "@/engine/types/equipment";
 import { createReadStream, writeFileSync, readFileSync, existsSync, mkdirSync, readdirSync, readFileSync as fsReadFileSync, writeFileSync as fsWriteFileSync } from "fs";
 import path from "path";
-import { evaluateObjectString } from "./utils";
-import * as engineConfigs from "@/engine/types/config";
-import * as engineEnums from "@engine/types/enums";
-import * as modifiersConfig from "@/engine/modifiers/types/config";
-import * as conditionsConfig from "@/engine/modifiers/conditions/types/config";
 import { ParsedItemModifiers, ParsedModifiers } from "./types";
 
 const BATCH_SIZE = 30;
+type RunOptions = {
+    retryFailed?: boolean;
+    retryPartial?: boolean;
+}
 
 export class BatchManager {
     private client: OpenAI;
@@ -68,7 +67,7 @@ export class BatchManager {
         };
         writeFileSync(this.stateFile, JSON.stringify(stateObject, null, 2));
         console.log(`Batch state saved to ${this.stateFile}`);
-        writeFileSync(path.join(this.stateDir, 'items-modifier.json'), JSON.stringify(this.completedResults))
+        writeFileSync(path.join(this.stateDir, 'all-results.json'), JSON.stringify(this.completedResults))
     }
 
     private loadStateFromFile() {
@@ -113,12 +112,16 @@ export class BatchManager {
         });
     }
 
-    private getItemsToProcess(): Set<iItem> {
+    private getItemsToProcess(includeFailed: boolean, includePartial: boolean): Set<iItem> {
         const itemsToProcess = new Set(this.items);
-        Object.keys(this.completedResults).forEach(id => {
-            const item = this.itemsMap.get(id);
-            if (item != null) {
-                itemsToProcess.delete(item);
+        Object.entries(this.completedResults).forEach(([id, result]) => {
+            if (result.status === "success"
+            || (result.status === "failed" && !includeFailed)
+            || (result.status === "partial" && !includePartial)) {
+                const item = this.itemsMap.get(id);
+                if (item != null) {
+                    itemsToProcess.delete(item);
+                }
             }
         });
         Object.entries(this.batches).filter(([, status]) => status === "in_progress").forEach(([batchId, ]) => {
@@ -152,9 +155,9 @@ export class BatchManager {
      * Submits all batches sequentially and waits for each to complete before submitting the next.
      * Returns all results at the end.
      */
-    async run() {
+    async run(options: RunOptions) {
         // Only process equipment not already submitted
-        this.itemsToProcess = this.getItemsToProcess();
+        this.itemsToProcess = this.getItemsToProcess(options.retryFailed ?? false, options.retryPartial ?? false);
         while (this.itemsToProcess.size > 0) {
             // If there's an in progress batch, skip batch creation and start polling it
             let batchId = this.findPendingBatch();
@@ -313,50 +316,8 @@ export class BatchManager {
                     }
                 ];
             }
-
-            const matcher = /FINAL_ANSWER:\s+([\s\S]*)/gim;
-            const matchs = matcher.exec(llmResponse);
-            if (!matchs) {
-                return [
-                    itemId, {
-                        status: "failed",
-                        error: "Failed to match the response to expected format",
-                        llm_response: llmResponse,
-                    }
-                ];
-            }
-            try{
-                const response = evaluateObjectString(matchs[1], {
-                    ModifierTypes: modifiersConfig.ModifierTypes,
-                    AttackMultiplierTypes: engineConfigs.AttackMultiplierTypes,
-                    AttackTypes: engineConfigs.AttackTypes,
-                    AttackRangeTypes: engineConfigs.AttackRangeTypes,
-                    ElementTypes: engineEnums.ElementTypes,
-                    ItemLocations: engineEnums.ItemLocations,
-                    JobIds: engineEnums.JobIds,
-                    RaceTypes: engineEnums.RaceTypes,
-                    SizeTypes: engineEnums.SizeTypes,
-                    TargetTypes: engineEnums.TargetTypes,
-                    ComparisonConditions: conditionsConfig.ComparisonConditions,
-                    ConditionTypes: conditionsConfig.ConditionTypes,
-                });
-                return [
-                    itemId, {
-                        status: response.status,
-                        modifiers: response.modifiers,
-                        error: response.error,
-                        llm_response: llmResponse,
-                    }
-                ];
-            } catch (e) {
-                return [
-                    itemId, {
-                        status: "failed",
-                        error: "Failed to evaluate the response: " + e,
-                        llm_response: llmResponse,
-                    }
-                ];
-            }
+            const itemModifiers = parseModifiersFromResponse(llmResponse)
+            return [itemId, itemModifiers];
         }));
     }
 

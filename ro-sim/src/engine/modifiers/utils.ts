@@ -13,7 +13,7 @@ import { JobCondition } from "./conditions/jobCondition";
 import { LevelCondition } from "./conditions/levelCondition";
 import { SkillCondition } from "./conditions/skillCondition";
 import { Combo } from "./combo";
-import { ModifierData, ModifierTypes } from "./types/config";
+import { AttributeModifierData, ComboModifierData, LevelModifierData, ModifierData, ModifierTypes, RefinementModifierData, StatsModifierData } from "./types/config";
 import { LevelModifier } from "./levelModifier";
 import { AttributeModifier } from "./attributeModifier";
 import { AttributeCondition } from "./conditions/attributeCondition";
@@ -26,30 +26,30 @@ import { LevelConditionData } from "./conditions/types/config";
 import { SkillConditionData } from "./conditions/types/config";
 import { AttributeConditionData } from "./conditions/types/config";
 
+
 export function newModifier(m: ModifierData): iModifier {
-    switch (m.type) {
-        // @ts-ignore
-        case "Stats": // The parser is sometimes using a string instead of the ModifierTypes.<Type> expression.
+    switch (m.type.toString().toLowerCase()) {
+        case "0":
+        case "stats": // The parser is sometimes using a string instead of the ModifierTypes.<Type> expression.
         case ModifierTypes.Stats:
-            return new StatsModifier(m.data, m.conditions);
-        // @ts-ignore
-        case "Refinement":
+            return new StatsModifier(m.data as StatsModifierData, m.conditions);
+        case "1":
+        case "refinement":
         case ModifierTypes.Refinement:
-            return new RefinementModifier(m.data, m.conditions);
-        // @ts-ignore
-        case "Combo":
+            return new RefinementModifier(m.data as RefinementModifierData, m.conditions);
+        case "2":
+        case "combo":
         case ModifierTypes.Combo:
-            return new Combo(m.data, m.conditions);
-        // @ts-ignore
-        case "LevelSteps":
+            return new Combo(m.data as ComboModifierData, m.conditions);
+        case "3":
+        case "levelsteps":
         case ModifierTypes.LevelSteps:
-          return new LevelModifier(m.data, m.conditions);
-        // @ts-ignore
-        case "AttributeSteps":
+          return new LevelModifier(m.data as LevelModifierData, m.conditions);
+        case "4":
+        case "attributesteps":
         case ModifierTypes.AttributeSteps:
-          return new AttributeModifier(m.data, m.conditions);
+          return new AttributeModifier(m.data as AttributeModifierData, m.conditions);
         default:
-            // @ts-expect-error unknown type
             throw new Error(`Unsupported Modifier Type: ${m.type}`)
     }
 }

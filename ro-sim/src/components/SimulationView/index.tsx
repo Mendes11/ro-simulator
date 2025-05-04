@@ -41,7 +41,8 @@ export const SimulationView = ({
     useEffect(() => {
       // const summary = getCharSummary(character, selectedSkill);
       // const result = Simulate(summary);
-      const res = character.simulate(ElementTypes.Neutral, DummyTarget, selectedSkill ? {skill: selectedSkill!, level: 10} : undefined);
+      console.log(selectedSkill);
+      const res = character.simulate(ElementTypes.Neutral, DummyTarget, selectedSkill ? {skill: selectedSkill!, level: selectedSkill.maxLevel} : undefined);
       setResult(res);
       setSummary(res.summary);
     }, [character, selectedSkill])

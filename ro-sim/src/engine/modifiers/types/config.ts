@@ -6,11 +6,11 @@ import { AttributesData } from "@/engine/types/config";
 import { CharacterSubStatsData } from "@/engine/types/config";
 
 export enum ModifierTypes {
-    Stats,
-    Refinement,
-    Combo,
-    LevelSteps,
-    AttributeSteps
+    Stats = "stats",
+    Refinement = "refinement",
+    Combo = "combo",
+    LevelSteps = "levelSteps",
+    AttributeSteps = "attributeSteps"
 }
 
 // Maps ModifierTypes to their respective configuration type.

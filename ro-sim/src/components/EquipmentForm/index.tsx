@@ -55,6 +55,7 @@ export default function EquipmentForm(props: Props) {
     } else {
       props.onSave(formData as iEquipmentInstance);
     }
+    console.log(formData)
   }
 
   const updateSlotItem = (i: number, slot: iCard) => {
