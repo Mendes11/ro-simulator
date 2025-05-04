@@ -3,7 +3,7 @@ import { iModifier } from "./types/engine";
 import { StatsModifier } from "./statsModifier";
 import { RefinementModifier } from "./refinementModifier";
 import { iCondition } from "./conditions/types/engine";
-import { ConditionData, RefinementConditionData } from "./conditions/types/config";
+import { ConditionData, EquipmentSet, RefinementConditionData } from "./conditions/types/config";
 import { RefinementCondition } from "./conditions/refinementCondition";
 import { EquipmentSetCondition } from "./conditions/equipmentSetCondition";
 import { CardSetCondition } from "./conditions/cardSetCondition";
@@ -25,6 +25,13 @@ import { JobConditionData } from "./conditions/types/config";
 import { LevelConditionData } from "./conditions/types/config";
 import { SkillConditionData } from "./conditions/types/config";
 import { AttributeConditionData } from "./conditions/types/config";
+import { ModifierApplyData } from "../types/equipment";
+import { iCharacter } from "../types/character";
+import { ElementTypes } from "../types/enums";
+import { AttackTypes, AttackRangeTypes } from "../types/config";
+import { iSkillInstance } from "../types/skills";
+import { iTarget } from "../types/target";
+import { iEquipmentInstance } from "../types/equipmentInstance";
 
 
 export function newModifier(m: ModifierData): iModifier {
@@ -88,5 +95,29 @@ export function newCondition(c: ConditionData): iCondition {
             return new AttributeCondition(c.data as AttributeConditionData);
         default:
             throw new Error(`Unsupported Condition Type: ${c.type}`)
+    }
+}
+
+export function newModifierApplyData(
+    character: iCharacter,
+    equipment: iEquipmentInstance,
+    element: ElementTypes,
+    target: iTarget,
+    sets: EquipmentSet[],
+    skill?: iSkillInstance
+): ModifierApplyData {
+    return {
+        character: character,
+        sets: sets,
+        target: target,
+        attackInfo: {
+            element: element,
+            attackType: skill?.skill.attackType ?? AttackTypes.Physical,
+            attackRangeType: skill?.skill.attackRangeType ?? AttackRangeTypes.Melee,
+        },
+        source: {
+            instance: equipment,
+            location: equipment.location
+        }
     }
 }

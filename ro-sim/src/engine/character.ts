@@ -11,7 +11,7 @@ import { CharacterModifiers } from "./modifiers/characterModifiers";
 import { CharacterSubStats } from "./subStats";
 import { AttackMultipliers } from "./attackMultipliers";
 import { AttackModifiers } from "./attackModifiers";
-import { newModifier } from "./modifiers/utils";
+import { newModifier, newModifierApplyData } from "./modifiers/utils";
 import { Novice } from "./jobs/novice";
 import { EquipmentSet } from "./modifiers/conditions/types/config";
 import { iCharacter } from "./types/character";
@@ -20,7 +20,7 @@ import { Job } from "./types/jobs";
 import { iCard } from "./types/card";
 import { iTarget } from "./types/target";
 import { iSkillInstance } from "./types/skills";
-import { iCharacterModifiers, iWeapon, ModifierApplyData } from "./types/equipment";
+import { iCharacterModifiers, iWeapon } from "./types/equipment";
 
 export class Character implements iCharacter {
     level: number;
@@ -68,20 +68,7 @@ export class Character implements iCharacter {
         // returning the sum of all modifiers per equipment.
         // NOTE: It may be interesting to split this between equipment and card modifiers when thinking about the presentation layer.
         return this.allEquipments().map(eqp => {
-            const applyData: ModifierApplyData = {
-                character: this,
-                sets: sets,
-                target: target,
-                attackInfo: {
-                    element: element,
-                    attackType: skill?.skill.attackType ?? AttackTypes.Physical,
-                    attackRangeType: skill?.skill.attackRangeType ?? AttackRangeTypes.Melee,
-                },
-                source: {
-                    instance: eqp,
-                    location: eqp.location
-                }
-            }
+            const applyData = newModifierApplyData(this, eqp, element, target, sets, skill);
 
             const equipmentModifiers = eqp.equipment.modifiers
                 ?.map(mod => newModifier(mod).getModifier(applyData))
@@ -96,9 +83,11 @@ export class Character implements iCharacter {
                 const modifiers = slot.modifiers.map(mod => newModifier(mod));
                 console.log(`Modifiers:`);
                 console.log(modifiers);
+
                 const appliedModifiers = modifiers.map(m => m.getModifier(applyData));
                 console.log("Applied Modifiers:");
                 console.log(appliedModifiers);
+
                 return appliedModifiers.filter(m => m != null);
             }
 
