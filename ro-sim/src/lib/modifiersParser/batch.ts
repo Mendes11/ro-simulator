@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import OpenAI from "openai";
 import { SystemPrompt } from "./systemPrompt";
 import { userPrompt } from "./utils";
@@ -221,6 +221,7 @@ export class BatchManager {
         return filename;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private selectModel(_item: iItem): string {
         // TODO: Select model based on the equipment description complexity
         // Nano: Simple
