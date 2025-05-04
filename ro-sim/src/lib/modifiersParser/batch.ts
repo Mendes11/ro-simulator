@@ -10,35 +10,40 @@ import * as engineConfigs from "@/engine/types/config";
 import * as engineEnums from "@engine/types/enums";
 import * as modifiersConfig from "@/engine/modifiers/types/config";
 import * as conditionsConfig from "@/engine/modifiers/conditions/types/config";
+import { ParsedItemModifiers, ParsedModifiers } from "./types";
 
-const BATCH_SIZE = 150;
+const BATCH_SIZE = 30;
 
 export class BatchManager {
     private client: OpenAI;
-    private modelName: string;
+    private items: iItem[];
+    private defaultModelName: string = "gpt-4.1-mini";
     private batches: Map<string, string>; // Map of batch ID to status
     private runId: string;
     private stateDir: string;
     private stateFile: string;
-    private equipmentsToProcess: Set<iItem>; // Store equipments to process
-    private submittedEquipmentIds: Set<string>; // Track submitted equipment IDs
-    private batchEquipments: Map<string, string[]>; // Map of batch ID to submitted equipment IDs
+    private itemsToProcess: Set<iItem>; // Store equipments to process
+    private batchItemIds: Map<string, string[]>; // Map of batch ID to submitted equipment IDs
     private batchDir: string;
     private resultsDir: string;
-    private completedResults: { [batchId: string]: any[] } = {}; // Loaded from disk
+    private completedResults: ParsedModifiers = {}; // Loaded from disk
+    private descriptionCache: Map<string, ParsedItemModifiers> = new Map(); // Cache of parsed modifiers for descriptions
+    private itemsMap: Map<string, iItem> = new Map();
 
-    constructor(client: OpenAI, modelName: string, runId: string) {
+    constructor(client: OpenAI, runId: string, items: iItem[]) {
         this.client = client;
-        this.modelName = modelName;
         this.runId = runId;
+        this.items = items;
+        this.itemsMap = new Map(items.map(e => [e.id.toString(), e]));
+
         this.stateDir = `tmp/${runId}`;
         this.stateFile = `${this.stateDir}/batch-state.json`;
         this.batchDir = `${this.stateDir}/batches`;
         this.resultsDir = `${this.batchDir}/results`;
         this.batches = new Map();
-        this.equipmentsToProcess = new Set();
-        this.submittedEquipmentIds = new Set();
-        this.batchEquipments = new Map();
+        this.itemsToProcess = new Set();
+        this.batchItemIds = new Map();
+        this.descriptionCache = new Map();
         // Ensure all directories exist
         if (!existsSync("tmp")) {
             mkdirSync("tmp");
@@ -59,11 +64,11 @@ export class BatchManager {
     public saveStateToFile() {
         const stateObject = {
             batches: Object.fromEntries(this.batches),
-            submittedEquipmentIds: Array.from(this.submittedEquipmentIds),
-            batchEquipments: Object.fromEntries(this.batchEquipments),
+            batchItemIds: Object.fromEntries(this.batchItemIds),
         };
         writeFileSync(this.stateFile, JSON.stringify(stateObject, null, 2));
         console.log(`Batch state saved to ${this.stateFile}`);
+        writeFileSync(path.join(this.stateDir, 'items-modifier.json'), JSON.stringify(this.completedResults))
     }
 
     private loadStateFromFile() {
@@ -75,15 +80,10 @@ export class BatchManager {
         } else {
             this.batches = new Map();
         }
-        if (stateObject.submittedEquipmentIds) {
-            this.submittedEquipmentIds = new Set(stateObject.submittedEquipmentIds);
+        if (stateObject.batchItemIds) {
+            this.batchItemIds = new Map(Object.entries(stateObject.batchItemIds));
         } else {
-            this.submittedEquipmentIds = new Set();
-        }
-        if (stateObject.batchEquipments) {
-            this.batchEquipments = new Map(Object.entries(stateObject.batchEquipments));
-        } else {
-            this.batchEquipments = new Map();
+            this.batchItemIds = new Map();
         }
         console.log(`Batch state loaded from ${this.stateFile}`);
     }
@@ -97,27 +97,54 @@ export class BatchManager {
         for (const file of files) {
             if (file.endsWith('.json')) {
                 const batchId = file.replace('results-', '').replace('.json', '');
+                console.log(`Loading results for batch ${batchId} at ${path.join(this.resultsDir, file)}`);
                 const content = fsReadFileSync(path.join(this.resultsDir, file), 'utf-8');
-                try {
-                    this.completedResults[batchId] = JSON.parse(content);
-                } catch (e) {
-                    console.error(`Failed to parse results file ${file}:`, e);
-                }
+                this.completedResults = { ...this.completedResults, ...JSON.parse(content) };
             }
         }
+        console.log(`Loaded ${Object.keys(this.completedResults).length} completed results`);
+        Object.entries(this.completedResults).forEach(([itemId, result]) => {
+            if (result.status === "success") {
+                const item = this.itemsMap.get(itemId);
+                if (item != null) {
+                    this.cacheDescription(item.description, result);
+                }
+            }
+        });
+    }
+
+    private getItemsToProcess(): Set<iItem> {
+        const itemsToProcess = new Set(this.items);
+        Object.keys(this.completedResults).forEach(id => {
+            const item = this.itemsMap.get(id);
+            if (item != null) {
+                itemsToProcess.delete(item);
+            }
+        });
+        Object.entries(this.batches).filter(([, status]) => status === "in_progress").forEach(([batchId, ]) => {
+            const itemIds = this.batchItemIds.get(batchId);
+            if (itemIds != null) {
+                itemIds.forEach(id => {
+                    const item = this.itemsMap.get(id);
+                    if (item != null) {
+                        itemsToProcess.delete(item);
+                    }
+                })
+            }
+        })
+        return itemsToProcess;
     }
 
     private getNextBatch(): iItem[] {
-        const endIdx = Math.min(BATCH_SIZE, this.equipmentsToProcess.size);
-        return Array.from(this.equipmentsToProcess.values()).slice(0, endIdx);
+        const endIdx = Math.min(BATCH_SIZE, this.itemsToProcess.size);
+        return Array.from(this.itemsToProcess.values()).slice(0, endIdx);
     }
 
-    private registerSubmittedEquipments(batchId: string, equipments: iItem[]) {
+    private registerSubmittedItems(batchId: string, equipments: iItem[]) {
         equipments.forEach(e => {
-            this.submittedEquipmentIds.add(e.id.toString());
-            this.equipmentsToProcess.delete(e)
+            this.itemsToProcess.delete(e)
         })
-        this.batchEquipments.set(batchId, equipments.map(e => e.id.toString()));
+        this.batchItemIds.set(batchId, equipments.map(e => e.id.toString()));
     }
 
 
@@ -125,52 +152,62 @@ export class BatchManager {
      * Submits all batches sequentially and waits for each to complete before submitting the next.
      * Returns all results at the end.
      */
-    async createBatches(equipments: iItem[]) {
+    async run() {
         // Only process equipment not already submitted
-        const allToProcess = equipments.filter(e => !this.submittedEquipmentIds.has(e.id.toString()));
-        this.equipmentsToProcess = new Set(allToProcess);
-        // Start with already completed results
-        const results: { [batchId: string]: any[] } = { ...this.completedResults };
-        while (this.equipmentsToProcess.size > 0) {
+        this.itemsToProcess = this.getItemsToProcess();
+        while (this.itemsToProcess.size > 0) {
             // If there's an in progress batch, skip batch creation and start polling it
             let batchId = this.findPendingBatch();
-            let currentBatchEquipments: iItem[] = [];
+            let currentBatchItems: iItem[] = [];
             if (batchId == null) {
-                // Submit the next batch
-                currentBatchEquipments = this.getNextBatch()
+                // Batch Submission Flow:
+                // First Look for any cache hits, to remove from the pending items to process
+                // Then, once all cache hits are removed, submit the next batch to be processed
+                this.processCacheHits();
+                console.log(`${this.itemsToProcess.size} items left to process`);
+                currentBatchItems = this.getNextBatch()
                 const batchFileId = Date.now().toString();
-                const batchFile = this.prepareAndWriteBatchFile(currentBatchEquipments, batchFileId);
+                const batchFile = this.prepareAndWriteBatchFile(currentBatchItems, batchFileId);
                 const fileId = await this.submitBatchFile(batchFile);
                 batchId = await this.createBatch(fileId);
-                this.registerSubmittedEquipments(batchId, currentBatchEquipments);
+                this.batches.set(batchId, "in_progress");
+                this.registerSubmittedItems(batchId, currentBatchItems);
                 this.saveStateToFile();
             } else {
                 console.log("Resuming from In Progress Batch: " + batchId);
-                const batchEquipmentIds = this.batchEquipments.get(batchId);
-                if (batchEquipmentIds != null) {
-                    currentBatchEquipments = batchEquipmentIds.map(id => equipments.find(e => e.id.toString() === id)).filter(e => e != null);
+                const batchItemIds = this.batchItemIds.get(batchId);
+                if (batchItemIds != null) {
+                    currentBatchItems = batchItemIds.map(id => this.items.find(e => e.id.toString() === id)).filter(e => e != null);
                 }
             }
 
             // Poll and persist results
-            const batchResult = await this.pollBatchUntilComplete(batchId, currentBatchEquipments);
-            if (batchResult) {
-                this.persistBatchResults(batchId, batchResult);
-                results[batchId] = batchResult;
+            const batchResult = await this.pollBatchUntilComplete(batchId);
+            if (batchResult != null) {
+                this.registerParsedModifiers(batchId, batchResult);
+            } else {
+                console.log(`No results for batch ${batchId}. Adding ${currentBatchItems.length} items back to queue`);
+                currentBatchItems.forEach(i => this.itemsToProcess.add(i));
             }
             this.saveStateToFile();
+            console.log("Waiting for 10 seconds to allow the API to refresh the limit");
+            await this.sleep(10 * 1000); // 10 seconds
         }
-        return results;
+        return this.completedResults;
     }
 
-    private prepareAndWriteBatchFile(equipments: iItem[], batchFileId: string): string {
-        const data = equipments.map(e => (
+    private async sleep(t: number) {
+        return new Promise((resolve) => setTimeout(resolve, t));
+    }
+
+    private prepareAndWriteBatchFile(items: iItem[], batchFileId: string): string {
+        const data = items.map(e => (
             JSON.stringify({
                 custom_id: `request-${this.runId}-${e.id}`,
                 method: "POST",
                 url: "/v1/chat/completions",
                 body: {
-                    model: this.modelName,
+                    model: this.selectModel(e),
                     messages: [
                         { role: "system", content: SystemPrompt },
                         { role: "user", content: userPrompt(e) }
@@ -179,9 +216,17 @@ export class BatchManager {
                 }
             })
         ));
-        const filename = `${this.batchDir}/${this.modelName}-${batchFileId}.jsonl`;
+        const filename = `${this.batchDir}/${this.runId}-${batchFileId}.jsonl`;
         writeFileSync(filename, data.join("\n"));
         return filename;
+    }
+
+    private selectModel(_item: iItem): string {
+        // TODO: Select model based on the equipment description complexity
+        // Nano: Simple
+        // Mini: Medium
+        // Standard: Complex
+        return this.defaultModelName;
     }
 
     private async submitBatchFile(filename: string): Promise<string> {
@@ -203,9 +248,9 @@ export class BatchManager {
         return batch.id;
     }
 
-    private async pollBatchUntilComplete(batchId: string, batchEquipments: iItem[]): Promise<any[] | null> {
+    private async pollBatchUntilComplete(batchId: string): Promise<ParsedModifiers | null> {
         let batchStatus = "validating";
-        let batchResult: any = null;
+        let batchResult: ParsedModifiers | null = null;
         const nonTerminalStatuses = ["validating", "in_progress", "finalizing"];
         while (nonTerminalStatuses.includes(batchStatus)) {
             await new Promise(res => setTimeout(res, 10000)); // Poll every 10 seconds
@@ -221,54 +266,63 @@ export class BatchManager {
             const fileResponse = await this.client.files.content(batchInfo.output_file_id);
             const content = await fileResponse.text();
             batchResult = this.parseBatchResults(content);
-            this.saveStateToFile();
             return batchResult;
         } else if (["failed", "expired", "cancelled"].includes(batchStatus)) {
             console.error(`Batch ${batchId} failed with status: ${batchStatus}`);
-            console.log(`Adding ${batchEquipments.length} equipments back to queue`);
-            this.equipmentsToProcess.union(new Set(batchEquipments));
-            this.saveStateToFile();
             return null;
         }
-        this.saveStateToFile();
         return null;
     }
 
-    private persistBatchResults(batchId: string, batchResult: any[]): void {
+    private registerParsedModifiers(batchId: string, batchResult: ParsedModifiers): void {
+        // Register parsed modifiers in cache to skip reprocessing the same description
+        // Only register successful results
+        Object.entries(batchResult).forEach(([itemId, result]) => {
+            if (result.status === "success") {
+                const item = this.itemsMap.get(itemId);
+                if (item != null) {
+                    this.cacheDescription(item.description, result)
+                }
+            }
+        });
         fsWriteFileSync(
             path.join(this.resultsDir, `results-${batchId}.json`),
             JSON.stringify(batchResult, null, 2)
         );
-        this.completedResults[batchId] = batchResult;
+        this.completedResults = { ...this.completedResults, ...batchResult };
     }
 
-    private parseBatchResults(content: string): any[] {
+    private cacheDescription(description: string, result: ParsedItemModifiers): void {
+        this.descriptionCache.set(description, result);
+    }
+
+    private parseBatchResults(content: string): ParsedModifiers {
         const lines = content.split("\n").filter(line => line.trim() !== "");
-        return lines.map(line => {
+        return Object.fromEntries(lines.map((line) => {
             const parsedLine = JSON.parse(line);
             const llmResponse = parsedLine.response.body.choices[0].message.content;
             const ids = parsedLine.custom_id.split("-");
-            const equipmentId = ids[ids.length - 1];
+            const itemId: string = ids[ids.length - 1];
             if (!llmResponse) {
-                return {
-                    [equipmentId]: {
+                return [
+                    itemId, {
                         status: "failed",
                         error: "Failed to get LLM content",
                         llm_response: "",
                     }
-                };
+                ];
             }
 
             const matcher = /FINAL_ANSWER:\s+([\s\S]*)/gim;
             const matchs = matcher.exec(llmResponse);
             if (!matchs) {
-                return {
-                    [equipmentId]: {
+                return [
+                    itemId, {
                         status: "failed",
                         error: "Failed to match the response to expected format",
                         llm_response: llmResponse,
                     }
-                };
+                ];
             }
             try{
                 const response = evaluateObjectString(matchs[1], {
@@ -285,27 +339,47 @@ export class BatchManager {
                     ComparisonConditions: conditionsConfig.ComparisonConditions,
                     ConditionTypes: conditionsConfig.ConditionTypes,
                 });
-                return {
-                    [equipmentId]: {
+                return [
+                    itemId, {
                         status: response.status,
                         modifiers: response.modifiers,
                         error: response.error,
                         llm_response: llmResponse,
                     }
-                };
+                ];
             } catch (e) {
-                return {
-                    [equipmentId]: {
+                return [
+                    itemId, {
                         status: "failed",
                         error: "Failed to evaluate the response: " + e,
                         llm_response: llmResponse,
                     }
-                };
+                ];
             }
-        });
+        }));
     }
 
     private findPendingBatch(): string | undefined {
-        return this.batches.keys().find(k => this.batches.get(k) === "in_progress");
+        return Array.from(this.batches.keys()).find(k => this.batches.get(k) === "in_progress");
+    }
+
+    private processCacheHits() {
+        this.itemsToProcess.forEach(e => {
+            const cachedResult = this.descriptionCache.get(e.description);
+            if (cachedResult != null) {
+                console.log(`Cache hit for ${e.id}`);
+                // Append to a cached results file
+                const cachePath = path.join(this.resultsDir, `results-cache.json`);
+                let parsedCachedResults: ParsedModifiers = {};
+                if (existsSync(cachePath)) {
+                    parsedCachedResults = JSON.parse(fsReadFileSync(cachePath, "utf-8"));
+                }
+                parsedCachedResults[e.id.toString()] = cachedResult;
+                fsWriteFileSync(cachePath, JSON.stringify(parsedCachedResults, null, 2));
+                this.itemsToProcess.delete(e);
+                this.completedResults[e.id.toString()] = cachedResult;
+            }
+        })
+        this.saveStateToFile();
     }
 }

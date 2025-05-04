@@ -3,8 +3,7 @@ import { iModifier } from "./types/engine";
 import { StatsModifier } from "./statsModifier";
 import { RefinementModifier } from "./refinementModifier";
 import { iCondition } from "./conditions/types/engine";
-import { ConditionData } from "./conditions/types/config";
-import { ConditionTypes } from "./conditions/types/config";
+import { ConditionData, RefinementConditionData } from "./conditions/types/config";
 import { RefinementCondition } from "./conditions/refinementCondition";
 import { EquipmentSetCondition } from "./conditions/equipmentSetCondition";
 import { CardSetCondition } from "./conditions/cardSetCondition";
@@ -17,6 +16,15 @@ import { Combo } from "./combo";
 import { ModifierData, ModifierTypes } from "./types/config";
 import { LevelModifier } from "./levelModifier";
 import { AttributeModifier } from "./attributeModifier";
+import { AttributeCondition } from "./conditions/attributeCondition";
+import { CardSetConditionData } from "./conditions/types/config";
+import { EquipmentSetConditionData } from "./conditions/types/config";
+import { AttackTypeConditionData } from "./conditions/types/config";
+import { TargetConditionData } from "./conditions/types/config";
+import { JobConditionData } from "./conditions/types/config";
+import { LevelConditionData } from "./conditions/types/config";
+import { SkillConditionData } from "./conditions/types/config";
+import { AttributeConditionData } from "./conditions/types/config";
 
 export function newModifier(m: ModifierData): iModifier {
     switch (m.type) {
@@ -46,40 +54,38 @@ export function newModifier(m: ModifierData): iModifier {
     }
 }
 
+
 export function newCondition(c: ConditionData): iCondition {
-    switch (c.type) {
-        // @ts-ignore
-        case "Refinement":
-        case ConditionTypes.Refinement:
-            return new RefinementCondition(c.data);
-        // @ts-ignore
-        case "EquipmentSet":
-        case ConditionTypes.EquipmentSet:
-            return new EquipmentSetCondition(c.data);
-        // @ts-ignore
-        case "Card":
-        case ConditionTypes.Card:
-            return new CardSetCondition(c.data);
-        // @ts-ignore
-        case "AttackType":
-        case ConditionTypes.AttackType:
-            return new AttackTypeCondition(c.data);
-        // @ts-ignore
-        case "Target":
-        case ConditionTypes.Target:
-            return new TargetCondition(c.data);
-        // @ts-ignore
-        case "Job":
-        case ConditionTypes.Job:
-            return new JobCondition(c.data);
-        // @ts-ignore
-        case "Level":
-        case ConditionTypes.Level:
-            return new LevelCondition(c.data);
-        // @ts-ignore
-        case "Skill":
-        case ConditionTypes.Skill:
-            return new SkillCondition(c.data);
+    switch (c.type.toString().toLowerCase()) {
+        // The AI turned out to be a bit... creative with the condition types.
+        // It didn't respect the instruction to put a call to the enum, and decided to use either the position or string value.
+        case "0":
+        case "refinement":
+            return new RefinementCondition(c.data as RefinementConditionData);
+        case "1":
+        case "equipmentset":
+            return new EquipmentSetCondition(c.data as EquipmentSetConditionData);
+        case "2":
+        case "target":
+            return new TargetCondition(c.data as TargetConditionData);
+        case "3":
+        case "attacktype":
+            return new AttackTypeCondition(c.data as AttackTypeConditionData);
+        case "4":
+        case "level":
+            return new LevelCondition(c.data as LevelConditionData);
+        case "5":
+        case "card":
+            return new CardSetCondition(c.data as CardSetConditionData);
+        case "6":
+        case "job":
+            return new JobCondition(c.data as JobConditionData);
+        case "7":
+        case "skill":
+            return new SkillCondition(c.data as SkillConditionData);
+        case "8":
+        case "attribute":
+            return new AttributeCondition(c.data as AttributeConditionData);
         default:
             throw new Error(`Unsupported Condition Type: ${c.type}`)
     }

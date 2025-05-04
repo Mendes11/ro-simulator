@@ -1,20 +1,22 @@
 import { iCard } from "@/engine/types/card";
 import { CardSearchArgs } from "@/engine/types/repositories";
-import fs from "fs";
+import { loadCardsFile, loadModifiersFile } from "./utils";
 
-
-function loadCardsFile(): string {
-    return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/cards.json", 'utf-8');
-}
 
 export class LocalCardRepository {
     cards: {[k: string]: iCard}
 
     public constructor() {
         this.cards = JSON.parse(loadCardsFile());
+        const modifiers = JSON.parse(loadModifiersFile());
+        Object.keys(modifiers).forEach(id => {
+            if (this.cards[id] && modifiers[id].status != "failed") {
+                this.cards[id].modifiers = modifiers[id].modifiers;
+            }
+        })  
         console.log(`Loaded ${Object.keys(this.cards).length} cards`)
         console.log("Indexing Cards...");
-        console.log("Finished Indexing Equipments.");
+        console.log("Finished Indexing Cards.");
 
     }
 

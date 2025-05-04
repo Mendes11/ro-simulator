@@ -1,16 +1,7 @@
 import { ItemLocations } from "@/engine/types/enums";
 import { iEquipment, ItemSubTypes, ItemTypes } from "@/engine/types/equipment";
 import { EquipmentSearchArgs } from "@/engine/types/repositories";
-import fs from "fs";
-
-
-function loadEquipmentsFile(): string {
-    return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/equipments.json", 'utf-8');
-}
-
-function loadModifiersFile(): string {
-    return fs.readFileSync(process.cwd() + "/src/lib/repositories/local/equipments-modifiers.json", 'utf-8');
-}
+import { loadEquipmentsFile, loadModifiersFile } from "./utils";
 
 export class LocalEquipmentRepository {
     equipments: {[k: string]: iEquipment}
@@ -23,7 +14,7 @@ export class LocalEquipmentRepository {
         this.equipments = JSON.parse(loadEquipmentsFile());
         const modifiers = JSON.parse(loadModifiersFile());
         Object.keys(modifiers).forEach(id => {
-            if (modifiers[id].status != "failed") {
+            if (this.equipments[id] && modifiers[id].status != "failed") {
                 this.equipments[id].modifiers = modifiers[id].modifiers;
             }
         })

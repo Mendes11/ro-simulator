@@ -13,16 +13,10 @@ import { OpenAI } from "openai";
 import { SystemPrompt } from "./systemPrompt";
 import { ModifierData } from "@/engine/modifiers/types/config";
 import { evaluateObjectString, userPrompt } from "./utils";
+import { ParsedItemModifiers } from "./types";
 
 
-export type ParsedModifiers = {
-    status: string;
-    modifiers?: ModifierData[];
-    error?: string
-    llm_response: string
-}
-
-export const parseItemModifiers = async (client: OpenAI, modelName: string, equipment: iItem): Promise<ParsedModifiers> => {
+export const parseItemModifiers = async (client: OpenAI, modelName: string, equipment: iItem): Promise<ParsedItemModifiers> => {
     const completion = await client.chat.completions.create({
         model: modelName,
         messages: [
@@ -38,7 +32,7 @@ export const parseItemModifiers = async (client: OpenAI, modelName: string, equi
     return parseModifier(content);
 }
 
-export const parseModifier = (content: string): ParsedModifiers => {
+export const parseModifier = (content: string): ParsedItemModifiers => {
     const matcher = /FINAL_ANSWER:\s+([\s\S]*)/gim;
     const matchs = matcher.exec(content);
     if (matchs == null) {

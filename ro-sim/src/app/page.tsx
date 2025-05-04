@@ -64,7 +64,7 @@ export default function Home() {
     window.location.hash = tab;
   }
 
-
+  console.log("Main Page");
   return (
     <div className="flex flex-row flex-wrap">
       <div className="basis-full lg:basis-2/3 p-1">
