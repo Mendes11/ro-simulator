@@ -26,7 +26,7 @@ const itemsList = Object.keys(items).map(e => items[e]).sort((a, b) => a.id - b.
 const batchManager = new BatchManager(client, "equipment-modifiers", itemsList);
 
 try {
-    await batchManager.run();
+    await batchManager.run({retryFailed: retryFailed});
 } catch (error) {
     console.error("Error during batch processing:", error);
 }
