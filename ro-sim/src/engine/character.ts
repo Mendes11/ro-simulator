@@ -88,15 +88,18 @@ export class Character implements iCharacter {
                 ?.filter(m => m != null) ?? []
 
             const cardsModifiers = eqp.slots.flatMap(slot => {
-                if (slot.name === "Carta Crux Findel") {
-                    console.log("Findel Breakpoint");
-                    const modifiers = slot.modifiers?.map(mod => newModifier(mod));
-                    const appliedModifiers = modifiers?.map(m => m.getModifier(applyData));
-                    console.log(appliedModifiers);
+                console.log(`${slot.name} - ${slot.id}`);
+                if (slot.modifiers == null) {
+                    console.log("Item missing modifiers!");
+                    return [];
                 }
-                return slot.modifiers
-                ?.map(mod => newModifier(mod).getModifier(applyData))
-                ?.filter(m => m != null) ?? []
+                const modifiers = slot.modifiers.map(mod => newModifier(mod));
+                console.log(`Modifiers:`);
+                console.log(modifiers);
+                const appliedModifiers = modifiers.map(m => m.getModifier(applyData));
+                console.log("Applied Modifiers:");
+                console.log(appliedModifiers);
+                return appliedModifiers.filter(m => m != null);
             }
 
             );
