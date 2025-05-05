@@ -1,11 +1,11 @@
 'use server'
 
-import { iCard } from "@/engine/types/card";
-import { iEquipment } from "@/engine/types/equipment";
+import { CardData } from "@/engine/types/card";
+import { ArmorData, WeaponData } from "@/engine/types/equipment";
 import { EquipmentSearchArgs, CardSearchArgs } from "@/engine/types/repositories";
 import { cardRepository, equipmentRepository } from "@/lib/repositories";
 
-export async function searchEquipments(args: EquipmentSearchArgs): Promise<iEquipment[]> {
+export async function searchEquipments(args: EquipmentSearchArgs): Promise<(ArmorData | WeaponData)[]> {
   console.log(args);
   const equipments = await equipmentRepository.Search(args);
   console.log(`Found ${equipments.length}`)
@@ -13,7 +13,7 @@ export async function searchEquipments(args: EquipmentSearchArgs): Promise<iEqui
 }
 
 
-export async function searchCards(args: CardSearchArgs): Promise<iCard[]> {
+export async function searchCards(args: CardSearchArgs): Promise<CardData[]> {
   console.log(args);
   return cardRepository.Search(args)
 }

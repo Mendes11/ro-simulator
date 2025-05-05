@@ -9,6 +9,8 @@ import { ModifierData } from "@/engine/modifiers/types/config";
 import { EquipmentSet } from "@/engine/modifiers/conditions/types/config";
 import { iAttackModifiers } from "@/engine/types/attackModifier";
 import { ItemLocations } from "@/engine/types/enums";
+import { iEquipmentInstance } from "./equipmentInstance";
+import { iModifier } from "../modifiers/types/engine";
 
 export enum ItemTypes {
     Weapon,
@@ -135,10 +137,7 @@ export type EquipmentData = iItem & {
 
 export type ModifierSourceData = {
     location: ItemLocations;
-    instance: {
-        refinement: number;
-        equipment: EquipmentData
-    }
+    instance: iEquipmentInstance;
     card?: boolean
 }
 
@@ -160,12 +159,31 @@ export interface iCharacterModifiers {
     mul: (n: number) => iCharacterModifiers;
 }
 
+export type ModifierResult = {
+    modifier: iModifier;
+    result: iCharacterModifiers | undefined;
+}
 // Equipment has the basic characteristics of any equipment item in the game.
-export type iEquipment = EquipmentData
+export interface iEquipment extends EquipmentData {
+    getModifiers(): iModifier[];
+    resolveModifiers(data: ModifierApplyData): ModifierResult[];
+}
+
+export interface ArmorData extends EquipmentData {
+    equipDef?: number;
+    equipMDef?: number;
+}
 
 export interface iArmor extends iEquipment {
     equipDef?: number;
     equipMDef?: number;
+}
+
+export interface WeaponData extends EquipmentData {
+    weaponLevel: number;
+    weaponAtk?: number;
+    weaponMAtk?: number;
+    attackRange: AttackRangeTypes;
 }
 
 export interface iWeapon extends iEquipment {

@@ -48,7 +48,6 @@ Ragnarok Online is a classic MMORPG with a rich equipment and card system. The a
 
 - Node.js (vXX+)
 - npm, yarn, pnpm, or bun
-- Access to `item_info.lub` from the bRO GRF
 - OpenAI API key (for data extraction)
 
 ### Installation

@@ -1,4 +1,4 @@
-import { SimulationSummary, SimulateResult } from "@/engine/simulation"
+import { SimulationSummary, SimulateResult, simulateForCharacter } from "@/engine/simulation"
 import { AttackTypes } from "@/engine/types/config";
 import { iCharacter } from "@engine/types/character";
 import { ElementTypes, RaceTypes } from "@/engine/types/enums";
@@ -39,10 +39,8 @@ export const SimulationView = ({
     const [result, setResult] = useState<SimulateResult>();
 
     useEffect(() => {
-      // const summary = getCharSummary(character, selectedSkill);
-      // const result = Simulate(summary);
       console.log(selectedSkill);
-      const res = character.simulate(ElementTypes.Neutral, DummyTarget, selectedSkill ? {skill: selectedSkill!, level: selectedSkill.maxLevel} : undefined);
+      const res = simulateForCharacter(character, ElementTypes.Neutral, DummyTarget, selectedSkill ? {skill: selectedSkill!, level: selectedSkill.maxLevel} : undefined);
       setResult(res);
       setSummary(res.summary);
     }, [character, selectedSkill])
@@ -56,7 +54,7 @@ export const SimulationView = ({
     return (
         <div className="p-2">
           <div>
-            <label htmlFor="attackType">Habilidadee: </label>
+            <label htmlFor="attackType">Habilidade: </label>
             <select value={selectedSkill?.id ?? ""}
               onChange={handleSkillSelected}
             className="border-2 rounded-md p-1" name="attackType">

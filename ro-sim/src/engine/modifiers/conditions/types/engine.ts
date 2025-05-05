@@ -9,7 +9,9 @@ export type ConditionAttackinfo = {
     element: ElementTypes;
     attackType: AttackTypes;
     attackRangeType: AttackRangeTypes;
-};export interface ConditionCheckData {
+}
+
+export interface ConditionCheckData {
     source: ModifierSourceData;
     character: iCharacter;
     target: iTarget;
@@ -18,6 +20,7 @@ export type ConditionAttackinfo = {
     setAlreadyInUse: (set: EquipmentSet) => boolean;
     addSet: (set: EquipmentSet) => void;
 }
+
 export interface iCondition {
     check: (data: ConditionCheckData) => boolean;
 }

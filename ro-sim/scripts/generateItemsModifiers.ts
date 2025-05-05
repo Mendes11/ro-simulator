@@ -1,13 +1,18 @@
 // Generate item-modifiers.json file from a parseModifiers json output
 
 import { ModifierData } from "@/engine/modifiers/types/config";
+import { newModifier } from "@/engine/modifiers/utils";
 import { ParsedModifiers } from "@/lib/modifiersParser/types";
 import { parseModifiersFromResponse } from "@/lib/modifiersParser/utils";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
 import path from "path";
 
-rmSync("db", {recursive: true, force: true});
-mkdirSync("db");
+if (existsSync(path.join("db", "failed-parses.json"))) rmSync(path.join("db", "failed-parses.json"));
+if (existsSync(path.join("db", "partial-parses.json"))) rmSync(path.join("db", "partial-parses.json"));
+if (existsSync(path.join("db", "success-parses.json"))) rmSync(path.join("db", "success-parses.json"));
+if (existsSync(path.join("db", "items-modifiers.json"))) rmSync(path.join("db", "items-modifiers.json"));
+
+if (!existsSync("db")) mkdirSync("db");
 
 const args = process.argv.slice(2);
 if (args.length !== 1) {
@@ -23,13 +28,27 @@ const successItems: ParsedModifiers = {};
 Object.entries(parsedModifiers).forEach(([itemId, result]) => {
     switch (result.status) {
         case "success":
-            successItems[itemId] = result;
+            try{
+                result.modifiers?.map(m => newModifier(m))
+                successItems[itemId] = result;
+            } catch (e) {
+                console.log(`Failed to parse modifiers for item ${itemId}`);
+                console.log(e);
+                failedItems[itemId] = result;
+            }
             break;
         case "failed":
             failedItems[itemId] = result;
             break;
         case "partial":
-            partialItems[itemId] = result;
+            try{
+                result.modifiers?.map(m => newModifier(m))
+                partialItems[itemId] = result;
+            } catch (e) {
+                console.log(`Failed to parse modifiers for item ${itemId}`);
+                console.log(e);
+                failedItems[itemId] = result;
+            }
             break;
         default:
             break;

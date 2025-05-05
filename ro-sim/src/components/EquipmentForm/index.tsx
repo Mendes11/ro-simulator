@@ -3,10 +3,11 @@ import CardSelector from "./CardSelector";
 import EquipmentSelector from "./EquipmentSelector";
 import { Priority } from "@/contants";
 import AppButton from "../common/AppButton";
-import { iEquipmentInstance } from "@engine/types/equipmentInstance";
+import { EquipmentInstanceData, iEquipmentInstance } from "@engine/types/equipmentInstance";
 import { ItemSubTypes, ItemTypes, iEquipment } from "@engine/types/equipment";
 import { ItemLocations } from "@/engine/types/enums";
 import { iCard } from "@engine/types/card";
+import { EquipmentInstance } from "@/engine/equipmentInstance";
 
 
 type Props = {
@@ -53,7 +54,7 @@ export default function EquipmentForm(props: Props) {
     if (formData.equipment == null) {
       props.onSave();
     } else {
-      props.onSave(formData as iEquipmentInstance);
+      props.onSave(new EquipmentInstance(formData as EquipmentInstanceData));
     }
     console.log(formData)
   }

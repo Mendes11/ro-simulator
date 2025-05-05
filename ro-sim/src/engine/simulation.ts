@@ -1,9 +1,17 @@
 import { AttackRangeTypes, AttackTypes } from "./types/config";
 import { AttributesData, iAttributes } from "./types/attributes";
-import { ElementTypes } from "./types/enums";
+import { ElementTypes, ItemLocations } from "./types/enums";
 import { iAttackMultipliers } from "./types/attackMultiplier";
 import { iCharacterSubStats } from "./types/stats";
 import { iTarget } from "./types/target";
+import { iCharacter } from "./types/character";
+import { iSkillInstance } from "./types/skills";
+import { CharacterModifiers } from "./modifiers/characterModifiers";
+import { CharacterSubStats } from "./subStats";
+import { AttackModifiers } from "./attackModifiers";
+import { AttackMultipliers } from "./attackMultipliers";
+import { iAttackModifiers } from "./types/attackModifier";
+import { iWeapon } from "./types/equipment";
 
 const BaseCriticalMultiplier = 1.4;
 
@@ -36,6 +44,24 @@ export type SimulationSummary = {
     attackInfo: AttackInfo;
     target: iTarget;
     attackMultipliers: iAttackMultipliers;
+}
+
+export type SimulateResult = {
+    upperBound: SimulationResult;
+    lowerBound: SimulationResult;
+    summary: SimulationSummary;
+}
+
+type SimulationResult = {
+    damage: number;
+    criticalDamage?: number;
+    hardReduction: number;
+    softReduction: number;
+    finalReductions: number;
+    groupA: number;
+    groupB: number;
+    sAtk: number;
+    atk: number;
 }
 
 
@@ -136,17 +162,36 @@ function hardDefMReduction(defM: number, bypass: number) {
     return ((1000+defM)/(1000+defM*10)) * (1 - bypass)
 }
 
-type SimulationResult = {
-    damage: number;
-    criticalDamage?: number;
-    hardReduction: number;
-    softReduction: number;
-    finalReductions: number;
-    groupA: number;
-    groupB: number;
-    sAtk: number;
-    atk: number;
+
+function attackInfo(character: iCharacter, element: ElementTypes, attackModifiers: iAttackModifiers, skill?: iSkillInstance): AttackInfo {
+    const rightHand = character.findEquipmentByLocation(ItemLocations.RightHand);
+    const leftHand = character.findEquipmentByLocation(ItemLocations.LeftHand);
+
+    return {
+        attackType: skill?.skill.attackType ?? AttackTypes.Physical,
+        critable: skill?.skill.critable ?? true,
+        element: element,
+        skill: skill != null,
+        attackRange: skill?.skill.attackRangeType ?? AttackRangeTypes.Melee,
+        defBypass: skill?.skill.defBypass ?? attackModifiers.defBypass,
+        defMBypass: skill?.skill.defMBypass ?? attackModifiers.defMBypass,
+        thanatosEffect: skill?.skill.thanatosEffect ?? attackModifiers.thanatosEffect,
+        rightWeapon: {
+            refinement: character.findEquipmentByLocation(ItemLocations.RightHand)?.refinement ?? 0,
+            wAtk: (rightHand?.equipment as iWeapon)?.weaponAtk ?? 0,
+            wMAtk: (rightHand?.equipment as iWeapon)?.weaponMAtk ?? 0,
+            weaponLevel: (rightHand?.equipment as iWeapon)?.weaponLevel ?? 0,
+        },
+        sizePenalty: attackModifiers.sizePenalty != 0 ? attackModifiers.sizePenalty : 1.0, // TODO: Implement size-penalty method from the weapon type
+        leftWeapon: leftHand ? {
+            refinement: leftHand?.refinement ?? 0,
+            wAtk: (leftHand?.equipment as iWeapon)?.weaponAtk ?? 0,
+            wMAtk: (leftHand?.equipment as iWeapon)?.weaponMAtk ?? 0,
+            weaponLevel: (leftHand?.equipment as iWeapon)?.weaponLevel ?? 0,
+        } : undefined,
+    }
 }
+
 
 // TODO: mAtk is missing some things
 // TODO: Missing consumableAtk + Ammunition Atk + PseudoBuffAtk
@@ -246,15 +291,37 @@ function simulate(summary: SimulationSummary, maxVariance=true): SimulationResul
 }
 
 
-export type SimulateResult = {
-    upperBound: SimulationResult;
-    lowerBound: SimulationResult;
-    summary: SimulationSummary;
-}
 export function Simulate(summary: SimulationSummary): SimulateResult {
     return {
         summary: summary,
         upperBound: simulate(summary, true),
         lowerBound: simulate(summary, false),
     }
+}
+
+export function simulateForCharacter(character: iCharacter, element: ElementTypes, target: iTarget, skill?: iSkillInstance): SimulateResult {
+    let charModifiers = new CharacterModifiers({
+        attributes: character.baseAttrs,
+        subStats: new CharacterSubStats(),
+        attackMultipliers: new AttackMultipliers(),
+        attackModifiers: new AttackModifiers()
+    })
+    const mods = character.activeModifiers(element, target, skill)
+    if (mods.length > 0) {
+        charModifiers = mods.map(m => m.charModifiers).reduce((l, r) => l.sum(r), charModifiers);
+    }
+
+    const summary: SimulationSummary = {
+        level: character.level,
+        target: target,
+        attackInfo: attackInfo(character, element, charModifiers.attackModifiers, skill),
+        attackMultipliers: charModifiers.attackMultipliers,
+        attributes: charModifiers.attributes,
+        subStats: charModifiers.subStats,
+    }
+    if (skill != null) {
+        summary.attackMultipliers.skillAtk = skill.skill.attackMultiplier!(skill.level, summary);
+    }
+
+    return Simulate(summary);
 }

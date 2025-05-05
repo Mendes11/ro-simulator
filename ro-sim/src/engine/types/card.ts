@@ -1,7 +1,11 @@
-import { iItem, ItemSubTypes, ItemTypes } from "./equipment"
+import { iItem, ItemSubTypes, ItemTypes, ModifierApplyData, ModifierResult } from "./equipment"
 
-export interface iCard extends iItem {
-  targetType: ItemTypes;
-  targetSubTypes?: ItemSubTypes[]
-  suffix?: string;
+export type CardData = iItem & {
+    targetType: ItemTypes;
+    targetSubTypes?: ItemSubTypes[]
+    suffix?: string;
+}
+
+export interface iCard extends CardData {
+    resolveModifiers(data: ModifierApplyData): ModifierResult[];
 }

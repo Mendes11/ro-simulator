@@ -1,11 +1,11 @@
-import { iCard } from "@/engine/types/card";
+import { CardData } from "@/engine/types/card";
 import { CardSearchArgs } from "@/engine/types/repositories";
 import { loadCardsFile, loadModifiersFile } from "./utils";
 import { ModifierData } from "@/engine/modifiers/types/config";
 
 
 export class LocalCardRepository {
-    cards: {[k: string]: iCard}
+    cards: {[k: string]: CardData}
 
     public constructor() {
         this.cards = JSON.parse(loadCardsFile());
@@ -21,11 +21,11 @@ export class LocalCardRepository {
 
     }
 
-    async Find(id: number): Promise<iCard> {
+    async Find(id: number): Promise<CardData> {
         return this.cards[id.toString()];
     }
 
-    async Search(query: CardSearchArgs): Promise<iCard[]> {
+    async Search(query: CardSearchArgs): Promise<CardData[]> {
         return Object.values(this.cards).filter(card => {
             if (query.name && !(new RegExp(query.name!, "gi").test(card.name))) return false;
             if (query.targetTypes && !query.targetTypes.includes(card.targetType)) return false;

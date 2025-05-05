@@ -1,11 +1,11 @@
 import { ItemLocations } from "@/engine/types/enums";
-import { iEquipment, ItemSubTypes, ItemTypes } from "@/engine/types/equipment";
+import { ArmorData, ItemSubTypes, ItemTypes, WeaponData } from "@/engine/types/equipment";
 import { EquipmentSearchArgs } from "@/engine/types/repositories";
 import { loadEquipmentsFile, loadModifiersFile } from "./utils";
 import { ModifierData } from "@/engine/modifiers/types/config";
 
 export class LocalEquipmentRepository {
-    equipments: {[k: string]: iEquipment}
+    equipments: {[k: string]: ArmorData | WeaponData}
     typeIndex: Map<ItemTypes, string[]>;
     subTypeIndex: Map<ItemSubTypes, string[]>;
     locationIndex: Map<ItemLocations, string[]>;
@@ -54,20 +54,20 @@ export class LocalEquipmentRepository {
 
     }
 
-    async All(): Promise<iEquipment[]> {
+    async All(): Promise<(ArmorData | WeaponData)[]> {
         return new Promise((resolve) => {
             resolve(
-                Object.keys(this.equipments).map(k => this.equipments[k] as iEquipment)
+                Object.keys(this.equipments).map(k => this.equipments[k])
             )
         })
 
     }
 
-    async Find(id: number): Promise<iEquipment> {
-        return this.equipments[id.toString()] as iEquipment;
+    async Find(id: number): Promise<ArmorData | WeaponData> {
+        return this.equipments[id.toString()];
     }
 
-    async Search(query: EquipmentSearchArgs): Promise<iEquipment[]> {
+    async Search(query: EquipmentSearchArgs): Promise<(ArmorData | WeaponData)[]> {
         console.log(`Searching through ${Object.keys(this.equipments).length} equipments...`);
         return Object.values(this.equipments).filter(e => {
             let q = true

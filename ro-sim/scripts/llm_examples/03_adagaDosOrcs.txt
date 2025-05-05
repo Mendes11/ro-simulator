@@ -33,7 +33,7 @@ Ok, Let me rewrite this without the special cursor formatting characters:
 A cada 3 refinos:
 ATQ e ATQM +40.
 
-Now, analyzing the first row: 
+Now, analyzing the first row:
 "A cada 3 refinos:"
 This row means that this is a refinement modifier that is applied to some other modifier below it. This refinement modifier in specific is applied at every 3 refinements, so I need to create it with a refinementStep of 3.
 
@@ -54,7 +54,7 @@ Refino +6 ou mais:
 Dano físico e mágico contra todas as raças +10%.
 Refino +9 ou mais:
 Dano físico e mágico contra todas as raças +15% adicional.
-Ao realizar ataques físicos, 7% de chance de autoconjurar [Impacto Meteoro] nv.5. 
+Ao realizar ataques físicos, 7% de chance de autoconjurar [Impacto Meteoro] nv.5.
 
 I can see that this block has two distinct conditions applied to distinct modifiers: Refinement +6 and Refinement +9. This probably means that I have to create two modifier objects each with their own condition.
 
@@ -112,7 +112,7 @@ FINAL_ANSWER:
 [
     {
         type: ModifierTypes.Refinement, data: {
-            refinementSteps: 3, 
+            refinementSteps: 3,
             modifier: {
                 type: ModifierTypes.Stats,
                 data: {subStats: {eAtk: 40, eMatk: 40}}
@@ -176,8 +176,8 @@ FINAL_ANSWER:
                 names: ["Anel dos Orcs"]
             }
         }],
-        type: ModifierTypes.Stats, 
+        type: ModifierTypes.Stats,
         data: {subStats: {eAtk: 70, eMatk: 70}},
-        
+
     }
 ]
